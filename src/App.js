@@ -20,10 +20,32 @@ class App extends Component {
     super(props);
 
     this.state = {
-      location: window.location.pathname
+      location: window.location.pathname,
+
+      ftp: {
+        host: "",
+        port: 21,
+        user: "",
+        pass: ""
+      }
+    }
+
+    try {
+      const jsftp = window.require("jsftp");
+
+      this.ftp = new jsftp({
+        host: this.state.ftp.host,
+        port: this.state.ftp.port,
+        user: this.state.ftp.user,
+        pass: this.state.ftp.pass
+      });
+    } catch {
+      this.ftp = null;
     }
 
     this.sidebar = createRef();
+
+    this.ftpClient = createRef();
   }
 
   render() {
@@ -38,8 +60,16 @@ class App extends Component {
             <Sidebar ref={this.sidebar} />
             <Taskbar />
             <Switch>
-              <Route exact path="/session" component={SessionPage} />
-              <Route exact path="/terminal" component={TerminalPage} />
+              <Route exact path="/session" component={(props) => {
+                return (
+                  <SessionPage ftp={this.ftp} />
+                );
+              }} />
+              <Route exact path="/terminal" component={(props) => {
+                return (
+                  <TerminalPage ftp={this.ftp} />
+                )
+              }} />
               <Route exact path="/stats" component={StatsPage} />
               <Route exact path="/settings" component={SettingsPage} />
             </Switch>

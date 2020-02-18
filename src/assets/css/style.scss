@@ -106,8 +106,7 @@ aside#sidebar {
 /* NAV TASKBAR */
 
 nav#taskbar {
-  padding-top: 37px;
-  padding-bottom: 35px;
+  padding: 37px 0 35px 25px;
   z-index: 9;
   width: 100vw;
   position: fixed;
@@ -185,11 +184,112 @@ nav#taskbar {
 }
 
 
+/* SESSION */
+
+main#session {
+  .content {
+    margin: 25px - 12.5px;
+    display: flex;
+    flex-wrap: wrap;
+
+    .system {
+      flex: 1;
+      margin: 12.5px;
+      min-width: 250px;
+
+      .path {
+        margin-bottom: 20px;
+        color: $grey;
+        display: flex;
+        align-items: center;
+
+        .back {
+          transition: all ease 0.1s;
+          margin-right: 10px;
+          border-radius: 50%;
+          padding: 6px 6px 3px 6px;
+          background: $dark;
+
+          svg {
+            width: 18px;
+            height: 18px;
+          }
+
+          &:hover {
+            color: $lightgrey;
+            background: $black;
+          }
+        }
+
+        .url {
+          transition: all ease 0.1s;
+          width: 100%;
+
+          &:hover {
+            color: $lightgrey;
+          }
+        }
+      }
+    }
+
+    .files {
+      // margin: -10px 0;
+
+      .file {
+        display: flex;
+        align-items: center;
+        padding: 7px 20px;
+        margin: 10px 0;
+        background: $dark;
+        color: $grey;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        outline: none;
+
+        &:hover {
+          color: $lightgrey;
+          background: $black;
+        }
+
+        &.dropping {
+          color: $white;
+          border: 1px solid $blue;
+        }
+
+        svg {
+          width: 16px;
+          height: 16px;
+          margin-right: 16px;
+        }
+
+        .name {
+          flex: 3;
+          white-space: nowrap;
+          overflow-x: hidden;
+          overflow-y: visible;
+          text-overflow: ellipsis;
+
+          &::-webkit-scrollbar {
+            width: 0px;
+            display: none;
+          }
+        }
+
+        .size {
+          flex: 1;
+          text-align: right;
+        }
+      }
+    }
+  }
+}
+
+
 /* TERMINAL */
 
 main#terminal {
   .content {
-    margin: 50px;
+    margin: 25px;
 
     .cli {
       width: 100%;
