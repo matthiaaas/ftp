@@ -6,6 +6,10 @@
   -webkit-user-select: none;
 }
 
+a {
+  cursor: default;
+}
+
 html,
 body {
   font-family: "Karla";
@@ -53,7 +57,7 @@ body {
 
 aside#sidebar {
   padding-top: 37px + 146px;
-  z-index: 10;
+  z-index: 8;
   width: 200px;
   height: 100vh;
   position: fixed;
@@ -107,7 +111,7 @@ aside#sidebar {
 
 nav#taskbar {
   padding: 37px 0 35px 25px;
-  z-index: 9;
+  z-index: 7;
   width: 100vw;
   position: fixed;
   background: $dark;
@@ -187,19 +191,83 @@ nav#taskbar {
 /* SESSION */
 
 main#session {
+  .disable {
+    z-index: 9;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    background: rgba($color: $dark, $alpha: 0.8);
+  }
+
+  .contextmenu {
+    z-index: 10;
+    position: fixed;
+    color: $grey;
+    padding: 10px 0;
+    border-radius: 10px;
+    background: $black;
+
+    &.hidden {
+      display: none;
+    }
+
+    ul {
+      li {
+        padding: 5px 25px;
+        display: flex;
+        align-items: center;
+        min-width: 200px;
+
+        .name {
+          flex: 3;
+        }
+
+        .shortcut {
+          text-align: right;
+          flex: 1;
+        }
+
+        &.disabled {
+          color: $light;
+        }
+        
+        &:hover:not(.disabled) {
+          color: $lightgrey;
+          background: $dark;
+        }
+      }
+
+      hr {
+        margin: 8px 25px;
+        border: none;
+        height: 1px;
+        background: $grey;
+      }
+    }
+  }
+
   .content {
     margin: 25px - 12.5px;
+    margin-top: 0;
     display: flex;
     flex-wrap: wrap;
 
     .system {
       flex: 1;
       margin: 12.5px;
+      margin-top: 0;
       min-width: 250px;
 
+      &.dropping {
+        background: $dark;
+      }
+
       .path {
-        margin-bottom: 20px;
+        position: fixed;
+        width: 100%;
         color: $grey;
+        padding: 20px 0;
+        background: $light;
         display: flex;
         align-items: center;
 
@@ -233,13 +301,13 @@ main#session {
     }
 
     .files {
-      // margin: -10px 0;
+      margin-top: 70px;
 
       .file {
         display: flex;
         align-items: center;
         padding: 7px 20px;
-        margin: 10px 0;
+        margin: 7px 0;
         background: $dark;
         color: $grey;
         border-radius: 10px;
@@ -266,7 +334,8 @@ main#session {
           flex: 3;
           white-space: nowrap;
           overflow-x: hidden;
-          overflow-y: visible;
+          overflow-y: hidden;
+          height: 17px;
           text-overflow: ellipsis;
 
           &::-webkit-scrollbar {

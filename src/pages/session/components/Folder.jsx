@@ -11,17 +11,19 @@ class File extends Component {
       }} onDragOver={(event) => {
         event.preventDefault();
       }} onDrop={(event) => {
-        // alert(event.dataTransfer.files[0].path);
-        this.props.onUpload.call(this, event.dataTransfer.files);
+        this.props.onUpload.call(this, event.dataTransfer.files, this.props.folderName);
         event.target.classList.remove("dropping");
       }} onDragLeave={(event) => {
         event.target.classList.remove("dropping");
       }} onClick={(event) => {
         this.props.onEnter.call(this, this.props.folderName);
+      }} onContextMenu={(event) => {
+        event.preventDefault();
+        this.props.onContext.call(this, event, this.props.folderName);
       }}>
         <FolderIcon />
         <span className="name">{this.props.folderName}</span>
-        <span className="size"></span>
+        <span className="size">{this.props.folderSize}</span>
       </div>
     );
   }

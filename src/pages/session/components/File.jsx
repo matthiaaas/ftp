@@ -11,10 +11,12 @@ class File extends Component {
       }} onDragOver={(event) => {
         event.preventDefault();
       }} onDrop={(event) => {
-        alert(event.dataTransfer.files[0].path);
         event.target.classList.remove("dropping");
       }} onDragLeave={(event) => {
         event.target.classList.remove("dropping");
+      }} onContextMenu={(event) => {
+        event.preventDefault();
+        this.props.onContext.call(this, event, this.props.fileName);
       }}>
         <FileIcon />
         <span className="name">{this.props.fileName}</span>
