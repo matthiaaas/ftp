@@ -2,8 +2,12 @@ import React, { Component } from "react";
 
 import { Folder as FolderIcon } from "react-feather";
 
-class File extends Component {
+import { toAccurateDate } from "../../../assets/utils/utils.js";
+
+class Folder extends Component {
   render() {
+    const timestamp = toAccurateDate(this.props.folderTimestamp);
+
     return (
       <div tabIndex="1" className="file" onDragEnter={(event) => {
         event.preventDefault();
@@ -24,9 +28,12 @@ class File extends Component {
         <FolderIcon />
         <span className="name">{this.props.folderName}</span>
         <span className="size">{this.props.folderSize}</span>
+        <span className="timestamp">
+          {timestamp.day + "/" + timestamp.month + "/" + timestamp.year}
+        </span>
       </div>
     );
   }
 }
 
-export default File;
+export default Folder;

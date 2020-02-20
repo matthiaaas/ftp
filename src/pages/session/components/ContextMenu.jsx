@@ -20,7 +20,9 @@ export default ContextMenu;
 export class ContextMenuItem extends Component {
   render() {
     return (
-      <li className={this.props.disabled ? "disabled" : {}}>
+      <li onClick={(event) => {
+        this.props.onExecute.call(this)
+      }} className={this.props.disabled ? "disabled" : {}}>
         <span className="name">{this.props.name}</span>
         <span className="shortcut">{this.props.shortcut}</span>
       </li>

@@ -5,8 +5,9 @@ import { ArrowLeft } from "react-feather";
 import File from "./components/File";
 import Folder from "./components/Folder";
 
-import { toAccurateFileSize } from "../../assets/utils/utils.js";
 import ContextMenu, { ContextMenuItem } from "./components/ContextMenu";
+
+import { toAccurateFileSize, getExactFileType } from "../../assets/utils/utils.js";
 
 class SessionPage extends Component {
   constructor(props) {
@@ -32,6 +33,8 @@ class SessionPage extends Component {
     this.uploadLocalFilesToExternFolder = this.uploadLocalFilesToExternFolder.bind(this);
     this.enterExternFolder = this.enterExternFolder.bind(this);
     this.updateExternFiles = this.updateExternFiles.bind(this);
+    this.deleteExternFile = this.deleteExternFile.bind(this);
+    this.deleteExternFolder = this.deleteExternFolder.bind(this);
     this.goBackExternFolder = this.goBackExternFolder.bind(this);
 
     this.openFolderContextMenu = this.openFolderContextMenu.bind(this);
@@ -44,7 +47,6 @@ class SessionPage extends Component {
   }
 
   componentDidMount() {
-    // load extern files
     this.updateExternFiles();
 
     this.folderContextMenu.current.classList.add("hidden");
@@ -138,24 +140,38 @@ class SessionPage extends Component {
     }
 
     loopFiles(files);
+  }
 
-    // Object.keys(files).map((index) => {
-    //   alert(index);
-    //   this.uploadLocalFileToExternFolder(files[index], this.state.extern.path + toFolder + "/");
-    //   this.fs.readFile(files[index].path, (err, buffer) => {
-    //     if (err) {
-    //       alert(err);
-    //     } else {
-    //       alert(this.state.extern.path + toFolder + "/" + files[index].name)
-    //       this.ftp.put(buffer, this.state.extern.path + toFolder + "/" + files[index].name, (err) => {
-    //         if (err) {
-              
-    //         }
-    //         alert("transferred successfully!")
-    //       })
-    //     }
-    //   })
-    // });
+  deleteExternFile(file) {
+    if (file === undefined) {
+      file = this.state.contextMenu.focus
+    }
+    this.ftp.raw("dele", this.state.extern.path + file, (err) => {
+      if (err) {
+        return alert(err);
+      }
+      alert("deleted successfully!");
+    });
+    this.updateExternFiles();
+    if (this.state.contextMenu.isOpen) {
+      this.closeFileContextMenu();
+    }
+  }
+
+  deleteExternFolder(folder) {
+    if (folder === undefined) {
+      folder = this.state.contextMenu.focus
+    }
+    this.ftp.raw("rmd", this.state.extern.path + folder + "/", (err) => {
+      if (err) {
+        return alert(err);
+      }
+      alert("deleted successfully!");
+    });
+    this.updateExternFiles();
+    if (this.state.contextMenu.isOpen) {
+      this.closeFolderContextMenu();
+    }
   }
 
   openFolderContextMenu(event, folder) {
@@ -163,7 +179,8 @@ class SessionPage extends Component {
       disabled: true,
       contextMenu: {
         ...this.state.contextMenu,
-        isOpen: true
+        isOpen: true,
+        focus: folder
       }
     });
     this.folderContextMenu.current.classList.remove("hidden");
@@ -191,7 +208,8 @@ class SessionPage extends Component {
       disabled: true,
       contextMenu: {
         ...this.state.contextMenu,
-        isOpen: true
+        isOpen: true,
+        focus: file
       }
     });
     this.fileContextMenu.current.classList.remove("hidden");
@@ -224,15 +242,15 @@ class SessionPage extends Component {
           }}} style={{"display": this.state.disabled ? "block" : "none"}}></div>
 
         <ContextMenu cref={this.folderContextMenu}>
-          <ContextMenuItem name="Info" shortcut="⌘I" />
+          <ContextMenuItem name="Info" shortcut="⌘I" disabled />
           <hr/>
           <ContextMenuItem name="Copy" shortcut="⌘C" />
           <ContextMenuItem name="Paste" shortcut="⌘V" />
           <ContextMenuItem name="Duplicate" shortcut="⌘J" />
           <hr/>
-          <ContextMenuItem name="Download" shortcut="⌘D" />
+          <ContextMenuItem name="Download" shortcut="⌘D" disabled />
           <hr/>
-          <ContextMenuItem name="Delete" shortcut="⌘⌫" />
+          <ContextMenuItem name="Delete" shortcut="⌘⌫" onExecute={this.deleteExternFolder} />
           <hr/>
           <ContextMenuItem name="New Folder" shortcut="⌘⇧N" />
           <ContextMenuItem name="New File" shortcut="⌘⇧F" />
@@ -248,7 +266,7 @@ class SessionPage extends Component {
           <hr/>
           <ContextMenuItem name="Download" shortcut="⌘D" />
           <hr/>
-          <ContextMenuItem name="Delete" shortcut="⌘⌫" />
+          <ContextMenuItem name="Delete" shortcut="⌘⌫" onExecute={this.deleteExternFile} />
           <hr/>
           <ContextMenuItem name="New Folder" shortcut="⌘⇧N" />
           <ContextMenuItem name="New File" shortcut="⌘⇧F" />
@@ -293,7 +311,8 @@ class SessionPage extends Component {
                       return (
                         <Folder key={index}
                           folderName={file.name}
-                          folderSize={Math.round(toAccurateFileSize(file.size).size * 10) / 10 + toAccurateFileSize(file.size).unit}
+                          folderSize={Math.round(toAccurateFileSize(file.size).size * 10) / 10 + " " + toAccurateFileSize(file.size).unit}
+                          folderTimestamp={file.time}
                           onUpload={this.uploadLocalFilesToExternFolder}
                           onEnter={this.enterExternFolder}
                           onContext={this.openFolderContextMenu}
@@ -303,7 +322,9 @@ class SessionPage extends Component {
                       return (
                         <File key={index}
                           fileName={file.name}
-                          fileSize={Math.round(toAccurateFileSize(file.size).size * 10) / 10 + toAccurateFileSize(file.size).unit}
+                          fileSize={Math.round(toAccurateFileSize(file.size).size * 10) / 10 + " " + toAccurateFileSize(file.size).unit}
+                          fileType={getExactFileType(file.name)}
+                          fileTimestamp={file.time}
                           onContext={this.openFileContextMenu}
                         />
                       );

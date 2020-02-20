@@ -196,7 +196,7 @@ main#session {
     width: 100vw;
     height: 100vh;
     position: fixed;
-    background: rgba($color: $dark, $alpha: 0.8);
+    background: rgba($color: $dark, $alpha: 0);
   }
 
   .contextmenu {
@@ -347,6 +347,12 @@ main#session {
         .size {
           flex: 1;
           text-align: right;
+        }
+
+        .timestamp {
+          flex: 1;
+          text-align: right;
+          margin-left: 10px;
         }
       }
     }
