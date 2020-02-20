@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { WifiOff } from "react-feather";
 
 class LoginPage extends Component {
   constructor(props) {
@@ -83,6 +84,16 @@ class LoginPage extends Component {
                   }} placeholder="••••" type="password" />
                 </div>
               </div>
+            </div>
+            <div className="quickactions">
+              <ul>
+                <li onClick={(event) => {
+                  this.props.onLogout.call(this);
+                }}>
+                  <WifiOff />
+                  <span>Disconnect</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>

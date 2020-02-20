@@ -1,11 +1,11 @@
 import React, { Component, Fragment, createRef } from "react";
 
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
-import RouteChange from "./componens/RouteChange";
+import RouteChange from "./components/RouteChange";
 
-import Sidebar from "./componens/static/Sidebar";
-import Taskbar from "./componens/static/Taskbar";
+import Sidebar from "./components/static/Sidebar";
+import Taskbar from "./components/static/Taskbar";
 
 import SessionPage from "./pages/session/SessionPage";
 import TerminalPage from "./pages/terminal/TerminalPage";
@@ -46,10 +46,27 @@ class App extends Component {
     }
 
     this.loginToFTP = this.loginToFTP.bind(this);
-    this.logoutTromFTP = this.logoutFromFTP.bind(this);
+    this.logoutFromFTP = this.logoutFromFTP.bind(this);
 
     this.sidebar = createRef();
     this.ftpClient = createRef();
+
+    this.createMenu();
+  }
+
+  createMenu() {
+    const { remote } = window.require("electron");
+    const { Menu, MenuItem } = remote;
+
+    const menu = new Menu({
+      label: "awesome"
+    });
+    menu.append(new MenuItem({
+      label: "Connection",
+      click() {
+        console.log("clicked!")
+      }
+    }))
   }
 
   logoutFromFTP() {
@@ -57,6 +74,17 @@ class App extends Component {
       if (err) {
         return alert(err);
       }
+      this.setState({
+        ftp: {
+          host: "",
+          port: 0,
+          user: "",
+          pass: ""
+        }
+      });
+      this.setState({
+        status: "offline"
+      });
     })
   }
 
@@ -80,6 +108,15 @@ class App extends Component {
       user: data.user,
       pass: data.pass
     });
+
+    this.ftp.ls(".", (err) => {
+      if (err) {
+        return;
+      }
+      this.setState({
+        status: "online"
+      });
+    })
   }
 
   render() {
@@ -103,21 +140,31 @@ class App extends Component {
                     ftpData={this.state.ftp}
                     ftpStatus={this.state.status}
                     onLogin={this.loginToFTP}
+                    onLogout={this.logoutFromFTP}
                   />
                 );
               }} />
               <Route exact path="/session" component={(props) => {
                 return (
-                  <SessionPage ftp={this.ftp} />
+                  <SessionPage
+                    ftp={this.ftp}
+                    ftpData={this.state.ftp}
+                    ftpStatus={this.state.status}
+                  />
                 );
               }} />
               <Route exact path="/terminal" component={(props) => {
                 return (
-                  <TerminalPage ftp={this.ftp} />
+                  <TerminalPage
+                    ftp={this.ftp}
+                    ftpData={this.state.ftp}
+                    ftpStatus={this.state.status}
+                  />
                 )
               }} />
               <Route exact path="/stats" component={StatsPage} />
               <Route exact path="/settings" component={SettingsPage} />
+              <Redirect to="/" />
             </Switch>
           </RouteChange>
         </BrowserRouter>

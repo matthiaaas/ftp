@@ -415,6 +415,7 @@ main#terminal {
           .host {
             color: $white;
             margin-right: 5px;
+            white-space: nowrap;
           }
     
           .dir {
@@ -542,6 +543,32 @@ main#login {
             input {
               letter-spacing: 3px;
             }
+          }
+        }
+      }
+    }
+
+    .quickactions {
+      padding-top: 40px;
+
+      ul {
+        li {
+          display: flex;
+          align-items: center;
+          color: $grey;
+  
+          svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+          }
+  
+          span {
+            margin-top: 3px;
+          }
+  
+          &:hover {
+            color: $lightgrey;
           }
         }
       }
