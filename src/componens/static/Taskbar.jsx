@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import { Search } from "react-feather";
 
@@ -19,12 +20,12 @@ class Taskbar extends Component {
               </div>
             </div>
             <div className="row">
-              <div className="item server">
+              <Link to="/" className="item server">
                 <div className="inner">
-                  <span>root@example.com</span>
-                  <div className="status online"></div>
+                  <span>{this.props.ftpData.host ? this.props.ftpData.host : "/"}</span>
+                  <div className={"status " + this.props.ftpStatus}></div>
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
         </div>

@@ -8,6 +8,15 @@
 
 a {
   cursor: default;
+  user-drag: none; 
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
 }
 
 html,
@@ -39,6 +48,17 @@ body {
 }
 
 
+/* text */
+
+h1 {
+  font-weight: bold;
+  font-size: 24px;
+  color: $white;
+}
+
+
+/* container */
+
 .container {
   padding: 183px 0 0 200px;
 }
@@ -56,7 +76,8 @@ body {
 /* ASIDE SIDEBAR */
 
 aside#sidebar {
-  padding-top: 37px + 146px;
+  padding-top: 37px + 148px;
+  border-right: 1px solid $light;
   z-index: 8;
   width: 200px;
   height: 100vh;
@@ -73,7 +94,8 @@ aside#sidebar {
         padding: 16px 32px;
         transition: all ease 0.2s;
 
-        &:hover {
+        &:hover,
+        &:focus {
           color: $lightgrey;
           background: $light;
         }
@@ -110,7 +132,8 @@ aside#sidebar {
 /* NAV TASKBAR */
 
 nav#taskbar {
-  padding: 37px 0 35px 25px;
+  border-bottom: 1px solid $light;
+  padding: 37px 0 35px 40px;
   z-index: 7;
   width: 100vw;
   position: fixed;
@@ -162,13 +185,20 @@ nav#taskbar {
       }
 
       .item.server {
+        cursor: default;
+
         .inner {
+          padding: 14px 22px;
+          border: 1px solid transparent;
           display: flex;
           align-items: center;
           color: $white;
           
-          &:hover {
+          &:hover,
+          &:focus {
+            border: 1px solid $light;
             color: $lightgrey;
+            background: $dark;
           }
 
           .status {
@@ -178,7 +208,15 @@ nav#taskbar {
             margin-left: 6px;
 
             &.online {
-              background: #25CC40;
+              background: $green;
+            }
+
+            &.afk {
+              background: $yellow;
+            }
+
+            &.offline {
+              background: $red;
             }
           }
         }
@@ -247,7 +285,7 @@ main#session {
   }
 
   .content {
-    margin: 25px - 12.5px;
+    margin: 40px - 12.5px;
     margin-top: 0;
     display: flex;
     flex-wrap: wrap;
@@ -266,7 +304,7 @@ main#session {
         position: fixed;
         width: 100%;
         color: $grey;
-        padding: 20px 0;
+        padding: 30px 0 20px 0;
         background: $light;
         display: flex;
         align-items: center;
@@ -301,7 +339,7 @@ main#session {
     }
 
     .files {
-      margin-top: 70px;
+      margin-top: 80px;
 
       .file {
         display: flex;
@@ -364,7 +402,7 @@ main#session {
 
 main#terminal {
   .content {
-    margin: 25px;
+    margin: 40px;
 
     .cli {
       width: 100%;
@@ -410,6 +448,99 @@ main#terminal {
 
             &.error {
               color: $red;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+/* LOGIN */
+
+main#login {
+  height: 100vh;
+  background: $dark;
+
+  .content {
+    margin: 0 40px;
+
+    .header {
+      display: flex;
+      align-items: center;
+      margin: 50px 0 0 5px;
+
+      .status {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        margin-right: 15px;
+
+        &.online {
+          background: $green;
+        }
+
+        &.afk {
+          background: $yellow;
+        }
+
+        &.offline {
+          background: $red;
+        }
+      }
+    }
+
+    .login {
+      color: $grey;
+      margin: -25px 0;
+      padding-top: 40px;
+
+      .row {
+        margin: 25px -15px;
+        display: flex;
+
+        .input {
+          margin: 0 15px;
+
+          label {
+            display: block;
+            margin-bottom: 15px;
+          }
+
+          input {
+            -webkit-appearance: none;
+            appearance: none;
+            outline: none;
+            user-select: all;
+            border: none;
+            border-radius: 27px;
+            padding: 14px 22px;
+            font-size: 16px;
+            color: $white;
+            background: $black;
+
+            &::placeholder {
+              color: $grey;
+            }
+          }
+
+          &.port {
+            input {
+              padding: 14px 26px 14px 22px;
+              text-align: right;
+              max-width: 23px;
+
+              &::-webkit-outer-spin-button,
+              &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+              }
+            }
+          }
+
+          &.password {
+            input {
+              letter-spacing: 3px;
             }
           }
         }

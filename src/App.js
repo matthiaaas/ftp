@@ -13,6 +13,7 @@ import StatsPage from "./pages/stats/StatsPage";
 import SettingsPage from "./pages/settings/SettingsPage";
 
 import "./assets/css/style.scss";
+import LoginPage from "./pages/login/LoginPage";
 
 
 class App extends Component {
@@ -24,10 +25,11 @@ class App extends Component {
 
       ftp: {
         host: "",
-        port: 21,
+        port: 0,
         user: "",
         pass: ""
-      }
+      },
+      status: "offline"
     }
 
     try {
@@ -43,9 +45,41 @@ class App extends Component {
       this.ftp = null;
     }
 
-    this.sidebar = createRef();
+    this.loginToFTP = this.loginToFTP.bind(this);
+    this.logoutTromFTP = this.logoutFromFTP.bind(this);
 
+    this.sidebar = createRef();
     this.ftpClient = createRef();
+  }
+
+  logoutFromFTP() {
+    this.ftp.raw("quit", (err, data) => {
+      if (err) {
+        return alert(err);
+      }
+    })
+  }
+
+  loginToFTP(data) {
+    this.logoutFromFTP();
+
+    this.setState({
+      ftp: {
+        host: data.host,
+        port: data.port,
+        user: data.user,
+        pass: data.pass
+      }
+    });
+
+    const jsftp = window.require("jsftp");
+
+    this.ftp = new jsftp({
+      host: data.host,
+      port: data.port,
+      user: data.user,
+      pass: data.pass
+    });
   }
 
   render() {
@@ -58,8 +92,20 @@ class App extends Component {
           }}>
             <div id="titlebar" />
             <Sidebar ref={this.sidebar} />
-            <Taskbar />
+            <Taskbar
+              ftpData={this.state.ftp}
+              ftpStatus={this.state.status}
+            />
             <Switch>
+              <Route exact path="/" component={(props) => {
+                return (
+                  <LoginPage
+                    ftpData={this.state.ftp}
+                    ftpStatus={this.state.status}
+                    onLogin={this.loginToFTP}
+                  />
+                );
+              }} />
               <Route exact path="/session" component={(props) => {
                 return (
                   <SessionPage ftp={this.ftp} />
