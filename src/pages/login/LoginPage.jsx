@@ -81,7 +81,12 @@ class LoginPage extends Component {
                         pass: event.target.value
                       }
                     });
+                  }} onFocus={(event) => {
+                    event.target.parentElement.classList.add("focussed")
                   }} placeholder="••••" type="password" />
+                  <div className="tip">
+                    <span>Hit <span className="highlighted" onClick={this.submitLoginData}>Enter</span> to connect</span>
+                  </div>
                 </div>
               </div>
             </div>

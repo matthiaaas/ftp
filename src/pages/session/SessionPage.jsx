@@ -47,7 +47,9 @@ class SessionPage extends Component {
   }
 
   componentDidMount() {
-    this.updateExternFiles();
+    if (this.props.ftpStatus !== "offline") {
+      this.updateExternFiles();
+    }
 
     this.folderContextMenu.current.classList.add("hidden");
     this.fileContextMenu.current.classList.add("hidden");

@@ -85,7 +85,7 @@ class App extends Component {
       this.setState({
         status: "offline"
       });
-    })
+    });
   }
 
   loginToFTP(data) {

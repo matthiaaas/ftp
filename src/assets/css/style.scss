@@ -502,6 +502,7 @@ main#login {
         display: flex;
 
         .input {
+          position: relative;
           margin: 0 15px;
 
           label {
@@ -523,6 +524,33 @@ main#login {
 
             &::placeholder {
               color: $grey;
+            }
+          }
+
+          .tip {
+            transition: all ease 0.4s;
+            opacity: 0;
+            transform: translateY(-10px);
+            position: absolute;
+            top: 95px;
+            right: 0;
+            font-size: 14px;
+
+            .highlighted {
+              border-bottom: 1px solid $grey;
+              padding-bottom: 2px;
+
+              &:hover {
+                border-bottom: 1px solid $lightgrey;
+                color: $lightgrey;
+              }
+            }
+          }
+
+          &.focussed {
+            .tip {
+              opacity: 1;
+              transform: translateY(0);
             }
           }
 
