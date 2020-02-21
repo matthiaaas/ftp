@@ -22,3 +22,17 @@ npm run start
 ```
 npm run electron-start
 ```
+
+## License
+
+This might become a **commercial product**. Keep the code private. Do not pass it to third parties. Do not publish any details referencing this repo or its idea.
+
+## Packaging
+
+requires `electron-builder`
+
+```
+npm run electron-pack
+```
+
+## Contributing
