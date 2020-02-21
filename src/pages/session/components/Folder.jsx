@@ -27,7 +27,7 @@ class Folder extends Component {
       }}>
         <FolderIcon />
         <span className="name">{this.props.folderName}</span>
-        <span className="size">{this.props.folderSize}</span>
+        <span className="size">{/* this.props.folderSize */}</span>
         <span className="timestamp">
           {timestamp.day + "/" + timestamp.month + "/" + timestamp.year}
         </span>

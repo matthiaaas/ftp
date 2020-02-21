@@ -109,7 +109,7 @@ class App extends Component {
       pass: data.pass
     });
 
-    this.ftp.ls(".", (err) => {
+    this.ftp.raw("noop", (err) => {
       if (err) {
         return;
       }

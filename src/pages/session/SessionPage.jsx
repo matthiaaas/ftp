@@ -8,6 +8,7 @@ import Folder from "./components/Folder";
 import ContextMenu, { ContextMenuItem } from "./components/ContextMenu";
 
 import { toAccurateFileSize, getExactFileType } from "../../assets/utils/utils.js";
+import Popup from "./components/Popup";
 
 class SessionPage extends Component {
   constructor(props) {
@@ -24,6 +25,11 @@ class SessionPage extends Component {
       extern: {
         path: "/",
         files: {}
+      },
+      popups: {
+        createFolder: {
+          isOpen: false
+        }
       }
     }
 
@@ -35,15 +41,23 @@ class SessionPage extends Component {
     this.updateExternFiles = this.updateExternFiles.bind(this);
     this.deleteExternFile = this.deleteExternFile.bind(this);
     this.deleteExternFolder = this.deleteExternFolder.bind(this);
+    this.createExternFolder = this.createExternFolder.bind(this);
+    this.openCreateFolderPopup = this.openCreateFolderPopup.bind(this);
+    this.closeCreateFolderPopup = this.closeCreateFolderPopup.bind(this);
     this.goBackExternFolder = this.goBackExternFolder.bind(this);
 
+    this.openSpaceContextMenu = this.openSpaceContextMenu.bind(this);
+    this.closeSpaceContextMenu = this.closeSpaceContextMenu.bind(this);
     this.openFolderContextMenu = this.openFolderContextMenu.bind(this);
     this.closeFolderContextMenu = this.closeFolderContextMenu.bind(this);
     this.openFileContextMenu = this.openFileContextMenu.bind(this);
     this.closeFileContextMenu = this.closeFileContextMenu.bind(this);
 
+    this.spaceContextMenu = createRef();
     this.folderContextMenu = createRef();
     this.fileContextMenu = createRef();
+
+    this.createFolderPopupInput = createRef();
   }
 
   componentDidMount() {
@@ -51,9 +65,12 @@ class SessionPage extends Component {
       this.updateExternFiles();
     }
 
+    this.spaceContextMenu.current.classList.add("hidden");
     this.folderContextMenu.current.classList.add("hidden");
     this.fileContextMenu.current.classList.add("hidden");
   }
+
+  /* FILE INTERACTION */
 
   updateExternFiles() {
     this.ftp.ls(this.state.extern.path, (err, data) => {
@@ -118,6 +135,7 @@ class SessionPage extends Component {
         alert(err);
         callback();
       } else {
+        console.log(buffer)
         this.ftp.put(buffer, folder + file.name, (err) => {
           if (err) {
             alert(err);
@@ -152,9 +170,8 @@ class SessionPage extends Component {
       if (err) {
         return alert(err);
       }
-      alert("deleted successfully!");
+      this.updateExternFiles();
     });
-    this.updateExternFiles();
     if (this.state.contextMenu.isOpen) {
       this.closeFileContextMenu();
     }
@@ -168,12 +185,99 @@ class SessionPage extends Component {
       if (err) {
         return alert(err);
       }
-      alert("deleted successfully!");
+      this.updateExternFiles();
     });
-    this.updateExternFiles();
     if (this.state.contextMenu.isOpen) {
       this.closeFolderContextMenu();
+      this.closeSpaceContextMenu();
     }
+  }
+
+  createExternFile(file) {
+    console.log(new Buffer(""))
+    if (file === undefined) {
+      file = this.state.contextMenu.focus;
+    }
+    this.ftp.put("", this.state.extern.path + file, (err) => {
+      if (err) {
+        alert(err);
+      }
+      alert("put file to")
+    });
+  }
+
+  createExternFolder(folder) {
+    if (folder === undefined) {
+      folder = this.createFolderPopupInput.current.value;
+      this.closeCreateFolderPopup();
+    }
+    this.ftp.raw("mkd", this.state.extern.path + folder, (err) => {
+      if (err) {
+        return alert(err);
+      }
+      this.updateExternFiles();
+    });
+  }
+
+  /* POPUPS */
+
+  openCreateFolderPopup() {
+    this.closeFolderContextMenu();
+    this.closeFileContextMenu();
+    this.closeSpaceContextMenu();
+
+    this.setState({
+      popups: {
+        ...this.state.popups,
+        createFolder: {
+          ...this.state.popups.createFolder,
+          isOpen: true
+        }
+      }
+    })
+  }
+
+  closeCreateFolderPopup() {
+    this.setState({
+      popups: {
+        ...this.state.popups,
+        createFolder: {
+          ...this.state.popups.createFolder,
+          isOpen: false
+        }
+      }
+    })
+  }
+
+  /* CONTEXT MENUS */
+
+  openSpaceContextMenu(event) {
+    this.setState({
+      disabled: true,
+      contextMenu: {
+        ...this.state.contextMenu,
+        isOpen: true,
+        focus: this.state.extern.path.split("/")[this.state.extern.path.split("/").length - 1]
+      }
+    });
+    this.spaceContextMenu.current.classList.remove("hidden");
+    this.spaceContextMenu.current.style.top = event.pageY - this.spaceContextMenu.current.offsetHeight + "px";
+    this.spaceContextMenu.current.style.left = event.pageX + "px";
+
+    if (this.spaceContextMenu.current.offsetHeight + parseInt(this.spaceContextMenu.current.style.top.replace("px", "")) > window.innerHeight) {
+      this.spaceContextMenu.current.style.top = window.innerHeight - this.spaceContextMenu.current.offsetHeight - 20 + "px";
+    }
+  }
+
+  closeSpaceContextMenu() {
+    this.setState({
+      disabled: false,
+      contextMenu: {
+        ...this.state.contextMenu,
+        isOpen: false
+      }
+    });
+    this.spaceContextMenu.current.classList.add("hidden");
   }
 
   openFolderContextMenu(event, folder) {
@@ -241,63 +345,72 @@ class SessionPage extends Component {
           if (this.state.contextMenu.isOpen) {
             this.closeFolderContextMenu();
             this.closeFileContextMenu();
+            this.closeSpaceContextMenu();
           }}} style={{"display": this.state.disabled ? "block" : "none"}}></div>
+
+        {/* CONTEXT MENUS */}
+
+        <ContextMenu cref={this.spaceContextMenu}>
+          <ContextMenuItem name="New Folder" shortcut="⌘⇧N" onExecute={this.openCreateFolderPopup} />
+          <ContextMenuItem name="New File" shortcut="⌘⇧F" disabled />
+        </ContextMenu>
 
         <ContextMenu cref={this.folderContextMenu}>
           <ContextMenuItem name="Info" shortcut="⌘I" disabled />
           <hr/>
-          <ContextMenuItem name="Copy" shortcut="⌘C" />
-          <ContextMenuItem name="Paste" shortcut="⌘V" />
-          <ContextMenuItem name="Duplicate" shortcut="⌘J" />
+          <ContextMenuItem name="Copy" shortcut="⌘C" disabled />
+          <ContextMenuItem name="Paste" shortcut="⌘V" disabled />
+          <ContextMenuItem name="Duplicate" shortcut="⌘J" disabled />
           <hr/>
           <ContextMenuItem name="Download" shortcut="⌘D" disabled />
           <hr/>
           <ContextMenuItem name="Delete" shortcut="⌘⌫" onExecute={this.deleteExternFolder} />
           <hr/>
-          <ContextMenuItem name="New Folder" shortcut="⌘⇧N" />
-          <ContextMenuItem name="New File" shortcut="⌘⇧F" />
+          <ContextMenuItem name="New Folder" shortcut="⌘⇧N" onExecute={this.openCreateFolderPopup} />
+          <ContextMenuItem name="New File" shortcut="⌘⇧F" disabled />
         </ContextMenu>
 
         <ContextMenu cref={this.fileContextMenu}>
-          <ContextMenuItem name="Open" shortcut="⌘O" />
-          <ContextMenuItem name="Info" shortcut="⌘I" />
+          <ContextMenuItem name="Open" shortcut="⌘O" disabled />
+          <ContextMenuItem name="Info" shortcut="⌘I" disabled />
           <hr/>
-          <ContextMenuItem name="Copy" shortcut="⌘C" />
-          <ContextMenuItem name="Paste" shortcut="⌘V" />
-          <ContextMenuItem name="Duplicate" shortcut="⌘J" />
+          <ContextMenuItem name="Copy" shortcut="⌘C" disabled />
+          <ContextMenuItem name="Paste" shortcut="⌘V" disabled />
+          <ContextMenuItem name="Duplicate" shortcut="⌘J" disabled />
           <hr/>
-          <ContextMenuItem name="Download" shortcut="⌘D" />
+          <ContextMenuItem name="Download" shortcut="⌘D" disabled />
           <hr/>
           <ContextMenuItem name="Delete" shortcut="⌘⌫" onExecute={this.deleteExternFile} />
           <hr/>
-          <ContextMenuItem name="New Folder" shortcut="⌘⇧N" />
-          <ContextMenuItem name="New File" shortcut="⌘⇧F" />
+          <ContextMenuItem name="New Folder" shortcut="⌘⇧N" onExecute={this.openCreateFolderPopup} />
+          <ContextMenuItem name="New File" shortcut="⌘⇧F" disabled />
         </ContextMenu>
+
+        {/* POPUPS */}
+
+        <Popup name="create-folder"
+          title="New folder"
+          hidden={!this.state.popups.createFolder.isOpen}
+          onClose={this.closeCreateFolderPopup}
+          onEnter={this.createExternFolder}
+        >
+          <input ref={this.createFolderPopupInput} placeholder="Name" type="text" />
+        </Popup>
 
         <div className="container">
           <div className="content">
-            {/* <div className="system local">
-              <div className="path">
-                <div className="back">
-                  <ArrowLeft />
-                </div>
-                <span className="url">{this.state.local.path}</span>
-              </div>
-              <div className="files">
-                <Folder onUpload={this.uploadFilesToFolder} folderName="assets" />
-                <File fileName="index.html" fileSize="10KB" />
-                <File fileName="robots.txt" fileSize="3KB" />
-                <File fileName="prototype.xd" fileSize="1.06MB" />
-                <File fileName="style.scss" fileSize="34KB" />
-                <File fileName="logo.png" fileSize="0.62MB" />
-              </div>
-            </div> */}
             <div className="system extern" onDragEnter={(event) => {
               event.preventDefault();
               event.target.classList.add("dropping");
             }} onDragLeave={(event) => {
               event.target.classList.remove("dropping");
             }}>
+              <div className="space" onContextMenu={(event) => {
+                event.preventDefault();
+                this.openSpaceContextMenu(event);
+              }} >
+
+              </div>
               <div className="path">
                 <div className="back" onClick={this.goBackExternFolder}>
                   <ArrowLeft />

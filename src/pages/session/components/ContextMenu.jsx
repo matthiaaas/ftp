@@ -21,7 +21,9 @@ export class ContextMenuItem extends Component {
   render() {
     return (
       <li onClick={(event) => {
-        this.props.onExecute.call(this)
+        if (typeof this.props.onExecute === "function") {
+          this.props.onExecute.call(this)
+        }
       }} className={this.props.disabled ? "disabled" : {}}>
         <span className="name">{this.props.name}</span>
         <span className="shortcut">{this.props.shortcut}</span>

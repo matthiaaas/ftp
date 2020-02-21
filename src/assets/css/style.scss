@@ -32,18 +32,19 @@ body {
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background: $dark;
+    background: $black
   }
   
   /* Handle */
   ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background: $black;
+    border: 1px solid $light;
+    background: $dark;
   }
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: $light;
+    background: $black;
   }
 }
 
@@ -229,6 +230,8 @@ nav#taskbar {
 /* SESSION */
 
 main#session {
+  position: relative;
+
   .disable {
     z-index: 9;
     width: 100vw;
@@ -284,6 +287,70 @@ main#session {
     }
   }
 
+  .popup {
+    z-index: 11;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($color: $dark, $alpha: 0.8);
+
+    &.hidden {
+      display: none;
+    }
+
+    .wrapper {
+      border-radius: 10px;
+      padding: 50px;
+      border: 1px solid $light;
+      background: $dark;
+
+      .title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .back {
+          color: $grey;
+          transition: all ease 0.1s;
+          margin-right: 10px;
+          border-radius: 50%;
+          padding: 6px 6px 3px 6px;
+          background: $black;
+
+          svg {
+            width: 18px;
+            height: 18px;
+          }
+
+          &:hover {
+            color: $lightgrey;
+            background: $light;
+          }
+        }
+      }
+
+      input {
+        -webkit-appearance: none;
+        appearance: none;
+        outline: none;
+        user-select: all;
+        border: none;
+        border-radius: 27px;
+        padding: 14px 22px;
+        font-size: 16px;
+        color: $white;
+        background: $black;
+
+        &::placeholder {
+          color: $grey;
+        }
+      }
+    }
+  }
+
   .content {
     margin: 40px - 12.5px;
     margin-top: 0;
@@ -298,6 +365,15 @@ main#session {
 
       &.dropping {
         background: $dark;
+      }
+
+      .space {
+        position: fixed;
+        z-index: 0;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
       }
 
       .path {
@@ -342,6 +418,8 @@ main#session {
       margin-top: 80px;
 
       .file {
+        position: relative;
+        z-index: 1;
         display: flex;
         align-items: center;
         padding: 7px 20px;
