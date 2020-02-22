@@ -377,6 +377,7 @@ main#session {
       }
 
       .path {
+        z-index: 2;
         position: fixed;
         width: 100%;
         color: $grey;

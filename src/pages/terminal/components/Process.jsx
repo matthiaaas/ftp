@@ -20,7 +20,7 @@ class Process extends Component {
     var child = process.exec(cmd);
 
     child.on("error", (err) => {
-      this.setState({output: this.state.output + "\err" + "\n" + err});
+      this.setState({output: this.state.output + "#err" + "\n" + err});
     });
 
     child.stdout.on("data", (data) => {
@@ -28,7 +28,7 @@ class Process extends Component {
     });
 
     child.stderr.on("data", (data) => {
-      this.setState({output: this.state.output + "\err" + "\n" + data});
+      this.setState({output: this.state.output + "#err" + "\n" + data});
     });
 
     child.on("exit", () => {
@@ -58,9 +58,9 @@ class Process extends Component {
         </div>
         <div ref={this.output} className="output">
           {this.state.output.split("\n").map((line, index) => {
-            console.log((line.includes("\err") ? " error" : ""), line);
+            console.log((line.includes("#err") ? " error" : ""), line);
             return (
-              <div className={"line" + (line.includes("\err") ? " error" : "")} key={index}>{line}</div>
+              <div className={"line" + (line.includes("#err") ? " error" : "")} key={index}>{line}</div>
             );
           })}
         </div>

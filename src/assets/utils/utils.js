@@ -1,5 +1,5 @@
 export function toAccurateFileSize(size) {
-  const units = ["B", "KB", "MB", "GB"];
+  const units = ["B", "KB", "MB", "GB", "TB", "PB"];
   let unit = 0;
 
   while (size >= 1000) {

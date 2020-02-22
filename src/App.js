@@ -70,18 +70,18 @@ class App extends Component {
   }
 
   logoutFromFTP() {
+    this.setState({
+      ftp: {
+        host: "",
+        port: 0,
+        user: "",
+        pass: ""
+      }
+    });
     this.ftp.raw("quit", (err, data) => {
       if (err) {
         return alert(err);
       }
-      this.setState({
-        ftp: {
-          host: "",
-          port: 0,
-          user: "",
-          pass: ""
-        }
-      });
       this.setState({
         status: "offline"
       });
@@ -116,7 +116,7 @@ class App extends Component {
       this.setState({
         status: "online"
       });
-    })
+    });
   }
 
   render() {
