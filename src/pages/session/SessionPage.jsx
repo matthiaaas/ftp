@@ -41,6 +41,7 @@ class SessionPage extends Component {
     this.updateExternFiles = this.updateExternFiles.bind(this);
     this.deleteExternFile = this.deleteExternFile.bind(this);
     this.deleteExternFolder = this.deleteExternFolder.bind(this);
+    this.deleteExternFolderRecursively = this.deleteExternFolderRecursively.bind(this);
     this.createExternFolder = this.createExternFolder.bind(this);
     this.openCreateFolderPopup = this.openCreateFolderPopup.bind(this);
     this.closeCreateFolderPopup = this.closeCreateFolderPopup.bind(this);
@@ -135,7 +136,6 @@ class SessionPage extends Component {
         alert(err);
         callback();
       } else {
-        console.log(buffer)
         this.ftp.put(buffer, folder + file.name, (err) => {
           if (err) {
             alert(err);
@@ -183,7 +183,7 @@ class SessionPage extends Component {
     }
     this.ftp.raw("rmd", this.state.extern.path + folder + "/", (err) => {
       if (err) {
-        return alert(err);
+        alert(err);
       }
       this.updateExternFiles();
     });
@@ -191,6 +191,71 @@ class SessionPage extends Component {
       this.closeFolderContextMenu();
       this.closeSpaceContextMenu();
     }
+  }
+
+  deleteExternFolderRecursively(folder) {
+    if (folder === undefined) {
+      folder = this.state.contextMenu.focus
+    }
+    const path = window.require("path");
+    folder = this.state.extern.path + folder;
+    console.log("folder is " + folder);
+    const list = (dir) => {
+      return new Promise((resolve, reject) => {
+        this.ftp.ls(dir, (err, files) => {
+          if (err) { alert(err); return; }
+          resolve(files);
+        });
+      });
+    }
+    const walk = (dir) => {
+      return list(dir).then((files) => {
+        if (files.length === 0) {
+          return Promise.resolve();
+        }
+        return Promise.all(files.map((file) => {
+          file.filepath = path.join(dir, file.name);
+          let promises = [];
+          if (file.type === 1) {
+            promises.push(walk(path.join(dir, file.name)));
+          }
+          promises.push(Promise.resolve(file));
+          return Promise.all(promises);
+        }));
+      });
+    }
+    const deleteDir = (dir) => {
+      return new Promise((resolve, reject) => {
+        this.ftp.raw("rmd", dir.filepath, (err, result) => {
+          if (err) { alert(err); return; }
+          return resolve(result);
+        });
+      });
+    }
+    const deleteFile = (file) => {
+      return new Promise((resolve, reject) => {
+        this.ftp.raw("dele", file.filepath, (err, result) => {
+          if (err) { alert(err); return; }
+          return resolve(result);
+        });
+      });
+    }
+    const flatten = list => list.reduce(
+      (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
+    );
+    walk(folder).then((results) => {
+      let files = flatten(results).filter(Boolean);
+      console.log("Trying to delete ", files.map((file) => file.filepath))
+      let deletions = files.map((file) => {
+        if (file.type === 1) {
+          return deleteDir(file);
+        } else {
+          return deleteFile(file);
+        }
+      });
+      this.deleteExternFolder(folder);
+      return Promise.all(deletions);
+    });
   }
 
   createExternFile(file) {
@@ -364,7 +429,7 @@ class SessionPage extends Component {
           <hr/>
           <ContextMenuItem name="Download" shortcut="⌘D" disabled />
           <hr/>
-          <ContextMenuItem name="Delete" shortcut="⌘⌫" onExecute={this.deleteExternFolder} />
+          <ContextMenuItem name="Delete" shortcut="⌘⌫" onExecute={this.deleteExternFolderRecursively} />
           <hr/>
           <ContextMenuItem name="New Folder" shortcut="⌘⇧N" onExecute={this.openCreateFolderPopup} />
           <ContextMenuItem name="New File" shortcut="⌘⇧F" disabled />
