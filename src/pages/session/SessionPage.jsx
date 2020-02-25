@@ -179,9 +179,9 @@ class SessionPage extends Component {
 
   deleteExternFolder(folder) {
     if (folder === undefined) {
-      folder = this.state.contextMenu.focus
+      folder = this.state.extern.path + this.state.contextMenu.focus
     }
-    this.ftp.raw("rmd", this.state.extern.path + folder + "/", (err) => {
+    this.ftp.raw("rmd", folder + "/", (err) => {
       if (err) {
         alert(err);
       }
@@ -244,17 +244,20 @@ class SessionPage extends Component {
       (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
     );
     walk(folder).then((results) => {
-      let files = flatten(results).filter(Boolean);
-      console.log("Trying to delete ", files.map((file) => file.filepath))
-      let deletions = files.map((file) => {
-        if (file.type === 1) {
-          return deleteDir(file);
-        } else {
-          return deleteFile(file);
-        }
-      });
+      let deletions;
+      try {
+        let files = flatten(results).filter(Boolean);
+        console.log("Trying to delete ", files.map((file) => file.filepath))
+        deletions = files.map((file) => {
+          if (file.type === 1) {
+            return deleteDir(file);
+          } else {
+            return deleteFile(file);
+          }
+        });
+      } catch {}
       this.deleteExternFolder(folder);
-      return Promise.all(deletions);
+      return deletions !== undefined ? Promise.all(deletions) : {};
     });
   }
 
@@ -275,6 +278,9 @@ class SessionPage extends Component {
     if (folder === undefined) {
       folder = this.createFolderPopupInput.current.value;
       this.closeCreateFolderPopup();
+    }
+    if (folder === "" || folder === undefined) {
+      return;
     }
     this.ftp.raw("mkd", this.state.extern.path + folder, (err) => {
       if (err) {

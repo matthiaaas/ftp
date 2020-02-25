@@ -487,6 +487,12 @@ main#terminal {
       width: 100%;
 
       .process {
+        margin-top: 24px;
+
+        &:first-child {
+          margin: 0;
+        }
+
         .input {
           display: flex;
           align-items: center;
