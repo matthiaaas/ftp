@@ -3,18 +3,19 @@ import React, { Component, Fragment, createRef } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import RouteChange from "./components/RouteChange";
+import { GlobalStyles } from "./components/GlobalStyles";
 
-import Sidebar from "./components/static/Sidebar";
-import Taskbar from "./components/static/Taskbar";
+import Titlebar from "./components/static/titlebar/Titlebar";
+import Sidebar from "./components/static/sidebar/Sidebar";
+import Taskbar from "./components/static/taskbar/Taskbar";
 
-import SessionPage from "./pages/session/SessionPage";
+import LoginPage from "./pages/login/LoginPage";
+import SessionPage from "./pages/session/Sessionpage";
 import TerminalPage from "./pages/terminal/TerminalPage";
 import StatsPage from "./pages/stats/StatsPage";
 import SettingsPage from "./pages/settings/SettingsPage";
 
-import "./assets/css/style.scss";
-import LoginPage from "./pages/login/LoginPage";
-
+import "./assets/css/reset.css";
 
 class App extends Component {
   constructor(props) {
@@ -50,23 +51,6 @@ class App extends Component {
 
     this.sidebar = createRef();
     this.ftpClient = createRef();
-
-    this.createMenu();
-  }
-
-  createMenu() {
-    const { remote } = window.require("electron");
-    const { Menu, MenuItem } = remote;
-
-    const menu = new Menu({
-      label: "awesome"
-    });
-    menu.append(new MenuItem({
-      label: "Connection",
-      click() {
-        console.log("clicked!")
-      }
-    }))
   }
 
   logoutFromFTP() {
@@ -110,24 +94,21 @@ class App extends Component {
     });
 
     this.ftp.raw("noop", (err) => {
-      if (err) {
-        return;
-      }
-      this.setState({
-        status: "online"
-      });
+      if (err) return;
+      this.setState({ status: "online" });
     });
   }
 
   render() {
     return (
       <Fragment>
+        <GlobalStyles />
         <BrowserRouter>
           <RouteChange onChange={(location, action) => {
             this.setState({location: location})
             this.sidebar.current.changeActive(location);
           }}>
-            <div id="titlebar" />
+            <Titlebar />
             <Sidebar ref={this.sidebar} />
             <Taskbar
               ftpData={this.state.ftp}
@@ -164,12 +145,13 @@ class App extends Component {
               }} />
               <Route exact path="/stats" component={StatsPage} />
               <Route exact path="/settings" component={SettingsPage} />
-              <Redirect to="/" />
+              
             </Switch>
+            <Redirect to="/" />
           </RouteChange>
         </BrowserRouter>
       </Fragment>
-    );
+    )
   }
 }
 

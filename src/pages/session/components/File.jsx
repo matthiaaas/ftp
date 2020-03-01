@@ -1,14 +1,81 @@
 import React, { Component } from "react";
+import styled from "styled-components";
 
-import { FileText, Image, Volume1, Film } from "react-feather";
+import { Image, Volume1, Film, FileText } from "react-feather";
 
-import { toAccurateDate } from "../../../assets/utils/utils";
+import { toAccurateDate, toAccurateFileSize, getExactFileType } from "../../../assets/utils/utils.js";
 
-class File extends Component {
+const Wrapper = styled.div`
+  user-select: none;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  padding: 7px 20px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  outline: none;
+  font-family: var(--font-main);
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--color-grey);
+  background: var(--color-dark);
+  
+  &:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 16px;
+  }
+
+  &:hover {
+    color: var(--color-grey-light);
+    background: var(--color-black);
+  }
+`
+
+const Info = styled.span`
+  flex: ${props => props.priority ? props.priority : `1`};
+  white-space: nowrap;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  height: 17px;
+  text-align: ${props => props.right ? "right" : "left"};
+
+  &:not(:last-child) {
+    margin-right: 12px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 0px;
+    display: none;
+  }
+`
+
+export default class File extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      dropping: false
+    }
+  }
+
+  onDropEnter() {
+
+  }
+
   render() {
+    const timestamp = toAccurateDate(this.props.file.time);
+    const size = Math.round(
+      toAccurateFileSize(this.props.file.size).size * 10
+    ) / 10 + " " + toAccurateFileSize(this.props.file.size).unit;
     let Icon;
 
-    switch (this.props.fileType) {
+    switch (getExactFileType(this.props.file.name)) {
       case "img":
         Icon = <Image />
         break;
@@ -23,33 +90,18 @@ class File extends Component {
         break;
     }
 
-    const timestamp = toAccurateDate(this.props.fileTimestamp);
-
     return (
-      <div tabIndex="1" className="file" onDragEnter={(event) => {
-        event.preventDefault();
-        event.target.classList.add("dropping");
-      }} onDragOver={(event) => {
-        event.preventDefault();
-      }} onDrop={(event) => {
-        event.target.classList.remove("dropping");
-      }} onDragLeave={(event) => {
-        event.target.classList.remove("dropping");
-      }} onContextMenu={(event) => {
-        event.preventDefault();
-        this.props.onContext.call(this, event, this.props.fileName);
-      }}>
-        {
-          Icon
-        }
-        <span className="name">{this.props.fileName}</span>
-        <span className="size">{this.props.fileSize}</span>
-        <span className="timestamp">
-          {timestamp.day + "/" + timestamp.month + "/" + timestamp.year}
-        </span>
-      </div>
-    );
+      <Wrapper
+        onContextMenu={(event) => {
+          event.preventDefault();
+          this.props.onContext.call(this, event, this.props.file.name);
+        }}
+      >
+        {Icon}
+        <Info priority={3}>{this.props.file.name}</Info>
+        <Info right>{size}</Info>
+        <Info right>{timestamp.day + "/" + timestamp.month + "/" + timestamp.year}</Info>
+      </Wrapper>
+    )
   }
 }
-
-export default File;

@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 
 import { Cloud, Terminal, PieChart, Sliders } from "react-feather";
-import { Link } from "react-router-dom";
+
+import { Aside, Content } from "./styles";
+
+import Nav, { NavItem } from "./components/Nav";
 
 class Sidebar extends Component {
   constructor(props) {
@@ -13,11 +16,11 @@ class Sidebar extends Component {
   }
 
   changeActive(location) {
-    this.setState({active: location.pathname});
+    this.setState({ active: location.pathname });
   }
 
   render() {
-    const menuItems = [
+    const navItems = [
       {
         name: "Session",
         loc: "/session",
@@ -38,26 +41,26 @@ class Sidebar extends Component {
         loc: "/settings",
         icon: <Sliders />
       }
-    ]
+    ];
 
     return (
-      <aside id="sidebar">
-        <div className="content">
-          <ul className="nav">
-            {menuItems.map((item, index) => {
+      <Aside>
+        <Content>
+          <Nav>
+            {navItems.map((item, index) => {
               return (
-                <li key={index}>
-                  <Link to={item.loc} className={item.loc === this.state.active ? "active" : {}}>
-                    {item.icon}
-                    <span>{item.name}</span>
-                  </Link>
-                </li>
-              );
+                <NavItem key={index}
+                  icon={item.icon}
+                  name={item.name}
+                  to={item.loc}
+                  active={item.loc === this.state.active}
+                />
+              )
             })}
-          </ul>
-        </div>
-      </aside>
-    );
+          </Nav>
+        </Content>
+      </Aside>
+    )
   }
 }
 

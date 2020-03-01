@@ -1,14 +1,21 @@
 import React, { Component } from "react";
 
+import Container from "../../components/misc/Container";
+import Tag from "../../components/misc/Tag";
+
+import { Page, Content } from "./styles";
+
 class StatsPage extends Component {
   render() {
     return (
-      <main id="stats">
-        <div className="container">
-          Stats
-        </div>
-      </main>
-    );
+      <Page>
+        <Container>
+          <Content>
+            <Tag>coming soon</Tag>
+          </Content>
+        </Container>
+      </Page>
+    )
   }
 }
 
