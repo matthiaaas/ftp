@@ -29,7 +29,7 @@ export const Row = styled.div`
 
 export const Item = styled.div`
   cursor: default;
-  transition: all ease 0.2s;
+  transition: all ease 0.1s;
   display: inline-flex;
   align-items: center;
   font-family: var(--font-main);
@@ -57,6 +57,7 @@ export const Item = styled.div`
 
 export const ItemInner = styled.div`
   border-radius: 27px;
+  position: relative;
   /* padding: 11px 13px; */
   padding: 12px 13px 10px 13px;
   font-size: 16px;
@@ -66,10 +67,42 @@ export const ItemInner = styled.div`
     width: 20px;
     height: 20px;
   }
+
+  &:hover >div {
+    transition: all 0s;
+    transition-delay: 1.5s;
+    transform: scaleY(1);
+  }
 `
 
 export const ItemOuter = styled.span`
   margin-left: 16px;
+`
+
+export const ToolTip = styled.div`
+  position: absolute;
+  z-index: 9 !important;
+  top: 56px;
+  left: -64px;
+  width: 148px;
+  padding: 8px 12px;
+  line-height: 1.2;
+  border-radius: 12px;
+  color: var(--color-grey);
+  background: var(--color-black);
+  transform: scaleY(0);
+
+  &::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -8px;
+    border-width: 8px;
+    border-style: solid;
+    transform: rotate(180deg);
+    border-color: var(--color-black) transparent transparent transparent;
+  }
 `
 
 export const ServerStatus = styled.div`

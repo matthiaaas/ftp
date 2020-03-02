@@ -94,7 +94,7 @@ export default class File extends Component {
       <Wrapper
         onContextMenu={(event) => {
           event.preventDefault();
-          this.props.onContext.call(this, event, this.props.file.name);
+          this.props.onContext.call(this, event, this.props.file);
         }}
       >
         {Icon}

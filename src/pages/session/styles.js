@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Page = styled.main`
-  position: relative;
+  /* position: relative; */
 `
 
 export const Content = styled.div`

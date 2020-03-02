@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
-import { Search, Bookmark } from "react-feather";
+import { Search, Bookmark, Eye, RefreshCcw } from "react-feather";
 
 import Button from "../../misc/Button";
 
-import { Header, Content, Rows, Row, Item, ServerStatus, ItemInner, ItemOuter } from "./styles";
+import { Header, Content, Rows, Row, Item, ServerStatus, ItemInner, ItemOuter, ToolTip } from "./styles";
 
 class Taskbar extends Component {
   render() {
@@ -16,12 +16,27 @@ class Taskbar extends Component {
               <Item>
                 <ItemInner>
                   <Search />
+                  <ToolTip>Search for files and folders</ToolTip>
                 </ItemInner>
                 <ItemOuter>Search</ItemOuter>
               </Item>
               <Item>
                 <ItemInner>
+                  <Eye />
+                  <ToolTip>Keep track of file changes</ToolTip>
+                </ItemInner>
+                <ItemOuter>Sync</ItemOuter>
+              </Item>
+              <Item>
+                <ItemInner>
+                  <RefreshCcw />
+                  <ToolTip>Refresh current session</ToolTip>
+                </ItemInner>
+              </Item>
+              <Item>
+                <ItemInner>
                   <Bookmark />
+                  <ToolTip>Open connection dictionary</ToolTip>
                 </ItemInner>
               </Item>
             </Row>

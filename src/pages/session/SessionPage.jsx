@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 
 import Container from "../../components/misc/Container";
 import GoBack from "../../components/misc/GoBack";
@@ -9,6 +9,7 @@ import FTP from "./ftp";
 
 import Folder from "./components/Folder";
 import File from "./components/File";
+import ContextMenus from "./components/ContextMenus";
 
 class SessionPage extends Component {
   constructor(props) {
@@ -34,6 +35,8 @@ class SessionPage extends Component {
     }
 
     this.ftp = new FTP(this.props.ftp);
+
+    this.contextMenus = createRef();
 
     this.enterExternFolder = this.enterExternFolder.bind(this);
     this.goBackExternFolder = this.goBackExternFolder.bind(this);
@@ -87,6 +90,7 @@ class SessionPage extends Component {
   render() {
     return (
       <Page>
+        <ContextMenus ref={this.contextMenus} />
         <Container>
           <Content>
             <System>
@@ -98,6 +102,7 @@ class SessionPage extends Component {
               <Files>
                 {Object.keys(this.state.extern.files).map((key, index) => {
                   const file = this.state.extern.files[key];
+                  file.path = this.state.extern.path;
 
                   if (file.type === 1) {
                     return (
@@ -105,8 +110,8 @@ class SessionPage extends Component {
                         key={index}
                         folder={file}
                         onEnter={this.enterExternFolder}
-                        onUpload={() => {}}
-                        onContext={() => {}}
+                        onUpload={this.ftp.uploadLocalFiles}
+                        onContext={this.contextMenus.current.openForFolder}
                       />
                     )
                   } else {
@@ -114,7 +119,7 @@ class SessionPage extends Component {
                       <File
                         key={index}
                         file={file}
-                        onContext={() => {}}
+                        onContext={this.contextMenus.current.openForFile}
                       />
                     )
                   }
