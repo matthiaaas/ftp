@@ -93,7 +93,7 @@ export default class Folder extends Component {
           this.props.onEnter.call(this, this.props.folder.name);
         }} onContextMenu={(event) => {
           event.preventDefault();
-          this.props.onContext.call(this, event, this.props.folder.name);
+          this.props.onContext.call(this, event, this.props.folder);
         }}
       >
         <FolderIcon />

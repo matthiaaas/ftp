@@ -103,7 +103,7 @@ class LoginPage extends Component {
                   />
                 </Input>
                 <Input>
-                  <Label>Port</Label>
+                  <Label>Password</Label>
                   <Button variant="input"
                     placeholder="••••"
                     style={{

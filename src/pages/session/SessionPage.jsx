@@ -38,18 +38,29 @@ class SessionPage extends Component {
 
     this.contextMenus = createRef();
 
+    this.updateExternFiles = this.updateExternFiles.bind(this);
     this.enterExternFolder = this.enterExternFolder.bind(this);
     this.goBackExternFolder = this.goBackExternFolder.bind(this);
   }
 
   componentDidMount() {
     if (this.props.ftpStatus !== "offline") {
-      this.updateExternFiles();
+      let path = this.state.extern.path;
+      if (window.localStorage.getItem(`extern_path-${this.props.ftpData.host}`) !== null) {
+        path = window.localStorage.getItem(`extern_path-${this.props.ftpData.host}`);
+        this.setState({
+          extern: {
+            ...this.state.extern,
+            path: path
+          }
+        });
+      }
+      this.updateExternFiles(path);
     }
   }
 
-  updateExternFiles() {
-    this.ftp.updateExternFiles(this.state.extern.path, (data) => {
+  updateExternFiles(path) {
+    this.ftp.updateExternFiles(path || this.state.extern.path, (data) => {
       this.setState({
         extern: {
           ...this.state.extern,
@@ -70,6 +81,7 @@ class SessionPage extends Component {
         }
       });
     })
+    window.localStorage.setItem(`extern_path-${this.props.ftpData.host}`, newPath);
   }
 
   goBackExternFolder() {
@@ -84,13 +96,14 @@ class SessionPage extends Component {
           }
         });
       })
+      window.localStorage.setItem(`extern_path-${this.props.ftpData.host}`, newPath);
     }
   }
 
   render() {
     return (
       <Page>
-        <ContextMenus ref={this.contextMenus} />
+        <ContextMenus ref={this.contextMenus} onReturn={this.updateExternFiles} ftp={this.ftp} />
         <Container>
           <Content>
             <System>

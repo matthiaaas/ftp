@@ -42,7 +42,15 @@ class ContextMenuFolder extends Component {
         <Separator />
         <ContextMenuItem shortcut="⌘D">Download</ContextMenuItem>
         <Separator />
-        <ContextMenuItem shortcut="⌘⌫">Delete</ContextMenuItem>
+        <ContextMenuItem
+          name="Delete"
+          shortcut="⌘⌫"
+          onExecute={() => {
+            console.log(this.props.target.path + this.props.target.name)
+            this.props.ftp.deleteExternFolderRecursively(this.props.target.path + this.props.target.name);
+            this.props.onReturn.call(this);
+          }}
+        />
       </ContextMenu>
     )
   }
@@ -63,7 +71,14 @@ class ContextMenuFile extends Component {
         <Separator />
         <ContextMenuItem shortcut="⌘D">Download</ContextMenuItem>
         <Separator />
-        <ContextMenuItem shortcut="⌘⌫">Delete</ContextMenuItem>
+        <ContextMenuItem
+          name="Delete"
+          shortcut="⌘⌫"
+          onExecute={() => {
+            this.props.ftp.deleteExternFile(this.props.target.path + this.props.target.name);
+            this.props.onReturn.call(this);
+          }}
+        />
       </ContextMenu>
     )
   }
@@ -84,6 +99,8 @@ export default class ContextMenus extends Component {
     super(props);
 
     this.state = {
+      target: null,
+
       folder: true,
       file: true,
       space: true,
@@ -100,7 +117,7 @@ export default class ContextMenus extends Component {
   }
 
   openForFile(event, file) {
-    this.setState({ file: false, disable: false });
+    this.setState({ file: false, disable: false, target: file });
 
     let menu = this.fileMenu.current;
     menu.style.top = event.pageY - 200 + "px";
@@ -112,7 +129,7 @@ export default class ContextMenus extends Component {
   }
 
   openForFolder(event, folder) {
-    this.setState({ folder: false, disable: false });
+    this.setState({ folder: false, disable: false, target: folder });
 
     let menu = this.folderMenu.current;
     menu.style.top = event.pageY - 200 + "px";
@@ -137,8 +154,26 @@ export default class ContextMenus extends Component {
       <Fragment>
         {this.props.children}
         <Disable hidden={this.state.disable} onClick={this.closeAll} />
-        <ContextMenuFolder _ref={this.folderMenu} hidden={this.state.folder} />
-        <ContextMenuFile _ref={this.fileMenu} hidden={this.state.file} />
+        <ContextMenuFolder
+          _ref={this.folderMenu}
+          ftp={this.props.ftp}
+          target={this.state.target}
+          onReturn={() => {
+            this.closeAll();
+            this.props.onReturn.call(this);
+          }}
+          hidden={this.state.folder}
+        />
+        <ContextMenuFile
+          _ref={this.fileMenu}
+          ftp={this.props.ftp}
+          target={this.state.target}
+          onReturn={() => {
+            this.closeAll();
+            this.props.onReturn.call(this);
+          }}
+          hidden={this.state.file}
+        />
       </Fragment>
     )
   } 

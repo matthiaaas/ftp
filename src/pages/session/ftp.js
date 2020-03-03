@@ -53,10 +53,17 @@ export default class FTP {
     callback();
   }
 
+  deleteExternFile = (file, callback) => {
+    this.ftp.raw("dele", file, (err) => {
+      if (err) alert(err);
+      else if (typeof callback === "function") callback();
+    })
+  }
+
   deleteExternFolder = (folder, callback) => {
     this.ftp.raw("rmd", folder, (err) => {
       if (err) alert(err);
-      else callback();
+      else if (typeof callback === "function") callback();
     })
   }
 
@@ -120,7 +127,7 @@ export default class FTP {
         });
       } catch {}
       this.deleteExternFolder(folder);
-      callback();
+      if (typeof callback === "function") callback();
       return deletions !== undefined ? Promise.all(deletions) : {};
     });
   }

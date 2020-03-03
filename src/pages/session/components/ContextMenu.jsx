@@ -26,8 +26,12 @@ const Shortcut = styled.span`
 export default class ContextMenuItem extends Component {
   render() {
     return (
-      <Wrapper disabled={this.props.disabled}>
-        <Name>{this.props.children}</Name>
+      <Wrapper disabled={this.props.disabled} onClick={(event) => {
+        if (!this.props.disabled) {
+          this.props.onExecute.call(this);
+        }
+      }}>
+        <Name>{this.props.children || this.props.name}</Name>
         <Shortcut>{this.props.shortcut}</Shortcut>
       </Wrapper>
     )
