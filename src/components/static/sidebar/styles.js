@@ -6,7 +6,7 @@ export const Aside = styled.aside`
   position: fixed;
   width: 200px;
   height: 100vh;
-  border-right: 1px solid var(--color-dark-light);
+  border-right: 1px solid var(--color-dark-grey);
   background: var(--color-dark);
 `
 

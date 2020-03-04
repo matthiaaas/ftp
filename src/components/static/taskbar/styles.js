@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Header = styled.header`
   z-index: 7;
-  border-bottom: 1px solid var(--color-dark-light);
+  border-bottom: 1px solid var(--color-dark-grey);
   margin: 36px 0 0 200px;
   padding: 8px 0 36px 36px;
   width: 100vw;
@@ -41,14 +41,14 @@ export const Item = styled.div`
     margin-right: 32px;
   }
 
-  >div:first-child {
+  div:first-child {
     border: 1px solid transparent;
   }
 
   &:hover {
     color: var(--color-grey-light);
 
-    >div:first-child {
+    div:first-child {
       border: 1px solid var(--color-dark-light);
       background: var(--color-dark);
     }

@@ -12,14 +12,14 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 7px 20px;
-  border: 1px solid transparent;
+  border: 1px solid ${props => props.selected ? `var(--color-blue) !important` : `transparent`};
   border-radius: 12px;
   outline: none;
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
-  color: var(--color-grey);
-  background: var(--color-dark);
+  color: ${props => props.selected ? `var(--color-white) !important` : `var(--color-grey)`};
+  background: ${props => props.selected ? `var(--color-blue-blur) !important` : `var(--color-dark)`};
   
   &:not(:last-child) {
     margin-bottom: 8px;
@@ -60,7 +60,8 @@ export default class File extends Component {
     super(props);
 
     this.state = {
-      dropping: false
+      dropping: false,
+      selected: false
     }
   }
 
@@ -88,6 +89,15 @@ export default class File extends Component {
 
     return (
       <Wrapper
+        selected={this.state.selected}
+        onClick={(event) => {
+          if (this.state.selected) {
+            this.props.onDeselect.call(this, event, this.props.file);
+          } else {
+            this.props.onSelect.call(this, event, this.props.file);
+          }
+          this.setState({ selected: !this.state.selected })
+        }} 
         onContextMenu={(event) => {
           event.preventDefault();
           this.props.onContext.call(this, event, this.props.file);

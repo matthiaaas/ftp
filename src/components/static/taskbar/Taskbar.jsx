@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import { Search, Bookmark, Eye, RefreshCcw } from "react-feather";
 
@@ -34,10 +35,12 @@ class Taskbar extends Component {
                 </ItemInner>
               </Item>
               <Item>
-                <ItemInner>
-                  <Bookmark />
-                  <ToolTip>Open connection dictionary</ToolTip>
-                </ItemInner>
+                <Link to="/quickconnect">
+                  <ItemInner>
+                    <Bookmark />
+                    <ToolTip>Open connection dictionary</ToolTip>
+                  </ItemInner>
+                </Link>
               </Item>
             </Row>
             <Row>

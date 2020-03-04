@@ -48,7 +48,7 @@ const WrappedInput = styled.input`
   }
 
   &:focus {
-    border: 1px solid var(--color-dark-light);
+    border: 1px solid var(--color-dark-grey);
   }
 
   &::-webkit-outer-spin-button,

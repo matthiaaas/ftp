@@ -17,12 +17,14 @@ class SessionPage extends Component {
     super(props);
 
     this.state = {
+      selecting: false,
       local: {
         path: "/"
       },
       extern: {
         path: "/",
-        files: {}
+        files: {},
+        selected: {}
       }
     }
 
@@ -120,7 +122,7 @@ class SessionPage extends Component {
                   if (file.type === 1) {
                     return (
                       <Folder
-                        key={index}
+                        key={index + file.name + file.time}
                         folder={file}
                         onEnter={this.enterExternFolder}
                         onUpload={this.ftp.uploadLocalFiles}
@@ -130,8 +132,24 @@ class SessionPage extends Component {
                   } else {
                     return (
                       <File
-                        key={index}
+                        key={index + file.name + file.time}
                         file={file}
+                        onSelect={(event, file) => {
+                          this.setState({
+                            extern: {
+                              ...this.state.extern,
+                              selecting: true
+                            }
+                          })
+                        }}
+                        onDeselect={(event, file) => {
+                          this.setState({
+                            extern: {
+                              ...this.state.extern,
+                              selecting: false
+                            }
+                          })
+                        }}
                         onContext={this.contextMenus.current.openForFile}
                       />
                     )
