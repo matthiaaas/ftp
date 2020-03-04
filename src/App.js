@@ -14,6 +14,7 @@ import SessionPage from "./pages/session/Sessionpage";
 import TerminalPage from "./pages/terminal/TerminalPage";
 import StatsPage from "./pages/stats/StatsPage";
 import SettingsPage from "./pages/settings/SettingsPage";
+import QuickConnectPage from "./pages/quickconnect/QuickConnectPage";
 
 import "./assets/css/reset.css";
 
@@ -33,18 +34,14 @@ class App extends Component {
       status: "offline"
     }
 
-    try {
-      const jsftp = window.require("jsftp");
+    const jsftp = window.require("jsftp");
 
-      this.ftp = new jsftp({
-        host: this.state.ftp.host,
-        port: this.state.ftp.port,
-        user: this.state.ftp.user,
-        pass: this.state.ftp.pass
-      });
-    } catch {
-      this.ftp = null;
-    }
+    this.ftp = new jsftp({
+      host: this.state.ftp.host,
+      port: this.state.ftp.port,
+      user: this.state.ftp.user,
+      pass: this.state.ftp.pass
+    });
 
     this.loginToFTP = this.loginToFTP.bind(this);
     this.logoutFromFTP = this.logoutFromFTP.bind(this);
@@ -66,9 +63,9 @@ class App extends Component {
       if (err) {
         return alert(err);
       }
-      this.setState({
-        status: "offline"
-      });
+    });
+    this.setState({
+      status: "offline"
     });
   }
 
@@ -76,6 +73,7 @@ class App extends Component {
     this.logoutFromFTP();
 
     this.setState({
+      status: "afk",
       ftp: {
         host: data.host,
         port: data.port,
@@ -88,15 +86,29 @@ class App extends Component {
 
     this.ftp = new jsftp({
       host: data.host,
-      port: data.port,
-      user: data.user,
-      pass: data.pass
+      port: data.port
     });
 
-    this.ftp.raw("noop", (err) => {
-      if (err) return;
-      this.setState({ status: "online" });
-    });
+    console.log("noop")
+
+    this.ftp.auth(data.user, data.pass, (err, success) => {
+      if (err) {
+        alert(err);
+        this.setState({ status: "offline" });
+      }
+      if (success) {
+        console.log(success);
+        this.setState({ status: "online" });
+      }
+    })
+
+    // this.ftp.raw("noop", (err, data) => {
+    //   if (err) alert(err);
+    //   else {
+    //     console.log(data)
+    //     this.setState({ status: "online" });
+    //   }
+    // });
   }
 
   render() {
@@ -145,7 +157,7 @@ class App extends Component {
               }} />
               <Route exact path="/stats" component={StatsPage} />
               <Route exact path="/settings" component={SettingsPage} />
-              
+              <Route exact path="/quickconnect" component={QuickConnectPage} />
             </Switch>
             <Redirect to="/" />
           </RouteChange>
