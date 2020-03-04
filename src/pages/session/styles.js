@@ -15,15 +15,6 @@ export const System = styled.section`
   min-width: 300px;
 `
 
-export const Space = styled.div`
-  position: fixed;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-`
-
 export const Path = styled.div`
   z-index: 3;
   position: fixed;

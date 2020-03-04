@@ -64,10 +64,6 @@ export default class File extends Component {
     }
   }
 
-  onDropEnter() {
-
-  }
-
   render() {
     const timestamp = toAccurateDate(this.props.file.time);
     const size = Math.round(

@@ -12,6 +12,7 @@ const Wrapper = styled.ul`
   font-weight: 400;
   font-size: 16px;
   color: var(--color-grey);
+  border: 1px solid var(--color-dark-light);
   background: var(--color-black);
 
   display: ${props => props.hidden ? "none" : "unset"};
@@ -23,6 +24,17 @@ class ContextMenu extends Component {
       <Wrapper ref={this.props._ref} {...this.props}>
         {this.props.children}
       </Wrapper>
+    )
+  }
+}
+
+class ContextMenuSpace extends Component {
+  render() {
+    return (
+      <ContextMenu _ref={this.props._ref} {...this.props}>
+        <ContextMenuItem shortcut="⇧⌘N">New Folder</ContextMenuItem>
+        <ContextMenuItem shortcut="⇧⌘F" disabled>New File</ContextMenuItem>
+      </ContextMenu>
     )
   }
 }
@@ -47,8 +59,7 @@ class ContextMenuFolder extends Component {
           shortcut="⌘⌫"
           onExecute={() => {
             console.log(this.props.target.path + this.props.target.name)
-            this.props.ftp.deleteExternFolderRecursively(this.props.target.path + this.props.target.name);
-            this.props.onReturn.call(this);
+            this.props.ftp.deleteExternFolderRecursively(this.props.target.path + this.props.target.name, this.props.onReturn);
           }}
         />
       </ContextMenu>
@@ -61,6 +72,8 @@ class ContextMenuFile extends Component {
     return (
       <ContextMenu _ref={this.props._ref} {...this.props}>
         <ContextMenuItem shortcut="⌘I" disabled>Info</ContextMenuItem>
+        <Separator />
+        <ContextMenuItem shortcut="⌘O" disabled>Open</ContextMenuItem>
         <Separator />
         <ContextMenuItem shortcut="⇧⌘N">New Folder</ContextMenuItem>
         <ContextMenuItem shortcut="⇧⌘F" disabled>New File</ContextMenuItem>
@@ -110,9 +123,12 @@ export default class ContextMenus extends Component {
 
     this.fileMenu = createRef();
     this.folderMenu = createRef();
+    this.spaceMenu = createRef();
 
     this.openForFile = this.openForFile.bind(this);
     this.openForFolder = this.openForFolder.bind(this);
+    this.openForSpace = this.openForSpace.bind(this);
+    
     this.closeAll = this.closeAll.bind(this);
   }
 
@@ -121,7 +137,7 @@ export default class ContextMenus extends Component {
 
     let menu = this.fileMenu.current;
     menu.style.top = event.pageY - 200 + "px";
-    menu.style.left = event.pageX + "px";
+    menu.style.left = event.pageX + 5 + "px";
 
     if (event.pageY + 200 > window.innerHeight) {
       menu.style.top = window.innerHeight - 350 + "px";
@@ -133,10 +149,22 @@ export default class ContextMenus extends Component {
 
     let menu = this.folderMenu.current;
     menu.style.top = event.pageY - 200 + "px";
-    menu.style.left = event.pageX + "px";
+    menu.style.left = event.pageX + 5 + "px";
 
     if (event.pageY + 200 > window.innerHeight) {
       menu.style.top = window.innerHeight - 350 + "px";
+    }
+  }
+
+  openForSpace(event, path) {
+    this.setState({ space: false, disable: false, target: path });
+
+    let menu = this.spaceMenu.current;
+    menu.style.top = event.pageY - 50 + "px";
+    menu.style.left = event.pageX + 5 + "px";
+
+    if (event.pageY + 50 > window.innerHeight) {
+      menu.style.top = window.innerHeight - 80 + "px";
     }
   }
 
@@ -173,6 +201,16 @@ export default class ContextMenus extends Component {
             this.props.onReturn.call(this);
           }}
           hidden={this.state.file}
+        />
+        <ContextMenuSpace
+          _ref={this.spaceMenu}
+          ftp={this.props.ftp}
+          target={this.state.target}
+          onReturn={() => {
+            this.closeAll();
+            this.props.onReturn.call(this);
+          }}
+          hidden={this.state.space}
         />
       </Fragment>
     )

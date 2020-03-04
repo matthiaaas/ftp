@@ -3,12 +3,13 @@ import React, { Component, createRef } from "react";
 import Container from "../../components/misc/Container";
 import GoBack from "../../components/misc/GoBack";
 
-import { Page, Content, Space, System, Path, Url, Files } from "./styles";
+import { Page, Content, System, Path, Url, Files } from "./styles";
 
 import FTP from "./ftp";
 
 import Folder from "./components/Folder";
 import File from "./components/File";
+import Space from "./components/Space";
 import ContextMenus from "./components/ContextMenus";
 
 class SessionPage extends Component {
@@ -16,21 +17,12 @@ class SessionPage extends Component {
     super(props);
 
     this.state = {
-      disabled: false,
-      contextMenu: {
-        isOpen: false
-      },
       local: {
         path: "/"
       },
       extern: {
         path: "/",
         files: {}
-      },
-      popups: {
-        createFolder: {
-          isOpen: false
-        }
       }
     }
 
@@ -107,7 +99,15 @@ class SessionPage extends Component {
         <Container>
           <Content>
             <System>
-              <Space />
+              <Space
+                path={this.state.extern.path}
+                onUpload={this.ftp.uploadLocalFiles}
+                onReturn={this.updateExternFiles}
+                onProgress={this.updateExternFiles}
+                onContext={(event) => {
+                  this.contextMenus.current.openForSpace(event, this.state.extern.path)
+                }}
+              />
               <Path>
                 <GoBack onTrigger={this.goBackExternFolder} />
                 <Url>{this.state.extern.path}</Url>

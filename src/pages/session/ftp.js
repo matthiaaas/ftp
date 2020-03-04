@@ -22,35 +22,122 @@ export default class FTP {
     
   }
 
-  uploadLocalFile = (file, path, callback) => {
-    this.fs.readFile(file.path, (err, buffer) => {
-      if (err) alert(err)
-      else {
-        this.ftp.put(buffer, path + file.name, (err) => {
-          if (err) alert(err);
-          else callback();
-        })
-      }
-    })
-  }
+  uploadLocalFiles = (transfer, path, callback, progress) => {
+    let items = transfer.items;
+    let files = transfer.files;
 
-  uploadLocalFiles = (files, path, callback) => {
-    let i = 0;
-    
-    let loopFiles = (files) => {
-      this.uploadLocalFile(files[i], path, () => {
-        i++;
-        if (i < Object.keys(files).length) {
-          loopFiles(files);
-        } else {
-          return;
+    let rootPaths = []
+
+    for (let i = 0; i < items.length; i++) {
+      rootPaths.push(files[i].path.replace(items[i].webkitGetAsEntry().fullPath, ""));
+    }
+    if (!rootPaths.some((val) => val === rootPaths[0])) {
+      alert("Uploading files and folder from different root directories is currently not supported. Please move all files and folder in the same root folder e.g. on your Desktop")
+      return callback();
+    }
+
+    const uploadFile = (item, path) => {
+      return new Promise((resolve, reject) => {
+        let newPath = path.slice(0, -1);
+        this.fs.readFile(rootPaths[0] + item.fullPath, (err, buffer) => {
+          if (err) { alert(err); resolve(); }
+          else {
+            this.ftp.put(buffer, newPath + item.fullPath, (err) => {
+              if (err) alert(err);
+              else resolve();
+            })
+          }
+        })
+      })
+    }
+
+    const createDir = (item, path) => {
+      return new Promise((resolve, reject) => {
+        let newPath = path.slice(0, -1);
+        this.ftp.raw("mkd", newPath + item.fullPath, (err) => {
+          if (err) alert(err);
+          else resolve();
+        })
+      })
+    }
+
+    const traverse = (item) => {
+      return new Promise((resolve, reject) => {
+        try {
+          let reader = item.createReader();
+          reader.readEntries((entries) => {
+            resolve(entries)
+          })
+        } catch {
+          resolve(item);
         }
       })
     }
 
-    loopFiles(files);
+    const walk = (items) => {
+      return traverse(items).then((items) => {
+        if (items.length === 0) return Promise.resolve();
+        return Promise.all(Object.keys(items).map((i) => {
+          let item;
+          try {
+            item = items[i].webkitGetAsEntry();
+          } catch {
+            item = items[i];
+          }
+          let promises = [];
+          if (item.isDirectory) {
+            promises.push(walk(item));
+          }
+          promises.push(Promise.resolve(item));
+          return Promise.all(promises);
+        }))
+      })
+    }
 
-    callback();
+    const flatten = list => list.reduce(
+      (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
+    );
+
+    walk(items).then((results) => {
+      let items = flatten(results).filter(Boolean);
+      items = items.sort((a, b) => {
+        return (a.fullPath.split("/").length - 1) > (b.fullPath.split("/").length - 1) ? 1 : -1
+      })
+      items = items.sort((a, b) => {
+        return b.isDirectory - a.isDirectory;
+      })
+
+      let runTasks = () => {
+        let p = Promise.resolve()
+        items.forEach((item) => {
+          if (item.isDirectory) {
+            // if (typeof progress === "function") progress()
+            p = p.then(() => createDir(item, path))
+          } else if (item.isFile) {
+            // if (typeof progress === "function") progress()
+            p = p.then(() => uploadFile(item, path))
+          }
+        });
+        return p;
+      }
+      runTasks().then(() => {
+        console.log("uploaded all files")
+        return typeof callback === "function" ? callback() : {};
+      })
+      // let creations = items.map((item) => {
+      //   if (item.isDirectory) {
+      //     return createDir(item, path);
+      //   }
+      // })
+      // Promise.all(creations);
+      // console.log("created all folders")
+      // let uploads = items.map((item) => {
+      //   if (item.isFile) {
+      //     return uploadFile(item, path);
+      //   }
+      // })
+      // Promise.all(uploads);
+    })
   }
 
   deleteExternFile = (file, callback) => {
@@ -127,8 +214,8 @@ export default class FTP {
         });
       } catch {}
       this.deleteExternFolder(folder);
-      if (typeof callback === "function") callback();
-      return deletions !== undefined ? Promise.all(deletions) : {};
+      Promise.all(deletions)
+      return callback();
     });
   }
 }

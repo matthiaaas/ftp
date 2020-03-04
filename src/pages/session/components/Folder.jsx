@@ -20,6 +20,10 @@ const Wrapper = styled.div`
   font-size: 16px;
   color: ${props => props.dropping ? `var(--color-white) !important` : `var(--color-grey)`};
   background: var(--color-dark);
+
+  * {
+    pointer-events: none;
+  }
   
   &:not(:last-child) {
     margin-bottom: 8px;
@@ -38,7 +42,8 @@ const Wrapper = styled.div`
 `
 
 const Info = styled.span`
-  flex: ${props => props.priority ? props.priority : `1`};
+  flex: ${props => props.priority ? props.priority : `1`};  
+  display: inline-block;
   white-space: nowrap;
   overflow-x: hidden;
   overflow-y: hidden;
@@ -64,10 +69,6 @@ export default class Folder extends Component {
     }
   }
 
-  onDropEnter() {
-
-  }
-
   render() {
     const timestamp = toAccurateDate(this.props.folder.time);
 
@@ -82,7 +83,7 @@ export default class Folder extends Component {
           event.preventDefault();
         }}
         onDrop={(event) => {
-          this.props.onUpload.call(this, event.dataTransfer.files, this.props.folder.path + this.props.folder.name + "/", () => {});
+          this.props.onUpload.call(this, event.dataTransfer, this.props.folder.path + this.props.folder.name + "/");
           this.setState({ dropping: false });
         }}
         onDragLeave={(event) => {
@@ -91,7 +92,8 @@ export default class Folder extends Component {
         }}
         onClick={(event) => {
           this.props.onEnter.call(this, this.props.folder.name);
-        }} onContextMenu={(event) => {
+        }}
+        onContextMenu={(event) => {
           event.preventDefault();
           this.props.onContext.call(this, event, this.props.folder);
         }}
