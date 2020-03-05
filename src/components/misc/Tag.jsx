@@ -10,6 +10,7 @@ const Wrapper = styled.div`
   border: 1px solid var(--color-blue);
   padding: 6px 12px;
   border-radius: 16px;
+  display: inline-block;
 `
 
 export default class Tag extends Component {

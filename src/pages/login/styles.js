@@ -88,27 +88,8 @@ export const Tip = styled.div`
 `
 
 export const QuickActions = styled.ul`
-  padding-top: 40px;
-  list-style: none;
-`
-
-export const QuickAction = styled.li`
-  cursor: default;
   display: flex;
   align-items: center;
-  font-family: var(--font-main);
-  font-weight: 400;
-  font-size: 16px;
-  color: var(--color-grey);
-
-  svg {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    color: inherit;
-  }
-
-  &:hover {
-    color: var(--color-grey-light);
-  }
+  padding-top: 40px;
+  list-style: none;
 `

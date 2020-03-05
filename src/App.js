@@ -157,7 +157,15 @@ class App extends Component {
               }} />
               <Route exact path="/stats" component={StatsPage} />
               <Route exact path="/settings" component={SettingsPage} />
-              <Route exact path="/quickconnect" component={QuickConnectPage} />
+              <Route exact path="/quickconnect" component={(props) => {
+                return (
+                  <QuickConnectPage
+                    ftpData={this.state.ftp}
+                    ftpStatus={this.state.status}
+                    onLogin={this.loginToFTP}
+                  />
+                )
+              }} />
             </Switch>
             <Redirect to="/" />
           </RouteChange>

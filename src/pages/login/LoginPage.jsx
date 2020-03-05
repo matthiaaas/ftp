@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 
-import { WifiOff } from "react-feather";
+import { WifiOff, Bookmark } from "react-feather";
 
 import Container from "../../components/misc/Container";
 import Headline from "../../components/misc/Headline";
 import Button from "../../components/misc/Button";
 
-import { Page, Content, Header, ServerStatus, Login, Row, Input, Label, Tip, QuickActions, QuickAction } from "./styles";
+import { Page, Content, Header, ServerStatus, Login, Row, Input, Label, Tip, QuickActions } from "./styles";
+
+import QuickAction from "./components/QuickAction";
 
 class LoginPage extends Component {
   constructor(props) {
@@ -128,7 +130,7 @@ class LoginPage extends Component {
             </Login>
             <QuickActions>
               <QuickAction
-                onClick={(event) => {
+                onAction={(event) => {
                   if (typeof this.props.onLogout === "function") {
                     this.props.onLogout.call(this);
                   }
@@ -136,6 +138,22 @@ class LoginPage extends Component {
               >
                 <WifiOff />
                 <span>Disconnect</span>
+              </QuickAction>
+              <QuickAction
+                disabled={!(this.props.ftpStatus === "online")}
+                onAction={(event) => {
+                  let connections = JSON.parse(window.localStorage.getItem("registered_connections"));
+                  connections.push({
+                    name: this.props.ftpData.host,
+                    user: this.props.ftpData.user,
+                    port: this.props.ftpData.port,
+                    protocol: "ftp"
+                  });
+                  window.localStorage.setItem("registered_connections", JSON.stringify(connections));
+                }}
+              >
+                <Bookmark />
+                <span>Save connection</span>
               </QuickAction>
             </QuickActions>
           </Content>

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import { MoreVertical, GitCommit, Shield, Lock } from "react-feather";
+import { MoreVertical, GitCommit, Shield, Lock, ShieldOff, X, Unlock } from "react-feather";
 
 const Wrapper = styled.div`
   font-family: var(--font-main);
@@ -13,6 +13,11 @@ const Wrapper = styled.div`
   margin: 12px;
   flex: 1;
   background: ${props => props.connected ? `var(--color-dark-grey-blur)` : `var(--color-dark)`};
+
+  &:hover {
+    /* border: 1px solid ${props => props.connected ? `inherit`: `var(--color-dark-grey)`}; */
+    background: ${props => props.connected ? `var(--color-dark-grey-blur)` : `var(--color-black)`};
+  }
 `
 
 const Header = styled.div`
@@ -42,6 +47,7 @@ const ServerStatus = styled.div`
 `
 
 const Menu = styled.div`
+  position: relative;
   color: var(--color-grey);
 
   &:hover {
@@ -80,17 +86,99 @@ const Item = styled.div`
   }
 `
 
+const Dropdown = styled.ul`
+  display: ${props => props.toggled ? `block` : `none`};
+  position: absolute;
+  top: 0;
+  right: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--color-dark-light);
+  overflow: hidden;
+  width: 148px;
+  background: var(--color-black);
+`
+
+const DropdownItem = styled.li`
+  font-family: var(--font-main);
+  font-weight: 400;
+  font-size: 16px;
+  padding: 8px 24px;
+  color: ${props => props.delete ? `var(--color-red)` : `var(--color-grey)`};
+
+  &:hover {
+    color: ${props => props.delete ? `var(--color-red)` : `var(--color-grey-light)`};
+    background: ${props => props.delete ? `var(--color-red-blur)` : `var(--color-dark-light)`};
+  }
+`
+
+const Separator = styled.hr`
+  margin: 0;
+  border: none;
+  height: 1px;
+  background: var(--color-dark-light);
+`
+
 export default class Connection extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      connecting: false,
+      editing: false
+    }
+
+    this.connect = this.connect.bind(this);
+    this.delete = this.delete.bind(this);
+  }
+
+  connect() {
+    if (!this.props.connected && !this.state.connecting && !this.state.editing) {
+      this.setState({ connecting: true });
+      this.props.onConnect.call(this, {
+        host: this.props.name,
+        user: this.props.user,
+        port: this.props.port,
+        protocol: this.props.protocol
+      });
+    }
+  }
+
+  delete() {
+    let connections = JSON.parse(window.localStorage.getItem("registered_connections"));
+
+    connections.splice(this.props.key, 1);
+
+    window.localStorage.setItem("registered_connections", JSON.stringify(connections));
+
+    this.props.onDelete.call(this)
+  }
+
   render() {
     return (
-      <Wrapper connected={this.props.connected}>
+      <Wrapper
+        connected={this.props.connected}
+        onClick={this.connect}
+      >
         <Header>
           <Group>
-            <Name>{this.props.name}</Name>
+            <Name>{this.props.user && this.props.user + "@" + this.props.name}</Name>
             <ServerStatus connected={this.props.connected} />
           </Group>
-          <Menu>
-            <MoreVertical />
+          <Menu
+            onClick={(event) => {
+              event.stopPropagation();
+              if (!this.state.connecting) {
+                this.setState({ editing: !this.state.editing });
+                console.log("editing");
+              }
+            }}
+          >
+            {this.state.editing ? <X /> : <MoreVertical />}
+            <Dropdown toggled={this.state.editing}>
+              <DropdownItem onClick={this.connect}>Connect</DropdownItem>
+              <Separator />
+              <DropdownItem onClick={this.delete} delete={true}>Delete</DropdownItem>
+            </Dropdown>
           </Menu>
         </Header>
         <Body>
@@ -100,12 +188,12 @@ export default class Connection extends Component {
               <span>{this.props.port}</span>
             </Item>
             <Item>
-              <Shield />
+              {this.props.protocol.toLowerCase() === "ftp" ? <ShieldOff /> : <Shield />}
               <span>{this.props.protocol}</span>
             </Item>
           </Group>
           <Item>
-            <Lock />
+            {this.props.password ? <Unlock /> : <Lock />}
           </Item>
         </Body>
       </Wrapper>

@@ -17,3 +17,10 @@ export const Connections = styled.section`
   flex-wrap: wrap;
   margin: -12px;
 `
+
+export const Message = styled.div`
+  font-family: var(--font-main);
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--color-grey);
+`

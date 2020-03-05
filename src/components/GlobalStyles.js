@@ -16,6 +16,7 @@ export const GlobalStyles = createGlobalStyle`
     --color-blue: #3E7DF3;
     --color-blue-blur: rgba(64, 121, 243, 0.05);
     --color-red: #FF6157;
+    --color-red-blur: rgba(255, 97, 87, 0.1);
     --color-green: #25CC40;
     --color-yellow: #FFBF2A;
 

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import Container from "../../components/misc/Container";
 import Headline from "../../components/misc/Headline";
+import Tag from "../../components/misc/Tag";
 
 import { Page, Content, Header, Connections } from "./styles";
 
@@ -14,9 +15,15 @@ class QuickConnectPage extends Component {
     this.state = {
       connections: []
     }
+
+    this.loadConnections = this.loadConnections.bind(this);
   }
 
   componentDidMount() {
+    this.loadConnections();
+  }
+
+  loadConnections() {
     let connections = [
     ];
 
@@ -26,13 +33,6 @@ class QuickConnectPage extends Component {
 
     connections = JSON.parse(window.localStorage.getItem("registered_connections"));
 
-    // connections.push({
-    //   name: "ftp@example.com",
-    //   port: 22,
-    //   protocol: "sftp"
-    // })
-
-    console.log(connections);
     this.setState({ connections: connections })
   }
 
@@ -44,18 +44,24 @@ class QuickConnectPage extends Component {
             <Header>
               <Headline>Quick Connect</Headline>
             </Header>
+            {this.state.connections.length === 0 && <Tag>no connections</Tag>}
             <Connections>
               {this.state.connections.map((item, index) => {
                 return (
                   <Connection
-                    connected={false}
+                    key={index}
+                    connected={(this.props.ftpData.host === item.name && this.props.ftpData.user === item.user)}
                     name={item.name}
+                    user={item.user}
                     port={item.port}
                     protocol={item.protocol.toUpperCase()}
-                    password={false}
+                    password={item.password ? true : false}
+                    onConnect={this.props.onLogin}
+                    onDelete={this.loadConnections}
                   />
                 )
               })}
+              {this.state.connections.length % 2 === 1 && <div style={{flex: 1, marginLeft: "12px"}}></div>}
             </Connections>
           </Content>
         </Container>
