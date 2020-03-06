@@ -35,7 +35,7 @@ class Taskbar extends Component {
                 </ItemInner>
               </Item>
               <Item>
-                <Link to="/quickconnect">
+                <Link to="/quickconnect" tabIndex="-1">
                   <ItemInner>
                     <Bookmark />
                     <ToolTip>Open connection dictionary</ToolTip>

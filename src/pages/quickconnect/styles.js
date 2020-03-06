@@ -18,9 +18,18 @@ export const Connections = styled.section`
   margin: -12px;
 `
 
+export const NoConnections = styled.div`
+
+`
+
 export const Message = styled.div`
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
+  line-height: 1.4;
   color: var(--color-grey);
+
+  &:not(:first-child) {
+    margin-top: 16px;
+  }
 `

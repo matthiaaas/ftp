@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import { MoreVertical, GitCommit, Shield, Lock, ShieldOff, X, Unlock } from "react-feather";
+import { MoreVertical, GitCommit, Shield, Lock, ShieldOff, Unlock } from "react-feather";
 
 const Wrapper = styled.div`
   font-family: var(--font-main);
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   background: ${props => props.connected ? `var(--color-dark-grey-blur)` : `var(--color-dark)`};
 
   &:hover {
-    /* border: 1px solid ${props => props.connected ? `inherit`: `var(--color-dark-grey)`}; */
+    border: 1px solid ${props => props.connected ? `inherit`: `var(--color-blue)`};
     background: ${props => props.connected ? `var(--color-dark-grey-blur)` : `var(--color-black)`};
   }
 `
@@ -136,8 +136,8 @@ export default class Connection extends Component {
       this.setState({ connecting: true });
       this.props.onConnect.call(this, {
         host: this.props.name,
-        user: this.props.user,
         port: this.props.port,
+        user: this.props.user,
         protocol: this.props.protocol
       });
     }
@@ -146,7 +146,7 @@ export default class Connection extends Component {
   delete() {
     let connections = JSON.parse(window.localStorage.getItem("registered_connections"));
 
-    connections.splice(this.props.key, 1);
+    connections.splice(this.props.id, 1);
 
     window.localStorage.setItem("registered_connections", JSON.stringify(connections));
 
@@ -169,11 +169,10 @@ export default class Connection extends Component {
               event.stopPropagation();
               if (!this.state.connecting) {
                 this.setState({ editing: !this.state.editing });
-                console.log("editing");
               }
             }}
           >
-            {this.state.editing ? <X /> : <MoreVertical />}
+            <MoreVertical />
             <Dropdown toggled={this.state.editing}>
               <DropdownItem onClick={this.connect}>Connect</DropdownItem>
               <Separator />

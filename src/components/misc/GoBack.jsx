@@ -7,6 +7,7 @@ const Wrapper = styled.div`
   transition: all ease 0.1s;
   border-radius: 50%;
   padding: 6px 6px 3px 6px;
+  display: inline-block;
   background: ${props => props.bg ? props.bg : `var(--color-dark)`};
 
   svg {
@@ -24,6 +25,8 @@ export default class GoBack extends Component {
   render() {
     return (
       <Wrapper
+        bg={this.props.bg}
+        bgHover={this.props.bgHover}
         onClick={(event) => {
           event.preventDefault();
           if (typeof this.props.onTrigger === "function") {

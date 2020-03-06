@@ -11,6 +11,7 @@ import Folder from "./components/Folder";
 import File from "./components/File";
 import Space from "./components/Space";
 import ContextMenus from "./components/ContextMenus";
+import NewFolder from "./components/NewFolder";
 
 class SessionPage extends Component {
   constructor(props) {
@@ -24,7 +25,8 @@ class SessionPage extends Component {
       extern: {
         path: "/",
         files: {},
-        selected: {}
+        selected: {},
+        newFolder: false
       }
     }
 
@@ -38,7 +40,7 @@ class SessionPage extends Component {
   }
 
   componentDidMount() {
-    if (this.props.ftpStatus !== "offline") {
+    if (this.props.ftpStatus === "online") {
       let path = this.state.extern.path;
       if (window.localStorage.getItem(`extern_path-${this.props.ftpData.host}`) !== null) {
         path = window.localStorage.getItem(`extern_path-${this.props.ftpData.host}`);
@@ -58,7 +60,8 @@ class SessionPage extends Component {
       this.setState({
         extern: {
           ...this.state.extern,
-          files: data
+          files: data,
+          newFolder: false
         }
       });
     })
@@ -97,7 +100,19 @@ class SessionPage extends Component {
   render() {
     return (
       <Page>
-        <ContextMenus ref={this.contextMenus} onReturn={this.updateExternFiles} ftp={this.ftp} />
+        <ContextMenus
+          ref={this.contextMenus}
+          ftp={this.ftp}
+          onReload={this.updateExternFiles}
+          onNewFolder={() => {
+            this.setState({
+              extern: {
+                ...this.state.extern,
+                newFolder: true
+              }
+            })
+          }}
+        />
         <Container>
           <Content>
             <System>
@@ -115,6 +130,21 @@ class SessionPage extends Component {
                 <Url>{this.state.extern.path}</Url>
               </Path>
               <Files>
+                {this.state.extern.newFolder &&
+                  <NewFolder
+                    path={this.state.extern.path}
+                    onSubmit={this.ftp.createExternFolder}
+                    onClose={() => {
+                      this.setState({
+                        extern: {
+                          ...this.state.extern,
+                          newFolder: false
+                        }
+                      });
+                      this.updateExternFiles();
+                    }}
+                  />
+                }
                 {Object.keys(this.state.extern.files).map((key, index) => {
                   const file = this.state.extern.files[key];
                   file.path = this.state.extern.path;

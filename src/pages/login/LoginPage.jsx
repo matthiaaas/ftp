@@ -16,10 +16,12 @@ class LoginPage extends Component {
 
     this.state = {
       login: {
-        host: "example.com",
+        host: "",
         port: 21,
-        user: "root",
-        pass: "root"
+        user: "",
+        pass: "",
+
+        default: this.props.default
       }
     }
 
@@ -28,7 +30,15 @@ class LoginPage extends Component {
 
   submitLoginData() {
     if (typeof this.props.onLogin === "function") {
-      this.props.onLogin.call(this, this.state.login);
+      let login = this.state.login;
+      if(!(typeof login.port === "number")) {
+        login.port = 21
+      } if (login.user === "") {
+        login.user = "anonymous"
+      } if (login.pass === "anonymous") {
+        login.pass = "anonymous"
+      }
+      this.props.onLogin.call(this, login);
     }
   }
 
@@ -38,7 +48,9 @@ class LoginPage extends Component {
         onKeyDown={(event) => {
           if (event.keyCode === 13) {
             event.preventDefault();
-            this.submitLoginData();
+            if (this.state.login.host !== "") {
+              this.submitLoginData();
+            }
           }
         }}
       >
@@ -53,8 +65,9 @@ class LoginPage extends Component {
                 <Input>
                   <Label>Server</Label>
                   <Button variant="input"
-                    placeholder={this.state.login.host !== "" ? this.state.login.host : "example.com"}
+                    placeholder="example.com"
                     type="text"
+                    value={this.state.login.host}
                     onChange={(event) => {
                       this.setState({
                         login: {
@@ -69,15 +82,19 @@ class LoginPage extends Component {
                 <Input>
                   <Label>Port</Label>
                   <Button variant="input"
-                    placeholder={this.state.login.port !== "" ? this.state.login.port : "21"}
+                    placeholder="21"
                     type="number"
                     min="1"
+                    max="9999"
                     style={{
                       textAlign: "right",
-                      maxWidth: "23px",
+                      minWidth: "24px",
+                      width: "24px",
+                      maxWidth: "36px",
                       padding: "14px 26px 14px 22px"
                     }}
                     onChange={(event) => {
+                      event.target.style.width = (event.target.value.length + 1) * 8 + "px";
                       this.setState({
                         login: {
                           ...this.state.login,
@@ -92,7 +109,7 @@ class LoginPage extends Component {
                 <Input>
                   <Label>User</Label>
                   <Button variant="input"
-                    placeholder={this.state.login.user !== "" ? this.state.login.user : "root"}
+                    placeholder="root"
                     type="text"
                     onChange={(event) => {
                       this.setState({

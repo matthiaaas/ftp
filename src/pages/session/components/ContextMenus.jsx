@@ -32,7 +32,14 @@ class ContextMenuSpace extends Component {
   render() {
     return (
       <ContextMenu _ref={this.props._ref} {...this.props}>
-        <ContextMenuItem shortcut="⇧⌘N">New Folder</ContextMenuItem>
+        <ContextMenuItem
+          name="New Folder"
+          shortcut="⇧⌘N"
+          onExecute={() => {
+            this.props.onReturn.call(this);
+            this.props.onNewFolder.call(this);
+          }}
+        />
         <ContextMenuItem shortcut="⇧⌘F" disabled>New File</ContextMenuItem>
       </ContextMenu>
     )
@@ -45,7 +52,14 @@ class ContextMenuFolder extends Component {
       <ContextMenu _ref={this.props._ref} {...this.props}>
         <ContextMenuItem shortcut="⌘I" disabled>Info</ContextMenuItem>
         <Separator />
-        <ContextMenuItem shortcut="⇧⌘N">New Folder</ContextMenuItem>
+        <ContextMenuItem
+          name="New Folder"
+          shortcut="⇧⌘N"
+          onExecute={() => {
+            this.props.onReturn.call(this);
+            this.props.onNewFolder.call(this);
+          }}
+        />
         <ContextMenuItem shortcut="⇧⌘F" disabled>New File</ContextMenuItem>
         <Separator />
         <ContextMenuItem shortcut="⌘C" disabled>Copy</ContextMenuItem>
@@ -58,8 +72,8 @@ class ContextMenuFolder extends Component {
           name="Delete"
           shortcut="⌘⌫"
           onExecute={() => {
-            console.log(this.props.target.path + this.props.target.name)
-            this.props.ftp.deleteExternFolderRecursively(this.props.target.path + this.props.target.name, this.props.onReturn);
+            this.props.ftp.deleteExternFolderRecursively(this.props.target.path + this.props.target.name, this.props.onReload);
+            this.props.onReturn.call(this);
           }}
         />
       </ContextMenu>
@@ -75,7 +89,14 @@ class ContextMenuFile extends Component {
         <Separator />
         <ContextMenuItem shortcut="⌘O" disabled>Open</ContextMenuItem>
         <Separator />
-        <ContextMenuItem shortcut="⇧⌘N">New Folder</ContextMenuItem>
+        <ContextMenuItem
+          name="New Folder"
+          shortcut="⇧⌘N"
+          onExecute={() => {
+            this.props.onReturn.call(this);
+            this.props.onNewFolder.call(this);
+          }}
+        />
         <ContextMenuItem shortcut="⇧⌘F" disabled>New File</ContextMenuItem>
         <Separator />
         <ContextMenuItem shortcut="⌘C" disabled>Copy</ContextMenuItem>
@@ -90,6 +111,7 @@ class ContextMenuFile extends Component {
           onExecute={() => {
             this.props.ftp.deleteExternFile(this.props.target.path + this.props.target.name);
             this.props.onReturn.call(this);
+            this.props.onReload.call(this);
           }}
         />
       </ContextMenu>
@@ -188,8 +210,12 @@ export default class ContextMenus extends Component {
           target={this.state.target}
           onReturn={() => {
             this.closeAll();
-            this.props.onReturn.call(this);
           }}
+          onReload={() => {
+            console.log("reloading")
+            this.props.onReload.call(this);
+          }}
+          onNewFolder={this.props.onNewFolder}
           hidden={this.state.folder}
         />
         <ContextMenuFile
@@ -198,8 +224,11 @@ export default class ContextMenus extends Component {
           target={this.state.target}
           onReturn={() => {
             this.closeAll();
-            this.props.onReturn.call(this);
           }}
+          onReload={() => {
+            this.props.onReload.call(this);
+          }}
+          onNewFolder={this.props.onNewFolder}
           hidden={this.state.file}
         />
         <ContextMenuSpace
@@ -208,8 +237,11 @@ export default class ContextMenus extends Component {
           target={this.state.target}
           onReturn={() => {
             this.closeAll();
-            this.props.onReturn.call(this);
           }}
+          onReload={() => {
+            this.props.onReload.call(this);
+          }}
+          onNewFolder={this.props.onNewFolder}
           hidden={this.state.space}
         />
       </Fragment>

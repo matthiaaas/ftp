@@ -89,8 +89,6 @@ class App extends Component {
       port: data.port
     });
 
-    console.log("noop")
-
     this.ftp.auth(data.user, data.pass, (err, success) => {
       if (err) {
         alert(err);

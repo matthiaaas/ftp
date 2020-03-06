@@ -51,6 +51,10 @@ const WrappedInput = styled.input`
     border: 1px solid var(--color-dark-grey);
   }
 
+  &:invalid {
+    border: 1px solid var(--color-red);
+  }
+
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;

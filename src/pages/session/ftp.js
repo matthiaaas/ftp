@@ -14,7 +14,7 @@ export default class FTP {
   createExternFolder = (path, folder, callback) => {
     this.ftp.raw("mkd", path + folder, (err) => {
       if (err) alert(err);
-      else callback();
+      else if (typeof callback === "function") callback();
     })
   }
 
@@ -32,7 +32,7 @@ export default class FTP {
       rootPaths.push(files[i].path.replace(items[i].webkitGetAsEntry().fullPath, ""));
     }
     if (!rootPaths.some((val) => val === rootPaths[0])) {
-      alert("Uploading files and folder from different root directories is currently not supported. Please move all files and folder in the same root folder e.g. on your Desktop")
+      alert("Uploading files and folder from different root directories is currently not supported. Please move all files and folders in the same root folder e.g. on your Desktop")
       return callback();
     }
 
@@ -156,7 +156,6 @@ export default class FTP {
 
   deleteExternFolderRecursively = (folder, callback) => {
     const path = window.require("path");
-    console.log("folder is " + folder);
     const list = (dir) => {
       return new Promise((resolve, reject) => {
         this.ftp.ls(dir, (err, files) => {
@@ -204,7 +203,6 @@ export default class FTP {
       let deletions;
       try {
         let files = flatten(results).filter(Boolean);
-        console.log("Trying to delete ", files.map((file) => file.filepath))
         deletions = files.map((file) => {
           if (file.type === 1) {
             return deleteDir(file);
@@ -213,9 +211,10 @@ export default class FTP {
           }
         });
       } catch {}
-      this.deleteExternFolder(folder);
-      Promise.all(deletions)
-      return callback();
+      this.deleteExternFolder(folder, () => {
+        return callback();
+      });
+      if (deletions !== undefined) Promise.all(deletions);
     });
   }
 }

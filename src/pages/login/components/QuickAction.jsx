@@ -27,13 +27,22 @@ const Wrapper = styled.li`
 `
 
 export default class QuickAction extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      executed: this.props.disabled
+    }
+  }
+
   render() {
     return (
       <Wrapper
-        disabled={this.props.disabled}
+        disabled={this.state.executed}
         onClick={(event) => {
-          if (!this.props.disabled && typeof this.props.onAction === "function") {
+          if (!this.props.disabled && !this.state.executed && typeof this.props.onAction === "function") {
             this.props.onAction.call(this, event);
+            this.setState({ executed: true });
           }
         }}
       >
