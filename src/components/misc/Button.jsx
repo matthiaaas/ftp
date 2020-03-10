@@ -39,8 +39,10 @@ const WrappedInput = styled.input`
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
+  letter-spacing: ${props => props.type === "password" && "3px"};
   text-decoration: none;
   color: var(--color-white);
+  display: inline-block;
   background: ${props => props.bg ? this.props.bg : `var(--color-black)`};
 
   &::placeholder {

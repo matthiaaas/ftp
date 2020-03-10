@@ -71,7 +71,7 @@ class App extends Component {
 
   loginToFTP(data) {
     this.logoutFromFTP();
-
+    
     this.setState({
       status: "afk",
       ftp: {
@@ -99,14 +99,6 @@ class App extends Component {
         this.setState({ status: "online" });
       }
     })
-
-    // this.ftp.raw("noop", (err, data) => {
-    //   if (err) alert(err);
-    //   else {
-    //     console.log(data)
-    //     this.setState({ status: "online" });
-    //   }
-    // });
   }
 
   render() {

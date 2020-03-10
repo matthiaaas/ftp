@@ -24,20 +24,22 @@ const Body = styled.div`
 `
 
 const Back = styled.div`
-  
+  display: inline-block;
 `
 
 const Header = styled.div`
   margin-top: 16px;
 `
 
+const Content = styled.div`
+
+`
+
 export default class Popup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isOpen: false
-    }
+    this.close = this.close.bind(this);
   }
 
   close() {
@@ -48,13 +50,16 @@ export default class Popup extends Component {
 
   render() {
     return (
-      <Wrapper hidden={!this.state.isOpen}>
-        <Body>
-          <Back>
+      <Wrapper>
+        <Body {...this.props}>
+          <Back onClick={this.close}>
             <GoBack bg="var(--color-black)" bgHover="var(--color-dark-light)" />
           </Back>
           <Header>
             <Headline>{this.props.headline}</Headline>
+            <Content>
+              {this.props.children}
+            </Content>
           </Header>
         </Body>
       </Wrapper>

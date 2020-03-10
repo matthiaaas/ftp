@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import Container from "../../components/misc/Container";
 import Headline from "../../components/misc/Headline";
 import Tag from "../../components/misc/Tag";
+import Button from "../../components/misc/Button";
 import Popup from "../../components/misc/Popup";
 
 import { Page, Content, Header, Connections, NoConnections, Message } from "./styles";
@@ -14,10 +15,12 @@ class QuickConnectPage extends Component {
     super(props);
 
     this.state = {
-      connections: []
+      connections: [],
+      target: undefined
     }
 
     this.loadConnections = this.loadConnections.bind(this);
+    this.connect = this.connect.bind(this);
   }
 
   componentDidMount() {
@@ -37,12 +40,38 @@ class QuickConnectPage extends Component {
     this.setState({ connections: connections })
   }
 
+  connect(connection) {
+    if (connection.pass === undefined || connection.pass === "" || connection.pass === false) {
+      connection.preview = `${connection.user}@${connection.host}`
+      this.setState({ target: connection });
+    } else this.props.onLogin.call(this, connection);
+  }
+
   render() {
     return (
       <Page>
-        <Popup
-          headline="Type in the password for"
-        />
+        {this.state.target &&
+          <Popup
+            style={{ maxWidth: "364px" }}
+            headline={<span>Type in the password for <span style={{borderBottom: "1px solid var(--color-white)", paddingBottom: "4px"}}>{this.state.target.preview}</span></span>}
+            onClose={() => {this.setState({ target: undefined })}}
+          >
+            <Button variant="input"
+              placeholder="••••"
+              type="password"
+              style={{ marginTop: "24px" }}
+              onKeyDown={(event) => {
+                if (event.keyCode === 13) {
+                  event.preventDefault();
+                  let connection = this.state.target;
+                  connection.pass = event.target.value;
+                  this.props.onLogin.call(this, connection);
+                }
+              }}
+              autoFocus
+            />
+          </Popup>
+        }
         <Container>
           <Content>
             <Header>
@@ -65,9 +94,10 @@ class QuickConnectPage extends Component {
                     name={item.name}
                     port={item.port}
                     user={item.user}
+                    pass={item.pass}
                     protocol={item.protocol.toUpperCase()}
                     password={item.password ? true : false}
-                    onConnect={this.props.onLogin}
+                    onConnect={this.connect}
                     onDelete={this.loadConnections}
                   />
                 )

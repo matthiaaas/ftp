@@ -66,7 +66,7 @@ class ContextMenuFolder extends Component {
         <ContextMenuItem shortcut="⌘V" disabled>Paste</ContextMenuItem>
         <ContextMenuItem shortcut="⌘J" disabled>Duplicate</ContextMenuItem>
         <Separator />
-        <ContextMenuItem shortcut="⌘D">Download</ContextMenuItem>
+        <ContextMenuItem shortcut="⌘D" disabled>Download</ContextMenuItem>
         <Separator />
         <ContextMenuItem
           name="Delete"
@@ -103,7 +103,14 @@ class ContextMenuFile extends Component {
         <ContextMenuItem shortcut="⌘V" disabled>Paste</ContextMenuItem>
         <ContextMenuItem shortcut="⌘J" disabled>Duplicate</ContextMenuItem>
         <Separator />
-        <ContextMenuItem shortcut="⌘D">Download</ContextMenuItem>
+        <ContextMenuItem
+          name="Download"
+          shortcut="⌘D"
+          onExecute={() => {
+            this.props.ftp.downloadExternFile(this.props.target.path, this.props.target.name);
+            this.props.onReturn.call(this);
+          }}
+        />
         <Separator />
         <ContextMenuItem
           name="Delete"
@@ -212,7 +219,6 @@ export default class ContextMenus extends Component {
             this.closeAll();
           }}
           onReload={() => {
-            console.log("reloading")
             this.props.onReload.call(this);
           }}
           onNewFolder={this.props.onNewFolder}

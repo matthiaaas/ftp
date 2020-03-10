@@ -67,7 +67,7 @@ export default class NewFolder extends Component {
   }
 
   submit() {
-    console.log("submitting", this.state.name)
+    console.debug("submitting new folder:", this.state.name)
     if (typeof this.props.onSubmit === "function") {
       this.props.onSubmit.call(this, this.props.path, this.state.name);
       this.props.onClose.call(this);

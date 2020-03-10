@@ -123,7 +123,6 @@ export default class Connection extends Component {
     super(props);
 
     this.state = {
-      connecting: false,
       editing: false
     }
 
@@ -132,12 +131,12 @@ export default class Connection extends Component {
   }
 
   connect() {
-    if (!this.props.connected && !this.state.connecting && !this.state.editing) {
-      this.setState({ connecting: true });
+    if (!this.props.connected) {
       this.props.onConnect.call(this, {
         host: this.props.name,
         port: this.props.port,
         user: this.props.user,
+        pass: this.props.pass,
         protocol: this.props.protocol
       });
     }
@@ -167,9 +166,7 @@ export default class Connection extends Component {
           <Menu
             onClick={(event) => {
               event.stopPropagation();
-              if (!this.state.connecting) {
-                this.setState({ editing: !this.state.editing });
-              }
+              this.setState({ editing: !this.state.editing });
             }}
           >
             <MoreVertical />

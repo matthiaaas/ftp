@@ -35,7 +35,7 @@ class LoginPage extends Component {
         login.port = 21
       } if (login.user === "") {
         login.user = "anonymous"
-      } if (login.pass === "anonymous") {
+      } if (login.pass === "") {
         login.pass = "anonymous"
       }
       this.props.onLogin.call(this, login);
@@ -90,7 +90,7 @@ class LoginPage extends Component {
                       textAlign: "right",
                       minWidth: "24px",
                       width: "24px",
-                      maxWidth: "36px",
+                      maxWidth: "37px",
                       padding: "14px 26px 14px 22px"
                     }}
                     onChange={(event) => {
@@ -125,9 +125,6 @@ class LoginPage extends Component {
                   <Label>Password</Label>
                   <Button variant="input"
                     placeholder="••••"
-                    style={{
-                      letterSpacing: "3px"
-                    }}    
                     type="password"
                     onChange={(event) => {
                       this.setState({
@@ -164,6 +161,7 @@ class LoginPage extends Component {
                     name: this.props.ftpData.host,
                     user: this.props.ftpData.user,
                     port: this.props.ftpData.port,
+                    pass: this.props.ftpData.pass === "anonymous" && this.props.ftpData.pass,
                     protocol: "ftp"
                   });
                   window.localStorage.setItem("registered_connections", JSON.stringify(connections));

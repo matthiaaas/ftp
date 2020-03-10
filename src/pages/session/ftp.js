@@ -22,6 +22,14 @@ export default class FTP {
     
   }
 
+  downloadExternFile = (path, file, callback) => {
+    let dlDir = window.require("downloads-folder");
+    this.ftp.get(path + file, dlDir() + "/" + file, (err) => {
+      if (err) alert(err);
+      else if (typeof callback === "function") callback();
+    })
+  }
+
   uploadLocalFiles = (transfer, path, callback, progress) => {
     let items = transfer.items;
     let files = transfer.files;
@@ -124,19 +132,6 @@ export default class FTP {
         console.log("uploaded all files")
         return typeof callback === "function" ? callback() : {};
       })
-      // let creations = items.map((item) => {
-      //   if (item.isDirectory) {
-      //     return createDir(item, path);
-      //   }
-      // })
-      // Promise.all(creations);
-      // console.log("created all folders")
-      // let uploads = items.map((item) => {
-      //   if (item.isFile) {
-      //     return uploadFile(item, path);
-      //   }
-      // })
-      // Promise.all(uploads);
     })
   }
 
