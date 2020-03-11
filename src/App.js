@@ -10,7 +10,7 @@ import Sidebar from "./components/static/sidebar/Sidebar";
 import Taskbar from "./components/static/taskbar/Taskbar";
 
 import LoginPage from "./pages/login/LoginPage";
-import SessionPage from "./pages/session/Sessionpage";
+import SessionPage from "./pages/session/SessionPage";
 import TerminalPage from "./pages/terminal/TerminalPage";
 import StatsPage from "./pages/stats/StatsPage";
 import SettingsPage from "./pages/settings/SettingsPage";

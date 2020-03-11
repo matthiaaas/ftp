@@ -6,6 +6,9 @@ import Headline from "./Headline";
 
 const Wrapper = styled.div`
   z-index: 11;
+  font-family: var(--font-main);
+  font-weight: 400;
+  font-size: 16px;
   position: fixed;
   width: 100vw;
   height: 100vh;

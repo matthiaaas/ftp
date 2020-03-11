@@ -8,7 +8,7 @@ const Wrapper = styled.ul`
   position: fixed;
   padding: 12px 0;
   border-radius: 12px;
-  font-family: "Karla";
+  font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
   color: var(--color-grey);
