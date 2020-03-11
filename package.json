@@ -48,8 +48,7 @@
   },
   "devDependencies": {
     "electron": "^8.0.1",
-    "electron-builder": "^22.3.2",
-    "node-sass": "^4.13.1"
+    "electron-builder": "^22.3.2"
   },
   "build": {
     "appId": "nonExistentID",
