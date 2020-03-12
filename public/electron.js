@@ -1,6 +1,8 @@
 const path = require("path");
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, Menu } = require("electron");
 const isDev = require("electron-is-dev");
+
+const isMac = process.platform === "darwin";
 
 function createWindow() {
   // Create the browser window.
@@ -14,13 +16,141 @@ function createWindow() {
     minWidth: 720,
     minHeight: 500,
     maxWidth: 900,
-    maxHeight: 600
+    maxHeight: 600,
+    backgroundColor: "#141417"
   })
+
+  const menu = Menu.buildFromTemplate([
+    ...(isMac ? [{
+      label: app.name,
+      submenu: [
+        { role: "about" },
+        { type: "separator" },
+        {
+          label: "Preferences",
+          enabled: false,
+          accelerator: "CmdOrCtrl+,"
+        },
+        { type: "separator" },
+        { role: "hide" },
+        { role: "hideothers" },
+        { role: "unhide" },
+        { type: "separator" },
+        { role: "quit" }
+      ]
+    }] : []),
+    {
+      label: "Edit",
+      submenu: [
+        {
+          label: "New Folder",
+          accelerator: "CmdOrCtrl+Shift+N",
+          click: () => {
+            console.log("new folder")
+          }
+        },
+        {
+          label: "New File",
+          enabled: false,
+          accelerator: "CmdOrCtrl+Shift+F",
+          click: () => {
+            console.log("new file")
+          }
+        },
+        { type: "separator" },
+        {
+          label: "Reload",
+          accelerator: "CmdOrCtrl+R",
+          click: () => {
+            console.log("reloading")
+          }
+        },
+        {
+          label: "Search...",
+          enabled: false,
+          accelerator: "CmdOrCtrl+F",
+          click: () => {
+            console.log("searching")
+          }
+        },
+        { type: "separator" },
+        {
+          label: "Disconnect",
+          enabled: false,
+          accelerator: "CmdOrCtrl+D",
+          click: () => {
+            console.log("disconnecting")
+          }
+        }
+      ]
+    },
+    {
+      label: "View",
+      submenu: [
+        {
+          label: "Connect",
+          enabled: false
+        },
+        { type: "separator" },
+        {
+          label: "Preferences",
+          enabled: false,
+          accelerator: "CmdOrCtrl+,"
+        },
+        { type: "separator" },
+        {
+          label: "Session",
+          enabled: false
+        },
+        {
+          label: "Terminal",
+          enabled: false
+        },
+        {
+          label: "Statistics",
+          enabled: false
+        },
+        { type: "separator" },
+        {
+          label: "QuickConnect",
+          enabled: false
+        }
+      ]
+    },
+    {
+      label: "Debug",
+      submenu: [
+        { role: "toggledevtools" }
+      ]
+    },
+    {
+      label: "Window",
+      submenu: [
+        { role: "minimize" },
+        { role: "zoom" },
+        { type: "separator" }, 
+        isMac ? { role: "close" } : { role: "quit" },
+      ]
+    },
+    {
+      label: "Help",
+      submenu: [
+        {
+          label: "Github Repository",
+          click: async () => {
+            const { shell } = require("electron")
+            await shell.openExternal("https://github.com/matthiaaas/ftp")
+          }
+        }
+      ]
+    }
+  ])
+  Menu.setApplicationMenu(menu)
 
   // and load the index.html of the app.
   win.loadURL(
     isDev ? "http://localhost:3000/"
-    : `file://${path.join(__dirname, '../build/index.html')}`
+    : `file://${path.join(__dirname, "../build/index.html")}`
   )
   
   win.removeMenu()
