@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   transition: all 0s;
-  transition-delay: 0.3s;
+  transition-delay: ${props => props.dropping ? `0.3s` : `0s`};
   position: fixed;
   z-index: 0;
   top: 0;
