@@ -2,6 +2,7 @@ export default class FTP {
   constructor(ftp) {
     this.ftp = ftp;
     this.fs = window.require("fs");
+    this.path = window.require("path");
   }
 
   updateExternFiles = (path, callback) => {
@@ -37,7 +38,7 @@ export default class FTP {
     let rootPaths = []
 
     for (let i = 0; i < items.length; i++) {
-      rootPaths.push(files[i].path.replace(items[i].webkitGetAsEntry().fullPath, ""));
+      rootPaths.push(this.path.dirname(files[i].path))
     }
     if (!rootPaths.some((val) => val === rootPaths[0])) {
       alert("Uploading files and folder from different root directories is currently not supported. Please move all files and folders in the same root folder e.g. on your Desktop")

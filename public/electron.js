@@ -17,6 +17,7 @@ function createWindow() {
     minHeight: 500,
     maxWidth: 900,
     maxHeight: 600,
+    autoHideMenuBar: true,
     backgroundColor: "#141417"
   })
 
@@ -132,6 +133,7 @@ function createWindow() {
     {
       label: "Debug",
       submenu: [
+        { role: "reload", accelerator: "CmdOrCtrl+Shift+R" },
         { role: "toggledevtools" }
       ]
     },
@@ -164,8 +166,6 @@ function createWindow() {
     isDev ? "http://localhost:3000/"
     : `file://${path.join(__dirname, "../build/index.html")}`
   )
-  
-  win.removeMenu()
 
   if (isDev) {
     // Open the DevTools.
