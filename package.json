@@ -45,7 +45,7 @@
   "devDependencies": {
     "electron": "^8.0.1",
     "electron-builder": "^22.3.2",
-    "react-scripts": "^3.3.1"
+    "react-scripts": "^3.4.0"
   },
   "build": {
     "appId": "nonExistentID",
