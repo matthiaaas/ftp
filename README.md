@@ -2,6 +2,8 @@
 
 React based Electron FTP desktop application like FileZilla for uploading local files to a remote server.
 
+![ftp client screenshot](https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/de16d577264959.5c82711c0becd.png)
+
 ## Installation
 
 ### Requirements
@@ -13,9 +15,15 @@ React based Electron FTP desktop application like FileZilla for uploading local 
 * React >16.12
 * Electron >8.0
 
+### Installing
+
+```
+npm install
+```
+
 ## Testing
 
-**Note:** Electron is a framework used to guarantee cross platform support for dektop apps. This app is developed using macOS and not yet well tested on other OS. Maybe some small configurations are necessary.
+**Note:** Electron is a framework used to guarantee cross platform support for dektop apps. This app is developed on macOS and not yet well tested on other OS. Maybe some small configurations are necessary.
 
 #### 1. Start in your browser
 
@@ -37,10 +45,23 @@ This might become a **commercial product**. Keep the code private. Do not pass i
 
 ## Packaging
 
-requires `electron-builder`
+Requires `electron-builder`.
 
 ```
 npm run electron-pack
 ```
 
+**Note:** This will perform packaging for your platform. More info on building for different platforms [Multi-Platform-Build Docs](https://www.electron.build/multi-platform-build) using electron-builder.
+
 ## Contributing
+
+Because the app is in an early stage, fundamental changes in design as well as in backend are possible and welcome.
+
+### Development
+
+When adding, improving features or fixing bugs, just start a pull request for review. Please append a detailed description of changes.
+
+### UI/UX improvements
+
+If you got any ui/ux ideas, wishes or improvements, start an issue with design material or references. For small changes in the source code, feel free to start a pull request.
+Or reach out to me and get in touch [Twitter](https://twitter.com/matthiashalfmnn)
