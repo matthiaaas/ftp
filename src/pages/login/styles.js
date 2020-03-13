@@ -33,6 +33,8 @@ export const Login = styled.section`
 
 export const Row = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  margin-bottom: -24px;
 
   &:not(:first-child) {
     margin-top: 24px;
@@ -41,6 +43,9 @@ export const Row = styled.div`
 
 export const Input = styled.div`
   position: relative;
+  width: 100%;
+  max-width: 216px;
+  margin-bottom: 24px;
 
   &:not(:last-child) {
     margin-right: 32px;

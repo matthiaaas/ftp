@@ -13,10 +13,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true
     },
-    minWidth: 720,
-    minHeight: 500,
-    maxWidth: 900,
-    maxHeight: 600,
+    minWidth: 492,
+    minHeight: 200,
     autoHideMenuBar: true,
     backgroundColor: "#141417"
   })
