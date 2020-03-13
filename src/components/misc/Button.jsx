@@ -7,7 +7,7 @@ const WrappedLink = styled(Link)`
   transition: all ease 0.1s;
   padding: 13px 24px;
   border: 1px solid transparent;
-  border-radius: 27px;
+  border-radius: 24px;
   display: inline-flex;
   align-items: center;
   font-family: var(--font-main);
@@ -33,9 +33,9 @@ const WrappedInput = styled.input`
   appearance: none;
   outline: none;
   user-select: all;
-  padding: 14px 24px;
-  border: 1px solid transparent;
-  border-radius: 27px;
+  padding: 12px 24px;
+  border: 1px solid ${props => props.bg ? this.props.bg : `var(--color-black)`};
+  border-radius: 24px;
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;

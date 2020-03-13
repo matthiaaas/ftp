@@ -88,10 +88,10 @@ class LoginPage extends Component {
                     max="9999"
                     style={{
                       textAlign: "right",
-                      minWidth: "24px",
                       width: "24px",
+                      minWidth: "24px",
                       maxWidth: "37px",
-                      padding: "14px 26px 14px 22px"
+                      padding: "12px 24px 12px 20px"
                     }}
                     onChange={(event) => {
                       event.target.style.width = (event.target.value.length + 1) * 8 + "px";

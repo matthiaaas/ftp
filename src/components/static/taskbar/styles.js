@@ -59,7 +59,7 @@ export const ItemInner = styled.div`
   border-radius: 27px;
   position: relative;
   /* padding: 11px 13px; */
-  padding: 12px 13px 10px 13px;
+  padding: 11px 11px 8px 11px;
   font-size: 16px;
   background: var(--color-dark-light);
 
