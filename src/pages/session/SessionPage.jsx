@@ -3,6 +3,8 @@ import React, { Component, createRef } from "react";
 import Container from "../../components/misc/Container";
 import GoBack from "../../components/misc/GoBack";
 
+import Data from "../../components/data";
+
 import { Page, Content, System, Path, Url, Files } from "./styles";
 
 import FTP from "./ftp";
@@ -31,6 +33,7 @@ class SessionPage extends Component {
     }
 
     this.ftp = new FTP(this.props.ftp);
+    this.dataSocket = new Data(this.props.ftpData.host);
 
     this.contextMenus = createRef();
 
@@ -41,16 +44,13 @@ class SessionPage extends Component {
 
   componentDidMount() {
     if (this.props.ftpStatus === "online") {
-      let path = this.state.extern.path;
-      if (window.localStorage.getItem(`extern_path-${this.props.ftpData.host}`) !== null) {
-        path = window.localStorage.getItem(`extern_path-${this.props.ftpData.host}`);
-        this.setState({
-          extern: {
-            ...this.state.extern,
-            path: path
-          }
-        });
-      }
+      let path = this.dataSocket.get("path");
+      this.setState({
+        extern: {
+          ...this.state.extern,
+          path: path
+        }
+      });
       this.updateExternFiles(path);
     }
   }
@@ -78,7 +78,7 @@ class SessionPage extends Component {
         }
       });
     })
-    window.localStorage.setItem(`extern_path-${this.props.ftpData.host}`, newPath);
+    this.dataSocket.set("path", newPath);
   }
 
   goBackExternFolder() {
@@ -93,7 +93,7 @@ class SessionPage extends Component {
           }
         });
       })
-      window.localStorage.setItem(`extern_path-${this.props.ftpData.host}`, newPath);
+      this.dataSocket.set("path", newPath);
     }
   }
 

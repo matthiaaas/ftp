@@ -26,7 +26,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   * {
-    -webkit-user-select: none;
+    user-select: none;
   }
 
   body,
