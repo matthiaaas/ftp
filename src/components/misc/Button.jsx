@@ -25,11 +25,28 @@ const WrappedLink = styled(Link)`
 `
 
 const WrappedButton = styled.button`
+  transition: all ease 0.1s;
+  appearance: none;
+  outline: none;
+  padding: 9px 20px;
+  border: 1px solid ${props => props.primary ? `var(--color-blue)` : `var(--color-dark-grey)`};
+  border-radius: 4px;
+  font-family: var(--font-main);
+  font-weight: 400;
+  font-size: 16px;
+  text-decoration: none;
+  color: ${props => props.primary ? `var(--color-white)` : `var(--color-grey)`};
+  display: inline-block;
+  background: ${props => props.primary ? `var(--color-blue)` : `transparent`};
 
+  &:hover {
+    border: 1px solid ${props => props.primary || `var(--color-grey)`};
+    color: ${props => props.primary ? `var(--color-white)` : `var(--color-grey-light)`};
+    background: ${props => props.primary ? `var(--color-blue-blur)` : `var(--color-dark-grey-blur)`};
+  }
 `
 
 const WrappedInput = styled.input`
-  -webkit-appearance: none;
   appearance: none;
   outline: none;
   user-select: all;
@@ -66,7 +83,11 @@ const WrappedInput = styled.input`
 export default class Button extends Component {
   render() {
     if (this.props.variant === "button") {
-      return null
+      return (
+        <WrappedButton {...this.props}>
+          {this.props.children}
+        </WrappedButton>
+      )
     } else if (this.props.variant === "input") {
       return (
         <WrappedInput bg={this.props.bg} {...this.props} />
