@@ -48,11 +48,16 @@ export default class FTP {
     const uploadFile = (item, path) => {
       return new Promise((resolve, reject) => {
         let newPath = path.slice(0, -1);
+        console.debug("reading ", item.fullPath)
         this.fs.readFile(rootPaths[0] + item.fullPath, (err, buffer) => {
           if (err) { alert(err); resolve(); }
           else {
+            console.debug("uploading ", item.fullPath)
             this.ftp.put(buffer, newPath + item.fullPath, (err) => {
-              if (err) alert(err);
+              if (err) {
+                alert(err);
+                console.error(err);
+              }
               else resolve();
             })
           }

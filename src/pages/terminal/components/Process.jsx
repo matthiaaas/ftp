@@ -67,6 +67,11 @@ export default class Process extends Component {
   }
 
   execute(cmd) {
+    // some temporary shortcut replacemnets
+    cmd = cmd.replace("cd", "cwd");
+    cmd = cmd.replace("ls", "list");
+    cmd = cmd.replace("mkdir", "mkd");
+
     this.ftp.raw(cmd, (err, data) => {
       let output = this.state.output;
       if (err) {
@@ -92,8 +97,8 @@ export default class Process extends Component {
             }}
             onKeyDown={(event) => {
               if (event.keyCode === 13) {
-                if (event.target.value === "" || event.target.value === " ") return;
-                this.execute(event.target.value);
+                if (event.target.value === "" || event.target.value === " ") this.props.onFinished.call(this);
+                else this.execute(event.target.value);
                 this.setState({ isRunning: true });
                 event.target.readOnly = true;
               }
