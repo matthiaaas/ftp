@@ -35,6 +35,7 @@ class App extends Component {
     }
 
     const jsftp = window.require("jsftp");
+    this.dns = window.require("dns");
 
     this.ftp = new jsftp({
       host: this.state.ftp.host,
@@ -51,6 +52,8 @@ class App extends Component {
   }
 
   logoutFromFTP() {
+    console.info("logging out...");
+
     this.setState({
       ftp: {
         host: "",
@@ -72,6 +75,8 @@ class App extends Component {
   loginToFTP(data) {
     this.logoutFromFTP();
     
+    console.info(`logging in to ${data.host}...`);
+
     this.setState({
       status: "afk",
       ftp: {
@@ -82,12 +87,24 @@ class App extends Component {
       }
     });
 
+    // const jsftp = require("./components/jsftp");
     const jsftp = window.require("jsftp");
+
+    this.dns.lookup(data.host, (err) => {
+      if (err) {
+        this.setState({ status: "offline" });
+        return alert(`Unable to resolve '${data.host}'`)
+      }
+    })
 
     this.ftp = new jsftp({
       host: data.host,
       port: data.port
     });
+
+    this.ftp.on("error", (err) => {
+      console.error(err);
+    })
 
     this.ftp.auth(data.user, data.pass, (err, success) => {
       if (err) {
@@ -95,7 +112,7 @@ class App extends Component {
         this.setState({ status: "offline" });
       }
       if (success) {
-        console.log(success);
+        console.info(`%c${data.user}@${data.host}:`, "color: #8890A5", success.text);
         this.setState({ status: "online" });
       }
     })
