@@ -31,6 +31,8 @@ const Input = styled.input`
   user-select: all;
   border: none;
   margin-left: 8px;
+  font-family: var(--font-code);
+  font-size: 15px;
   color: var(--color-grey);
   width: 100%;
   background: none;
@@ -41,6 +43,8 @@ const Input = styled.input`
 `
 
 const Output = styled.div`
+  font-family: var(--font-code);
+  font-size: 15px;
   margin-top: 4px;
 `
 

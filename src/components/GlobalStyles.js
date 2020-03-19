@@ -23,6 +23,7 @@ export const GlobalStyles = createGlobalStyle`
 
 
     --font-main: "Karla";
+    --font-code: "Source Code Pro";
   }
 
   * {
