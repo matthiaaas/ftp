@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.li`
-  padding: 4px 24px;
+  padding: 8px 24px;
   display: flex;
   align-items: center;
   min-width: 200px;
-  color: ${props => props.disabled ? `var(--color-dark-light)` : `inherit`};
+  color: ${props => props.disabled ? `var(--color-dark-grey)` : `inherit`};
 
   &:hover {
     color: ${props => props.disabled ? `none` : `var(--color-grey-light)`};
@@ -39,10 +39,10 @@ export default class ContextMenuItem extends Component {
 }
 
 const Hr = styled.hr `
-  margin: 8px 25px;
+  margin: 4px 25px;
   border: none;
   height: 1px;
-  background: var(--color-grey);
+  background: var(--color-dark-grey);
 `
 
 export class Separator extends Component {

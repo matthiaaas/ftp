@@ -7,11 +7,11 @@ const Wrapper = styled.div`
   font-size: 14px;
   text-transform: uppercase;
   color: var(--color-blue);
-  /* border: 1px solid var(--color-blue); */
+  border: 1px solid var(--color-blue);
   padding: 6px 12px;
   border-radius: 16px;
   display: inline-block;
-  background: var(--color-blue-blur);
+  /* background: var(--color-blue-blur); */
 `
 
 export default class Tag extends Component {

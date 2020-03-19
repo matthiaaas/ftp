@@ -96,7 +96,7 @@ class QuickConnectPage extends Component {
                     user={item.user}
                     pass={item.pass}
                     protocol={item.protocol.toUpperCase()}
-                    password={item.password ? true : false}
+                    password={item.pass ? true : false}
                     onConnect={this.connect}
                     onDelete={this.loadConnections}
                   />

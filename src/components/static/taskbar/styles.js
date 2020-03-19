@@ -35,21 +35,22 @@ export const Item = styled.div`
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
-  color: var(--color-grey);
+  color: ${props => props.disabled ? `var(--color-dark-grey) !important` : props.active ? `var(--color-grey-light)` : `var(--color-grey)`};
 
   &:not(:last-child) {
     margin-right: 32px;
   }
 
   div:first-child {
-    border: 1px solid transparent;
+    border: 1px solid ${props => props.disabled ? `var(--color-dark-light) !important` : props.active ? `var(--color-dark-grey)` : `transparent`};
+    background: ${props => props.disabled ? `transparent !important` : props.active && `var(--color-dark)`};
   }
 
   &:hover {
     color: var(--color-grey-light);
 
     div:first-child {
-      border: 1px solid var(--color-dark-light);
+      border: 1px solid var(--color-dark-grey);
       background: var(--color-dark);
     }
   }
@@ -58,7 +59,6 @@ export const Item = styled.div`
 export const ItemInner = styled.div`
   border-radius: 27px;
   position: relative;
-  /* padding: 11px 13px; */
   padding: 11px 11px 8px 11px;
   font-size: 16px;
   background: var(--color-dark-light);
@@ -70,7 +70,7 @@ export const ItemInner = styled.div`
 
   &:hover >div {
     transition: all 0s;
-    transition-delay: 1.5s;
+    transition-delay: 1s;
     transform: scaleY(1);
   }
 `
@@ -87,7 +87,7 @@ export const ToolTip = styled.div`
   width: 148px;
   padding: 8px 12px;
   line-height: 1.2;
-  border-radius: 12px;
+  border-radius: 4px;
   color: var(--color-grey);
   background: var(--color-black);
   transform: scaleY(0);
@@ -105,6 +105,24 @@ export const ToolTip = styled.div`
   }
 `
 
+export const Server = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  &:hover {
+    >div {
+      transition: visibility 0s ease 1s;
+      visibility: visible;
+    }
+
+    >a {
+      transition: padding-left 0.2s ease 1s;
+      padding-left: 56px;
+    }
+  }
+`
+
 export const ServerStatus = styled.div`
   width: 6px;
   height: 6px;
@@ -114,5 +132,27 @@ export const ServerStatus = styled.div`
   background: ${
     props => props.status === "online" ? `var(--color-green)`
     : props.status === "afk" ? `var(--color-yellow)` : `var(--color-red)`
+  };
+`
+
+export const ServerDisconnect = styled.div`
+  position: absolute;
+  visibility: hidden;
+  z-index: 1;
+  padding: 10.5px 11px 8.5px 12px;
+  border-radius: 50%;
+  border: 1px solid var(--color-dark-grey);
+  color: var(--color-grey-light);
+  background: var(--color-dark);
+  pointer-events: all;
+
+  svg {
+    width: 20px;
+    height: 20px;
+    color: var(--color-light-grey);
+  }
+
+  &:hover {
+    color: var(--color-white);
   }
 `

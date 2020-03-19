@@ -1,13 +1,25 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import { Search, Bookmark, Eye, RefreshCcw } from "react-feather";
+import Button from "../../../components/misc/Button";
 
-import Button from "../../misc/Button";
+import { Search, Bookmark, Eye, RefreshCcw, X } from "react-feather";
 
-import { Header, Content, Rows, Row, Item, ServerStatus, ItemInner, ItemOuter, ToolTip } from "./styles";
+import { Header, Content, Rows, Row, Item, ItemInner, ItemOuter, ToolTip, Server, ServerStatus, ServerDisconnect, ServerRedirect } from "./styles";
 
 class Taskbar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      location: window.location.pathname
+    }
+  }
+
+  changeActive(location) {
+    this.setState({ location: location.pathname });
+  }
+
   render() {
     return (
       <Header>
@@ -21,20 +33,20 @@ class Taskbar extends Component {
                 </ItemInner>
                 <ItemOuter>Search</ItemOuter>
               </Item>
-              <Item>
+              <Item disabled={true}>
                 <ItemInner>
                   <Eye />
                   <ToolTip>Keep track of file changes</ToolTip>
                 </ItemInner>
                 <ItemOuter>Sync</ItemOuter>
               </Item>
-              <Item>
+              <Item onClick={this.props.onRefresh} disabled={this.state.location !== "/session"}>
                 <ItemInner>
                   <RefreshCcw />
-                  <ToolTip>Refresh current session</ToolTip>
+                  <ToolTip>Reload files and folders</ToolTip>
                 </ItemInner>
               </Item>
-              <Item>
+              <Item active={this.state.location === "/quickconnect"}>
                 <Link to="/quickconnect" tabIndex="-1">
                   <ItemInner>
                     <Bookmark />
@@ -44,10 +56,13 @@ class Taskbar extends Component {
               </Item>
             </Row>
             <Row>
-              <Button to="/" tabIndex="-1">
-                <span>{this.props.ftpData.host === "" || this.props.ftpData.host === undefined ? "/" : this.props.ftpData.host}</span>
-                <ServerStatus status={this.props.ftpStatus} />
-              </Button>
+              <Server>
+                <ServerDisconnect onClick={this.props.onDisconnect}><X /></ServerDisconnect>
+                <Button to="/" tabIndex="-1">
+                  <span>{this.props.ftpData.host === "" || this.props.ftpData.host === undefined ? "/" : this.props.ftpData.host}</span>
+                  <ServerStatus status={this.props.ftpStatus} />
+                </Button>
+              </Server>
             </Row>
           </Rows>
         </Content>

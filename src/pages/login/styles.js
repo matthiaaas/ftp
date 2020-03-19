@@ -95,6 +95,7 @@ export const Tip = styled.div`
 export const QuickActions = styled.ul`
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   padding-top: 40px;
   list-style: none;
 `

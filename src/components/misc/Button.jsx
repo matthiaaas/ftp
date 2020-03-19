@@ -18,7 +18,7 @@ const WrappedLink = styled(Link)`
   background: ${props => props.bg ? this.props.bg : `var(--color-dark-light)`};
 
   &:hover {
-    border: 1px solid var(--color-dark-light);
+    border: 1px solid var(--color-dark-grey);
     color: var(--color-grey-light);
     background: var(--color-dark);
   }

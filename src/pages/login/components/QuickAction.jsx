@@ -8,6 +8,10 @@ const Wrapper = styled.li`
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
+  padding: 5px 12px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  white-space: nowrap;
   color: ${props => props.disabled ? `var(--color-dark-light) !important` : `var(--color-grey)`};
 
   svg {
@@ -18,10 +22,11 @@ const Wrapper = styled.li`
   }
 
   &:not(:last-child) {
-    margin-right: 24px;
+    margin-right: 16px;
   }
 
   &:hover {
+    border: 1px solid ${props => props.disabled || `var(--color-dark-grey)`};
     color: var(--color-grey-light);
   }
 `

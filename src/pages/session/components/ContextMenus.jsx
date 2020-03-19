@@ -7,7 +7,7 @@ const Wrapper = styled.ul`
   z-index: 10;
   position: fixed;
   padding: 12px 0;
-  border-radius: 12px;
+  border-radius: 4px;
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
@@ -165,11 +165,11 @@ export default class ContextMenus extends Component {
     this.setState({ file: false, disable: false, target: file });
 
     let menu = this.fileMenu.current;
-    menu.style.top = event.pageY - 200 + "px";
+    menu.style.top = event.pageY - 280 + "px";
     menu.style.left = event.pageX + 5 + "px";
 
     if (event.pageY + 200 > window.innerHeight) {
-      menu.style.top = window.innerHeight - 350 + "px";
+      menu.style.top = window.innerHeight - 400 + "px";
     }
   }
 
@@ -177,11 +177,11 @@ export default class ContextMenus extends Component {
     this.setState({ folder: false, disable: false, target: folder });
 
     let menu = this.folderMenu.current;
-    menu.style.top = event.pageY - 200 + "px";
+    menu.style.top = event.pageY - 280 + "px";
     menu.style.left = event.pageX + 5 + "px";
 
     if (event.pageY + 200 > window.innerHeight) {
-      menu.style.top = window.innerHeight - 350 + "px";
+      menu.style.top = window.innerHeight - 400 + "px";
     }
   }
 
@@ -189,11 +189,11 @@ export default class ContextMenus extends Component {
     this.setState({ space: false, disable: false, target: path });
 
     let menu = this.spaceMenu.current;
-    menu.style.top = event.pageY - 50 + "px";
+    menu.style.top = event.pageY - 80 + "px";
     menu.style.left = event.pageX + 5 + "px";
 
     if (event.pageY + 50 > window.innerHeight) {
-      menu.style.top = window.innerHeight - 80 + "px";
+      menu.style.top = window.innerHeight - 100 + "px";
     }
   }
 

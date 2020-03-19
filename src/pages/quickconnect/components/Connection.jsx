@@ -34,6 +34,7 @@ const Group = styled.div`
 `
 
 const Name = styled.span`
+  text-overflow: ellipsis;
   color: var(--color-white);
 `
 
@@ -189,7 +190,7 @@ export default class Connection extends Component {
             </Item>
           </Group>
           <Item>
-            {this.props.password ? <Unlock /> : <Lock />}
+            {!this.props.password ? <Lock /> : <Unlock />}
           </Item>
         </Body>
       </Wrapper>

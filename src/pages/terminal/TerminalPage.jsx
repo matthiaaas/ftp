@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import Container from "../../components/misc/Container";
+import Tag from "../../components/misc/Tag";
 
 import Data from "../../components/data";
 
@@ -50,6 +51,7 @@ class TerminalPage extends Component {
       <Page>
         <Container>
           <Content>
+            {this.props.ftpStatus !== "online" && <Tag>You are not online</Tag>}
             {this.state.processes.map((item, index) => {
               return (
                 <Process

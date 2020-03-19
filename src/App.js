@@ -48,7 +48,8 @@ class App extends Component {
     this.logoutFromFTP = this.logoutFromFTP.bind(this);
 
     this.sidebar = createRef();
-    this.ftpClient = createRef();
+    this.taskbar = createRef();
+    this.session = createRef();
   }
 
   logoutFromFTP() {
@@ -87,7 +88,6 @@ class App extends Component {
       }
     });
 
-    // const jsftp = require("./components/jsftp");
     const jsftp = window.require("jsftp");
 
     this.dns.lookup(data.host, (err) => {
@@ -104,6 +104,10 @@ class App extends Component {
 
     this.ftp.on("error", (err) => {
       console.error(err);
+      if (err.toString().includes("ECONNRESET")) {
+        alert(err);
+      }
+      this.setState({ status: "offline" });
     })
 
     this.ftp.auth(data.user, data.pass, (err, success) => {
@@ -126,12 +130,16 @@ class App extends Component {
           <RouteChange onChange={(location, action) => {
             this.setState({location: location})
             this.sidebar.current.changeActive(location);
+            this.taskbar.current.changeActive(location);
           }}>
             <Titlebar />
             <Sidebar ref={this.sidebar} />
             <Taskbar
+              ref={this.taskbar}
               ftpData={this.state.ftp}
               ftpStatus={this.state.status}
+              onRefresh={() => {if (this.state.location.pathname === "/session") this.session.current.updateExternFiles()}}
+              onDisconnect={this.logoutFromFTP}
             />
             <Switch>
               <Route exact path="/" component={(props) => {
@@ -147,6 +155,7 @@ class App extends Component {
               <Route exact path="/session" component={(props) => {
                 return (
                   <SessionPage
+                    ref={this.session}
                     ftp={this.ftp}
                     ftpData={this.state.ftp}
                     ftpStatus={this.state.status}
