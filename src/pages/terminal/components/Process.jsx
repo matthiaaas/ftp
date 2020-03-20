@@ -65,27 +65,22 @@ export default class Process extends Component {
       isRunning: false
     }
 
-    this.ftp = this.props.ftp;
+    this.socket = this.props.socket;
 
     this.execute = this.execute.bind(this);
   }
 
   execute(cmd) {
-    // some temporary shortcut replacemnets
-    cmd = cmd.replace("cd", "cwd");
-    cmd = cmd.replace("ls", "list");
-    cmd = cmd.replace("mkdir", "mkd");
-
-    this.ftp.raw(cmd, (err, data) => {
+    this.socket.raw(cmd, (err, data, finished) => {
       let output = this.state.output;
       if (err) {
         output.push({ content: err.toString(), isError: true })
         this.setState({ output: output })
-      } else {
+      } else if (data) {
         output.push({ content: data.text, isError: false })
         this.setState({ output: output })
       }
-      this.props.onFinished.call(this);
+      if (finished || this.props.protocol === "ftp") this.props.onFinished.call(this);
     })
   }
 

@@ -59,8 +59,8 @@ class Taskbar extends Component {
               <Server>
                 <ServerDisconnect onClick={this.props.onDisconnect}><X /></ServerDisconnect>
                 <Button to="/" tabIndex="-1">
-                  <span>{this.props.ftpData.host === "" || this.props.ftpData.host === undefined ? "/" : this.props.ftpData.host}</span>
-                  <ServerStatus status={this.props.ftpStatus} />
+                  <span>{this.props.socketData.host === "" || this.props.socketData.host === undefined ? "/" : this.props.socketData.host}</span>
+                  <ServerStatus status={this.props.socketStatus} />
                 </Button>
               </Server>
             </Row>

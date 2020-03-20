@@ -185,8 +185,8 @@ export default class Connection extends Component {
               <span>{this.props.port}</span>
             </Item>
             <Item>
-              {this.props.protocol.toLowerCase() === "ftp" ? <ShieldOff /> : <Shield />}
-              <span>{this.props.protocol}</span>
+              {this.props.protocol === "ftp" ? <ShieldOff /> : <Shield />}
+              <span>{this.props.protocol.toUpperCase()}</span>
             </Item>
           </Group>
           <Item>

@@ -13,10 +13,17 @@ export default class FTP {
   }
 
   createExternFolder = (path, folder, callback) => {
-    this.ftp.raw("mkd", path + folder, (err) => {
-      if (err) alert(err);
-      else if (typeof callback === "function") callback();
-    })
+    if (this.ftp.sftp) {
+      this.ftp.mkd(path + folder, (err) => {
+        if (err) alert(err);
+        else if (typeof callback === "function") callback();
+      })
+    } else {
+      this.ftp.raw("mkd", path + folder, (err) => {
+        if (err) alert(err);
+        else if (typeof callback === "function") callback();
+      })
+    }
   }
 
   createExternFile = (path, file, callback) => {
@@ -68,10 +75,18 @@ export default class FTP {
     const createDir = (item, path) => {
       return new Promise((resolve, reject) => {
         let newPath = path.slice(0, -1);
-        this.ftp.raw("mkd", newPath + item.fullPath, (err) => {
-          if (err) alert(err);
-          else resolve();
-        })
+        if (this.ftp.sftp) {
+          this.ftp.mkd(newPath + item.fullPath, (err) => {
+            if (err) alert(err);
+            else resolve();
+          })
+        } else {
+          this.ftp.raw("mkd", newPath + item.fullPath, (err) => {
+            if (err) alert(err);
+            else resolve();
+          })
+        }
+        
       })
     }
 
@@ -149,10 +164,17 @@ export default class FTP {
   }
 
   deleteExternFolder = (folder, callback) => {
-    this.ftp.raw("rmd", folder, (err) => {
-      if (err) alert(err);
-      else if (typeof callback === "function") callback();
-    })
+    if (this.ftp.sftp) {
+      this.ftp.rmd(folder, (err) => {
+        if (err) alert(err);
+        else if (typeof callback === "function") callback();
+      })
+    } else {
+      this.ftp.raw("rmd", folder, (err) => {
+        if (err) alert(err);
+        else if (typeof callback === "function") callback();
+      })
+    }
   }
 
   deleteExternFolderRecursively = (folder, callback) => {
@@ -183,10 +205,17 @@ export default class FTP {
     }
     const deleteDir = (dir) => {
       return new Promise((resolve, reject) => {
-        this.ftp.raw("rmd", dir.filepath, (err, result) => {
-          if (err) { alert(err); return; }
-          return resolve(result);
-        });
+        if (this.ftp.sftp) {
+          this.ftp.rmd(dir.filePath, (err) => {
+            if (err) { alert(err); return; }
+            return resolve()
+          })
+        } else {
+          this.ftp.raw("rmd", dir.filepath, (err, result) => {
+            if (err) { alert(err); return; }
+            return resolve(result);
+          });
+        }
       });
     }
     const deleteFile = (file) => {

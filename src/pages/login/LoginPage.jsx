@@ -4,6 +4,7 @@ import { WifiOff, Bookmark } from "react-feather";
 
 import Container from "../../components/misc/Container";
 import Headline from "../../components/misc/Headline";
+import Dropdown, { DropdownItem } from "../../components/misc/Dropdown";
 import Button from "../../components/misc/Button";
 
 import { Page, Content, Header, ServerStatus, Login, Row, Input, Label, Tip, QuickActions } from "./styles";
@@ -20,6 +21,7 @@ class LoginPage extends Component {
         port: 21,
         user: "",
         pass: "",
+        protocol: "ftp",
 
         default: this.props.default
       }
@@ -31,13 +33,14 @@ class LoginPage extends Component {
   submitLoginData() {
     if (typeof this.props.onLogin === "function") {
       let login = this.state.login;
-      if(!(typeof login.port === "number")) {
+      if(typeof login.port !== "number") {
         login.port = 21
       } if (login.user === "") {
         login.user = "anonymous"
       } if (login.pass === "") {
         login.pass = "anonymous"
       }
+      console.log(login)
       this.props.onLogin.call(this, login);
     }
   }
@@ -57,7 +60,7 @@ class LoginPage extends Component {
         <Container>
           <Content>
             <Header>
-              <ServerStatus status={this.props.ftpStatus} />
+              <ServerStatus status={this.props.socketStatus} />
               <Headline>Login</Headline>
             </Header>
             <Login>
@@ -98,11 +101,27 @@ class LoginPage extends Component {
                       this.setState({
                         login: {
                           ...this.state.login,
-                          port: event.target.value
+                          port: parseInt(event.target.value)
                         }
                       });
                     }}
                   />
+                </Input>
+                <Input>
+                  <Label>Protocol</Label>
+                  <Dropdown
+                    onChange={(event) => {
+                      this.setState({
+                        login: {
+                          ...this.state.login,
+                          protocol: event.target.value
+                        }
+                      })
+                    }}
+                  >
+                    <DropdownItem value="ftp">FTP</DropdownItem>
+                    <DropdownItem value="sftp">SFTP</DropdownItem>
+                  </Dropdown>
                 </Input>
               </Row>
               <Row>
@@ -154,15 +173,15 @@ class LoginPage extends Component {
                 <span>Disconnect</span>
               </QuickAction>
               <QuickAction
-                disabled={!(this.props.ftpStatus === "online")}
+                disabled={!(this.props.socketStatus === "online")}
                 onAction={(event) => {
                   let connections = JSON.parse(window.localStorage.getItem("registered_connections"));
                   connections.push({
-                    name: this.props.ftpData.host,
-                    user: this.props.ftpData.user,
-                    port: this.props.ftpData.port,
-                    pass: this.props.ftpData.pass === "anonymous" && this.props.ftpData.pass,
-                    protocol: "ftp"
+                    name: this.props.socketData.host,
+                    user: this.props.socketData.user,
+                    port: this.props.socketData.port,
+                    pass: this.props.socketData.pass === "anonymous" && this.props.socketData.pass,
+                    protocol: this.props.socketData.protocol
                   });
                   window.localStorage.setItem("registered_connections", JSON.stringify(connections));
                 }}

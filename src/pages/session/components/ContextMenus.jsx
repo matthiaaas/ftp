@@ -72,7 +72,7 @@ class ContextMenuFolder extends Component {
           name="Delete"
           shortcut="⌘⌫"
           onExecute={() => {
-            this.props.ftp.deleteExternFolderRecursively(this.props.target.path + this.props.target.name, this.props.onReload);
+            this.props.socket.deleteExternFolderRecursively(this.props.target.path + this.props.target.name, this.props.onReload);
             this.props.onReturn.call(this);
           }}
         />
@@ -107,7 +107,7 @@ class ContextMenuFile extends Component {
           name="Download"
           shortcut="⌘D"
           onExecute={() => {
-            this.props.ftp.downloadExternFile(this.props.target.path, this.props.target.name);
+            this.props.socket.downloadExternFile(this.props.target.path, this.props.target.name);
             this.props.onReturn.call(this);
           }}
         />
@@ -116,7 +116,7 @@ class ContextMenuFile extends Component {
           name="Delete"
           shortcut="⌘⌫"
           onExecute={() => {
-            this.props.ftp.deleteExternFile(this.props.target.path + this.props.target.name);
+            this.props.socket.deleteExternFile(this.props.target.path + this.props.target.name);
             this.props.onReturn.call(this);
             this.props.onReload.call(this);
           }}
@@ -213,7 +213,7 @@ export default class ContextMenus extends Component {
         <Disable hidden={this.state.disable} onClick={this.closeAll} />
         <ContextMenuFolder
           _ref={this.folderMenu}
-          ftp={this.props.ftp}
+          socket={this.props.socket}
           target={this.state.target}
           onReturn={() => {
             this.closeAll();
@@ -226,7 +226,7 @@ export default class ContextMenus extends Component {
         />
         <ContextMenuFile
           _ref={this.fileMenu}
-          ftp={this.props.ftp}
+          socket={this.props.socket}
           target={this.state.target}
           onReturn={() => {
             this.closeAll();
@@ -239,7 +239,7 @@ export default class ContextMenus extends Component {
         />
         <ContextMenuSpace
           _ref={this.spaceMenu}
-          ftp={this.props.ftp}
+          socket={this.props.socket}
           target={this.state.target}
           onReturn={() => {
             this.closeAll();

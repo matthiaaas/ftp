@@ -43,8 +43,8 @@ export const Row = styled.div`
 
 export const Input = styled.div`
   position: relative;
-  width: 100%;
-  max-width: 216px;
+  /* width: 100%;
+  max-width: 216px; */
   margin-bottom: 24px;
 
   &:not(:last-child) {

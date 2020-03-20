@@ -20,20 +20,20 @@ class SessionPage extends Component {
     super(props);
 
     this.state = {
-      selecting: false,
       local: {
         path: "/"
       },
       extern: {
         path: "/",
         files: {},
-        selected: {},
+        selected: [],
+        selecting: false,
         newFolder: false
       }
     }
 
-    this.ftp = new FTP(this.props.ftp);
-    this.dataSocket = new Data(this.props.ftpData.host);
+    this.socket = new FTP(this.props.socket);
+    this.dataSocket = new Data(this.props.socketData.host);
 
     this.contextMenus = createRef();
 
@@ -43,7 +43,7 @@ class SessionPage extends Component {
   }
 
   componentDidMount() {
-    if (this.props.ftpStatus === "online") {
+    if (this.props.socketStatus === "online") {
       let path = this.dataSocket.get("path");
       this.setState({
         extern: {
@@ -56,7 +56,7 @@ class SessionPage extends Component {
   }
 
   updateExternFiles(path) {
-    this.ftp.updateExternFiles(path || this.state.extern.path, (data) => {
+    this.socket.updateExternFiles(path || this.state.extern.path, (data) => {
       this.setState({
         extern: {
           ...this.state.extern,
@@ -69,7 +69,7 @@ class SessionPage extends Component {
 
   enterExternFolder(folder) {
     let newPath = this.state.extern.path + folder + "/";
-    this.ftp.updateExternFiles(newPath, (data) => {
+    this.socket.updateExternFiles(newPath, (data) => {
       this.setState({
         extern: {
           ...this.state.extern,
@@ -84,7 +84,7 @@ class SessionPage extends Component {
   goBackExternFolder() {
     if (this.state.extern.path.split("/").length - 1 > 1) {
       let newPath = this.state.extern.path.replace(this.state.extern.path.split("/")[this.state.extern.path.split("/").length - 2] + "/", "");
-      this.ftp.updateExternFiles(newPath, (data) => {
+      this.socket.updateExternFiles(newPath, (data) => {
         this.setState({
           extern: {
             ...this.state.extern,
@@ -102,7 +102,7 @@ class SessionPage extends Component {
       <Page>
         <ContextMenus
           ref={this.contextMenus}
-          ftp={this.ftp}
+          socket={this.socket}
           onReload={this.updateExternFiles}
           onNewFolder={() => {
             this.setState({
@@ -118,7 +118,7 @@ class SessionPage extends Component {
             <System>
               <Space
                 path={this.state.extern.path}
-                onUpload={this.ftp.uploadLocalFiles}
+                onUpload={this.socket.uploadLocalFiles}
                 onReturn={this.updateExternFiles}
                 onProgress={this.updateExternFiles}
                 onContext={(event) => {
@@ -133,7 +133,7 @@ class SessionPage extends Component {
                 {this.state.extern.newFolder &&
                   <NewFolder
                     path={this.state.extern.path}
-                    onSubmit={this.ftp.createExternFolder}
+                    onSubmit={this.socket.createExternFolder}
                     onClose={() => {
                       this.setState({
                         extern: {
@@ -155,7 +155,7 @@ class SessionPage extends Component {
                         key={index + file.name + file.time}
                         folder={file}
                         onEnter={this.enterExternFolder}
-                        onUpload={this.ftp.uploadLocalFiles}
+                        onUpload={this.socket.uploadLocalFiles}
                         onContext={this.contextMenus.current.openForFolder}
                       />
                     )
@@ -165,18 +165,25 @@ class SessionPage extends Component {
                         key={index + file.name + file.time}
                         file={file}
                         onSelect={(event, file) => {
+                          let selected = this.state.extern.selected;
+                          selected.push(file)
                           this.setState({
                             extern: {
                               ...this.state.extern,
-                              selecting: true
+                              selecting: true,
+                              selected: selected
                             }
                           })
                         }}
                         onDeselect={(event, file) => {
+                          let selected = this.state.extern.selected;
+                          let found = selected.findIndex(item => item.name === file.name);
+                          selected.splice(found, 1);
                           this.setState({
                             extern: {
                               ...this.state.extern,
-                              selecting: false
+                              selecting: !selected.length === 0,
+                              selected: selected
                             }
                           })
                         }}

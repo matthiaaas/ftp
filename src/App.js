@@ -25,45 +25,39 @@ class App extends Component {
     this.state = {
       location: window.location.pathname,
 
-      ftp: {
+      socket: {
         host: "",
         port: 0,
         user: "",
-        pass: ""
+        pass: "",
+        protocol: "ftp"
       },
       status: "offline"
     }
-
-    const jsftp = window.require("jsftp");
     this.dns = window.require("dns");
 
-    this.ftp = new jsftp({
-      host: this.state.ftp.host,
-      port: this.state.ftp.port,
-      user: this.state.ftp.user,
-      pass: this.state.ftp.pass
-    });
-
-    this.loginToFTP = this.loginToFTP.bind(this);
-    this.logoutFromFTP = this.logoutFromFTP.bind(this);
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
 
     this.sidebar = createRef();
     this.taskbar = createRef();
     this.session = createRef();
   }
 
-  logoutFromFTP() {
+  logout() {
     console.info("logging out...");
 
+    if (this.socket === undefined) return;
+
     this.setState({
-      ftp: {
+      socket: {
         host: "",
         port: 0,
         user: "",
         pass: ""
       }
     });
-    this.ftp.raw("quit", (err, data) => {
+    this.socket.raw("quit", (err, data) => {
       if (err) {
         return alert(err);
       }
@@ -73,22 +67,23 @@ class App extends Component {
     });
   }
 
-  loginToFTP(data) {
-    this.logoutFromFTP();
+  login(data) {
+    this.logout();
     
     console.info(`logging in to ${data.host}...`);
 
+    data.protocol = data.protocol || "ftp";
+
     this.setState({
       status: "afk",
-      ftp: {
+      socket: {
         host: data.host,
         port: data.port,
         user: data.user,
-        pass: data.pass
+        pass: data.pass,
+        protocol: data.protocol
       }
     });
-
-    const jsftp = window.require("jsftp");
 
     this.dns.lookup(data.host, (err) => {
       if (err) {
@@ -97,26 +92,39 @@ class App extends Component {
       }
     })
 
-    this.ftp = new jsftp({
-      host: data.host,
-      port: data.port
-    });
+    if (data.protocol === "ftp") {
+      console.debug("session protocol is: ftp");
+      const jsftp = window.require("jsftp");
 
-    this.ftp.on("error", (err) => {
-      console.error(err);
-      if (err.toString().includes("ECONNRESET")) {
-        alert(err);
-      }
-      this.setState({ status: "offline" });
-    })
+      this.socket = new jsftp({
+        host: data.host,
+        port: data.port
+      });
 
-    this.ftp.auth(data.user, data.pass, (err, success) => {
+      this.socket.on("error", (err) => {
+        console.error(err);
+        if (err.toString().includes("ECONNRESET")) {
+          alert(err);
+        }
+        this.setState({ status: "offline" });
+      })
+    } else {
+      console.debug("session protocol is: sftp");
+      const sftp = require("./components/sftp");
+
+      this.socket = new sftp({
+        host: data.host,
+        port: data.port
+      })
+    }
+
+    this.socket.auth(data.user, data.pass, (err, success) => {
       if (err) {
         alert(err);
         this.setState({ status: "offline" });
       }
       if (success) {
-        console.info(`%c${data.user}@${data.host}:`, "color: #8890A5", success.text);
+        console.info(`%c${data.user}@${data.host}:`, "color: #25CC40", success.text);
         this.setState({ status: "online" });
       }
     })
@@ -136,19 +144,19 @@ class App extends Component {
             <Sidebar ref={this.sidebar} />
             <Taskbar
               ref={this.taskbar}
-              ftpData={this.state.ftp}
-              ftpStatus={this.state.status}
+              socketData={this.state.socket}
+              socketStatus={this.state.status}
               onRefresh={() => {if (this.state.location.pathname === "/session") this.session.current.updateExternFiles()}}
-              onDisconnect={this.logoutFromFTP}
+              onDisconnect={this.logout}
             />
             <Switch>
               <Route exact path="/" component={(props) => {
                 return (
                   <LoginPage
-                    ftpData={this.state.ftp}
-                    ftpStatus={this.state.status}
-                    onLogin={this.loginToFTP}
-                    onLogout={this.logoutFromFTP}
+                    socketData={this.state.socket}
+                    socketStatus={this.state.status}
+                    onLogin={this.login}
+                    onLogout={this.logout}
                   />
                 );
               }} />
@@ -156,18 +164,18 @@ class App extends Component {
                 return (
                   <SessionPage
                     ref={this.session}
-                    ftp={this.ftp}
-                    ftpData={this.state.ftp}
-                    ftpStatus={this.state.status}
+                    socket={this.socket}
+                    socketData={this.state.socket}
+                    socketStatus={this.state.status}
                   />
                 );
               }} />
               <Route exact path="/terminal" component={(props) => {
                 return (
                   <TerminalPage
-                    ftp={this.ftp}
-                    ftpData={this.state.ftp}
-                    ftpStatus={this.state.status}
+                    socket={this.socket}
+                    socketData={this.state.socket}
+                    socketStatus={this.state.status}
                   />
                 )
               }} />
@@ -176,9 +184,9 @@ class App extends Component {
               <Route exact path="/quickconnect" component={(props) => {
                 return (
                   <QuickConnectPage
-                    ftpData={this.state.ftp}
-                    ftpStatus={this.state.status}
-                    onLogin={this.loginToFTP}
+                    socketData={this.state.socket}
+                    socketStatus={this.state.status}
+                    onLogin={this.login}
                   />
                 )
               }} />

@@ -90,12 +90,12 @@ class QuickConnectPage extends Component {
                   <Connection
                     key={index}
                     id={index}
-                    connected={(this.props.ftpData.host === item.name && this.props.ftpData.user === item.user && this.props.ftpStatus === "online")}
+                    connected={(this.props.socketData.host === item.name && this.props.socketData.user === item.user && this.props.socketStatus === "online")}
                     name={item.name}
                     port={item.port}
                     user={item.user}
                     pass={item.pass}
-                    protocol={item.protocol.toUpperCase()}
+                    protocol={item.protocol}
                     password={item.pass ? true : false}
                     onConnect={this.connect}
                     onDelete={this.loadConnections}
