@@ -43,7 +43,7 @@ export const Item = styled.div`
 
   div:first-child {
     border: 1px solid ${props => props.disabled ? `var(--color-dark-light) !important` : props.active ? `var(--color-dark-grey)` : `transparent`};
-    background: ${props => props.disabled ? `transparent !important` : props.active && `var(--color-dark)`};
+    background: ${props => props.disabled ? `transparent !important` : props.active && `var(--color-dark) !important`};
   }
 
   &:hover {
@@ -52,6 +52,12 @@ export const Item = styled.div`
     div:first-child {
       border: 1px solid var(--color-dark-grey);
       background: var(--color-dark);
+    }
+  }
+
+  &:active {
+    div:first-child {
+      background: var(--color-dark-grey-blur);
     }
   }
 `
@@ -154,5 +160,9 @@ export const ServerDisconnect = styled.div`
 
   &:hover {
     color: var(--color-white);
+  }
+
+  &:active {
+    background: var(--color-black);
   }
 `

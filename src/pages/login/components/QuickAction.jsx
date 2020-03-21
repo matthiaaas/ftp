@@ -29,6 +29,10 @@ const Wrapper = styled.li`
     border: 1px solid ${props => props.disabled || `var(--color-dark-grey)`};
     color: var(--color-grey-light);
   }
+
+  &:active {
+    background: ${props => props.disabled || `var(--color-dark-grey-blur)`};
+  }
 `
 
 export default class QuickAction extends Component {

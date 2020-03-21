@@ -19,6 +19,10 @@ const Wrapper = styled.div`
     color: var(--color-grey-light);
     background: ${props => props.bgHover ? props.bgHover : `var(--color-black)`};
   }
+
+  &:active {
+    color: var(--color-grey);
+  }
 `
 
 export default class GoBack extends Component {

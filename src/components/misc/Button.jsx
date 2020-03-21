@@ -22,6 +22,10 @@ const WrappedLink = styled(Link)`
     color: var(--color-grey-light);
     background: var(--color-dark);
   }
+
+  &:active {
+    background: var(--color-dark-grey-blur);
+  }
 `
 
 const WrappedButton = styled.button`

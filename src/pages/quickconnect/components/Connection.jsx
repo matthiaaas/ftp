@@ -15,8 +15,12 @@ const Wrapper = styled.div`
   background: ${props => props.connected ? `var(--color-dark-grey-blur)` : `var(--color-dark)`};
 
   &:hover {
-    border: 1px solid ${props => props.connected ? `inherit`: `var(--color-blue)`};
+    border: 1px solid ${props => props.connected || `var(--color-blue)`};
     background: ${props => props.connected ? `var(--color-dark-grey-blur)` : `var(--color-black)`};
+  }
+
+  &:active {
+    background: ${props => props.connected || `var(--color-dark)`};
   }
 `
 
