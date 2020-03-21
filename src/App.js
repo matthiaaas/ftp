@@ -65,6 +65,7 @@ class App extends Component {
     this.setState({
       status: "offline"
     });
+    this.socket.destroy();
   }
 
   login(data) {
