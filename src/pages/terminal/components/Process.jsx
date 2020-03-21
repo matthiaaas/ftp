@@ -8,6 +8,10 @@ const Wrapper = styled.div`
   &:not(:first-child) {
     margin-top: 12px;
   }
+
+  &:last-child {
+    margin-bottom: 24px;
+  }
 `
 
 const Prompt = styled.div`
@@ -71,14 +75,22 @@ export default class Process extends Component {
   }
 
   execute(cmd) {
+    this.setState({ isRunning: true });
+    if (this.props.socketStatus !== "online") {
+      console.debug("unable to send terminal command");
+      return this.props.onFinished.call(this);
+    }
     this.socket.raw(cmd, (err, data, finished) => {
       let output = this.state.output;
       if (err) {
         output.push({ content: err.toString(), isError: true })
         this.setState({ output: output })
       } else if (data) {
-        output.push({ content: data.text, isError: false })
+        output.push({ content: data.text, isError: data.isError || false })
         this.setState({ output: output })
+      }
+      if (cmd.startsWith("cd ") && finished) {
+        this.props.onCwd.call(this, cmd.split(" ")[cmd.split(" ").findIndex(arg => !arg.startsWith("-"))])
       }
       if (finished || this.props.protocol === "ftp") this.props.onFinished.call(this);
     })
@@ -88,7 +100,7 @@ export default class Process extends Component {
     return (
       <Wrapper>
         <Prompt>
-          <Connection>{this.props.user}{this.props.host && "@"}{this.props.host}</Connection>
+          <Connection>{this.props.user}{this.props.host && "@"}{this.props.host || "terminal"}</Connection>
           <Tree>~{this.props.path === undefined || this.props.path === "/" ? "$" : this.props.path + "/"}</Tree>
           <Input
             onChange={(event) => {
@@ -98,7 +110,6 @@ export default class Process extends Component {
               if (event.keyCode === 13) {
                 if (event.target.value === "" || event.target.value === " ") this.props.onFinished.call(this);
                 else this.execute(event.target.value);
-                this.setState({ isRunning: true });
                 event.target.readOnly = true;
               }
             }}

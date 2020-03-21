@@ -18,37 +18,62 @@ class TerminalPage extends Component {
     this.newProcess = this.newProcess.bind(this);
 
     this.state = {
-      processes: [
-        {
-          host: this.props.socketData.host,
-          user: this.props.socketData.user,
-          path: undefined,
-          onFinished: this.newProcess
-        }
-      ]
+      processes: []
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.socketStatus === "online") {
+      this.newProcess();
+    } else {
+      this.setState({
+        processes: [
+          ...this.state.processes,
+          {
+            host: this.props.socketData.host,
+            user: this.props.socketData.user,
+            path: undefined,
+            onFinished: this.newProcess
+          }
+        ]
+      })
     }
   }
 
   newProcess() {
-    this.props.socket.raw("pwd", (err, data) => {
-      if (data) {
-        let path;
-        if (data.text.includes('"')) {
-          path = data.text.match(/"([^"]+)"/)[1];
-        } else path = data.text.split("\n")[0];
-        this.setState({
-          processes: [
-            ...this.state.processes,
-            {
-              host: this.props.socketData.host,
-              user: this.props.socketData.user,
-              path: path,
-              onFinished: this.newProcess
-            }
-          ]
-        })
-      }
-    })
+    if (this.props.socketStatus !== "online") {
+      this.setState({
+        processes: [
+          ...this.state.processes,
+          {
+            host: this.props.socketData.host,
+            user: this.props.socketData.user,
+            path: undefined,
+            onFinished: this.newProcess
+          }
+        ]
+      })
+    } else {
+      this.props.socket.raw("pwd", (err, data) => {
+        if (data) {
+          let path;
+          if (data.text.includes('"')) {
+            path = data.text.match(/"([^"]+)"/)[1];
+          } else path = data.text.split("\n")[0];
+          this.setState({
+            processes: [
+              ...this.state.processes,
+              {
+                host: this.props.socketData.host,
+                user: this.props.socketData.user,
+                path: path,
+                onFinished: this.newProcess
+              }
+            ]
+          })
+        }
+      })
+    }
   }
 
   render() {
@@ -65,10 +90,12 @@ class TerminalPage extends Component {
                 <Process
                   key={index}
                   socket={this.props.socket}
+                  socketStatus={this.props.socketStatus}
                   user={item.user}
                   host={item.host}
                   path={item.path}
                   protocol={this.props.socketData.protocol}
+                  onCwd={(path) => {console.log("cd:", path)}}
                   onFinished={item.onFinished}
                 />
               )
