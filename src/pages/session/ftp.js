@@ -55,20 +55,28 @@ export default class FTP {
     const uploadFile = (item, path) => {
       return new Promise((resolve, reject) => {
         let newPath = path.slice(0, -1);
-        console.debug("reading ", item.fullPath)
-        this.fs.readFile(rootPaths[0] + item.fullPath, (err, buffer) => {
-          if (err) { alert(err); resolve(); }
-          else {
-            console.debug("uploading ", item.fullPath)
-            this.ftp.put(buffer, newPath + item.fullPath, (err) => {
-              if (err) {
-                alert(err);
-                console.error(err);
-              }
-              else resolve();
-            })
-          }
-        })
+        if (this.ftp.sftp) {
+          console.debug("uploading ", item.fullPath)
+          this.ftp.put(rootPaths[0] + item.fullPath, newPath + item.fullPath, (err) => {
+            if (err) {console.error(err)}
+            else resolve();
+          })
+        } else {
+          console.debug("reading ", item.fullPath)
+          this.fs.readFile(rootPaths[0] + item.fullPath, (err, buffer) => {
+            if (err) { alert(err); resolve(); }
+            else {
+              console.debug("uploading ", item.fullPath)
+              this.ftp.put(buffer, newPath + item.fullPath, (err) => {
+                if (err) {
+                  alert(err);
+                  console.error(err);
+                }
+                else resolve();
+              })
+            }
+          })
+        }
       })
     }
 
@@ -77,7 +85,7 @@ export default class FTP {
         let newPath = path.slice(0, -1);
         if (this.ftp.sftp) {
           this.ftp.mkd(newPath + item.fullPath, (err) => {
-            if (err) alert(err);
+            if (err) console.error(err);
             else resolve();
           })
         } else {
@@ -138,12 +146,12 @@ export default class FTP {
 
       let runTasks = () => {
         let p = Promise.resolve()
-        items.forEach((item) => {
+        let max = items.length;
+        items.forEach((item, index) => {
+          if (typeof progress === "function") progress(index, max);
           if (item.isDirectory) {
-            // if (typeof progress === "function") progress()
             p = p.then(() => createDir(item, path))
           } else if (item.isFile) {
-            // if (typeof progress === "function") progress()
             p = p.then(() => uploadFile(item, path))
           }
         });
@@ -151,23 +159,31 @@ export default class FTP {
       }
       runTasks().then(() => {
         console.log("uploaded all files")
+        if (typeof progress === "function") progress(items.length, items.length);
         return typeof callback === "function" ? callback() : {};
       })
     })
   }
 
   deleteExternFile = (file, callback) => {
-    this.ftp.raw("dele", file, (err) => {
-      if (err) alert(err);
-      else if (typeof callback === "function") callback();
-    })
+    if (this.ftp.sftp) {
+      this.ftp.rm(file, (err) => {
+        if (err) alert(err);
+        else if (typeof callback === "function") callback();
+      })
+    } else {
+      this.ftp.raw("dele", file, (err) => {
+        if (err) alert(err);
+        else if (typeof callback === "function") callback();
+      })
+    }
   }
 
   deleteExternFolder = (folder, callback) => {
     if (this.ftp.sftp) {
       this.ftp.rmd(folder, (err) => {
         if (err) alert(err);
-        else if (typeof callback === "function") callback();
+        callback();
       })
     } else {
       this.ftp.raw("rmd", folder, (err) => {
@@ -178,73 +194,87 @@ export default class FTP {
   }
 
   deleteExternFolderRecursively = (folder, callback) => {
-    const path = window.require("path");
-    const list = (dir) => {
-      return new Promise((resolve, reject) => {
-        this.ftp.ls(dir, (err, files) => {
-          if (err) { alert(err); return; }
-          resolve(files);
-        });
-      });
-    }
-    const walk = (dir) => {
-      return list(dir).then((files) => {
-        if (files.length === 0) {
-          return Promise.resolve();
-        }
-        return Promise.all(files.map((file) => {
-          file.filepath = path.join(dir, file.name);
-          let promises = [];
-          if (file.type === 1) {
-            promises.push(walk(path.join(dir, file.name)));
-          }
-          promises.push(Promise.resolve(file));
-          return Promise.all(promises);
-        }));
-      });
-    }
-    const deleteDir = (dir) => {
-      return new Promise((resolve, reject) => {
-        if (this.ftp.sftp) {
-          this.ftp.rmd(dir.filePath, (err) => {
+    if (this.ftp.sftp) {
+      this.ftp.raw(`rm ${folder} -r`, (err, data, finished) => {
+        if (err) alert(err);
+        callback();
+      }) 
+    } else {
+      const path = window.require("path");
+      const list = (dir) => {
+        return new Promise((resolve, reject) => {
+          this.ftp.ls(dir, (err, files) => {
             if (err) { alert(err); return; }
-            return resolve()
-          })
-        } else {
-          this.ftp.raw("rmd", dir.filepath, (err, result) => {
-            if (err) { alert(err); return; }
-            return resolve(result);
+            resolve(files);
           });
-        }
-      });
-    }
-    const deleteFile = (file) => {
-      return new Promise((resolve, reject) => {
-        this.ftp.raw("dele", file.filepath, (err, result) => {
-          if (err) { alert(err); return; }
-          return resolve(result);
         });
-      });
-    }
-    const flatten = list => list.reduce(
-      (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
-    );
-    walk(folder).then((results) => {
-      let deletions;
-      try {
-        let files = flatten(results).filter(Boolean);
-        deletions = files.map((file) => {
-          if (file.type === 1) {
-            return deleteDir(file);
+      }
+      const walk = (dir) => {
+        return list(dir).then((files) => {
+          if (files.length === 0) {
+            return Promise.resolve();
+          }
+          return Promise.all(files.map((file) => {
+            file.filepath = path.join(dir, file.name);
+            let promises = [];
+            if (file.type === 1) {
+              promises.push(walk(path.join(dir, file.name)));
+            }
+            promises.push(Promise.resolve(file));
+            return Promise.all(promises);
+          }));
+        });
+      }
+      const deleteDir = (dir) => {
+        return new Promise((resolve, reject) => {
+          if (this.ftp.sftp) {
+            this.ftp.rmd(dir.filePath, (err) => {
+              if (err) { alert(err); return; }
+              return resolve();
+            })
           } else {
-            return deleteFile(file);
+            this.ftp.raw("rmd", dir.filepath, (err, result) => {
+              if (err) { alert(err); return; }
+              return resolve(result);
+            });
           }
         });
-      } catch {}
-      this.deleteExternFolder(folder, () => {
-        return callback();
+      }
+      const deleteFile = (file) => {
+        return new Promise((resolve, reject) => {
+          if (this.ftp.sftp) {
+            this.ftp.rm(file.filepath, (err) => {
+              if (err) { alert(err); return; }
+              return resolve();
+            })
+          } else {
+            this.ftp.raw("dele", file.filepath, (err, result) => {
+              if (err) { alert(err); return; }
+              return resolve(result);
+            });
+          }
+        });
+      }
+      const flatten = list => list.reduce(
+        (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
+      );
+      walk(folder).then((results) => {
+        let deletions;
+        try {
+          let files = flatten(results).filter(Boolean);
+          deletions = files.map((file) => {
+            if (file.type === 1) {
+              return deleteDir(file);
+            } else {
+              return deleteFile(file);
+            }
+          });
+        } catch {}
+        this.deleteExternFolder(folder, () => {
+          return callback();
+        });
+        if (deletions !== undefined) Promise.all(deletions);
       });
-      if (deletions !== undefined) Promise.all(deletions);
-    });
+    }
   }
 }

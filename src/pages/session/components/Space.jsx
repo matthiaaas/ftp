@@ -39,12 +39,8 @@ export default class Space extends Component {
           this.props.onUpload.call(this,
             event.dataTransfer,
             this.props.path,
-            () => {
-              this.props.onReturn.call(this);
-            },
-            () => {
-              this.props.onProgress.call(this);
-            }
+            this.props.onReturn,
+            this.props.onProgress
           );
         }}
         onDragLeave={(event) => {

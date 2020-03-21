@@ -33,7 +33,9 @@ class SFTP {
         this.sftp = sftp;
         this.authenticated = true;
         this.sftp.realpath(".", (err, absPath) => {
-          if (callback) callback(null, {text: "Login successful"});
+          let isUnix = absPath.startsWith("/");
+          this.platform = isUnix ? "unix" : "windows";
+          if (callback) callback(null, {text: `Login successful; path is ${absPath} on platform ${isUnix ? "Unix" : "Windows"}`});
         })
       })
     }).connect({
@@ -59,6 +61,17 @@ class SFTP {
         size: item.attrs.size
       }))
       callback(err, data)
+    })
+  }
+
+  /**
+   * @param {String} path 
+   * @param {Function} callback 
+   */
+  cd(path, callback) {
+    if (!this.authenticated) return;
+    this.sftp.opendir(path, (err, data) => {
+      callback(err, data);
     })
   }
 
@@ -92,7 +105,7 @@ class SFTP {
    */
   rm(filePath, callback) {
     if (!this.authenticated) return;
-    this.raw(`rm ${filePath}`, (err, data) => {
+    this.raw(`rm "${filePath}"`, (err, data) => {
       callback(err, data);
     })
   }

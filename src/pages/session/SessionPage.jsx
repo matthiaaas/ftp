@@ -14,6 +14,7 @@ import File from "./components/File";
 import Space from "./components/Space";
 import ContextMenus from "./components/ContextMenus";
 import NewFolder from "./components/NewFolder";
+import Upload from "./components/Upload";
 
 class SessionPage extends Component {
   constructor(props) {
@@ -35,6 +36,7 @@ class SessionPage extends Component {
     this.socket = new FTP(this.props.socket);
     this.dataSocket = new Data(this.props.socketData.host);
 
+    this.upload = createRef();
     this.contextMenus = createRef();
 
     this.updateExternFiles = this.updateExternFiles.bind(this);
@@ -56,6 +58,7 @@ class SessionPage extends Component {
   }
 
   updateExternFiles(path) {
+    if (this.props.socketStatus === "offline") return console.debug("unable to update extern files");
     this.socket.updateExternFiles(path || this.state.extern.path, (data) => {
       this.setState({
         extern: {
@@ -100,6 +103,9 @@ class SessionPage extends Component {
   render() {
     return (
       <Page>
+        <Upload
+          ref={this.upload}
+        />
         <ContextMenus
           ref={this.contextMenus}
           socket={this.socket}
@@ -120,7 +126,9 @@ class SessionPage extends Component {
                 path={this.state.extern.path}
                 onUpload={this.socket.uploadLocalFiles}
                 onReturn={this.updateExternFiles}
-                onProgress={this.updateExternFiles}
+                onProgress={(current, max) => {
+                  this.upload.current.updateProgress(current, max);
+                }}
                 onContext={(event) => {
                   this.contextMenus.current.openForSpace(event, this.state.extern.path)
                 }}
