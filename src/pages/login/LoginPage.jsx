@@ -40,7 +40,6 @@ class LoginPage extends Component {
       } if (login.pass === "") {
         login.pass = "anonymous"
       }
-      console.log(login)
       this.props.onLogin.call(this, login);
     }
   }

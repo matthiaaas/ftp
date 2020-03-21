@@ -116,9 +116,8 @@ class ContextMenuFile extends Component {
           name="Delete"
           shortcut="⌘⌫"
           onExecute={() => {
-            this.props.socket.deleteExternFile(this.props.target.path + this.props.target.name);
+            this.props.socket.deleteExternFile(this.props.target.path + this.props.target.name, this.props.onReload);
             this.props.onReturn.call(this);
-            this.props.onReload.call(this);
           }}
         />
       </ContextMenu>

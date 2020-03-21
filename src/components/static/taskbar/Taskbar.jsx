@@ -40,7 +40,7 @@ class Taskbar extends Component {
                 </ItemInner>
                 <ItemOuter>Sync</ItemOuter>
               </Item>
-              <Item onClick={this.props.onRefresh} disabled={this.state.location !== "/session"}>
+              <Item onClick={this.props.onRefresh} disabled={this.state.location !== "/session" || this.props.socketStatus !== "online"}>
                 <ItemInner>
                   <RefreshCcw />
                   <ToolTip>Reload files and folders</ToolTip>

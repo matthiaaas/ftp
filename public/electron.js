@@ -141,7 +141,8 @@ function createWindow() {
         { role: "minimize" },
         { role: "zoom" },
         { type: "separator" }, 
-        isMac ? { role: "close" } : { role: "quit" },
+        { role: 'togglefullscreen' },
+        isMac ? { role: "close" } : { role: "quit" }
       ]
     },
     {
