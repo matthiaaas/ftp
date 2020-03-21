@@ -83,7 +83,12 @@ export default class Folder extends Component {
           event.preventDefault();
         }}
         onDrop={(event) => {
-          this.props.onUpload.call(this, event.dataTransfer, this.props.folder.path + this.props.folder.name + "/");
+          this.props.onUpload.call(
+            this, event.dataTransfer,
+            this.props.folder.path + this.props.folder.name + "/",
+            () => {},
+            this.props.onProgress
+          );
           this.setState({ dropping: false });
         }}
         onDragLeave={(event) => {

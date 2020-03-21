@@ -56,10 +56,11 @@ class SFTP {
       let data = [];
       list.forEach(item => data.push({
         name: item.filename,
-        type: item.attrs.mode === 33188 ? 0 : 1,
-        time: item.attrs.mtime,
+        type: item.attrs.mode >= 33152 && item.attrs.mode <= 33188 ? 0 : 1,
+        time: item.attrs.mtime * 1000,
         size: item.attrs.size
       }))
+      data.sort((a, b) => a.name.localeCompare(b.name));
       callback(err, data)
     })
   }

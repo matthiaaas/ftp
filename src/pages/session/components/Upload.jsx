@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   width: 100%;
   max-width: 186px;
   transition: ${props => props.progress >= 1 && `visibility 0s ease 2s`};
-  visibility: ${props => props.progress >= 1 || props.progress === 0 ? `hidden` : `visible`};
+  visibility: ${props => props.progress >= 1 || props.progress < 0 ? `hidden` : `visible`};
   background: var(--color-black);
 `
 
@@ -65,8 +65,8 @@ export default class Upload extends Component {
     super(props);
 
     this.state = {
-      progress: 0,
-      current: 0,
+      progress: -1,
+      current: -1,
       max: 0
     }
 
@@ -74,11 +74,21 @@ export default class Upload extends Component {
   }
 
   updateProgress(current, max) {
+    let progress = current / max;
     this.setState({
-      progress: current / max,
+      progress: progress,
       current: current,
       max: max
     })
+    if (progress >= 1) {
+      setTimeout(() => {
+        this.setState({
+          progress: -1,
+          current: -1,
+          max: 0
+        })
+      }, 2500);
+    }
   }
 
   render() {
@@ -87,7 +97,7 @@ export default class Upload extends Component {
         <Title>
           <Label>Uploading</Label>
           <Label>
-            <Number highlighted>{this.state.current}</Number> of <Number>{this.state.max}</Number>
+            <Number highlighted>{this.state.current === this.state.max ? this.state.current : this.state.current + 1}</Number> of <Number>{this.state.max}</Number>
           </Label>
         </Title>
         <Progress progress={this.state.progress} />

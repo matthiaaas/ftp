@@ -164,6 +164,9 @@ class SessionPage extends Component {
                         folder={file}
                         onEnter={this.enterExternFolder}
                         onUpload={this.socket.uploadLocalFiles}
+                        onProgress={(current, max) => {
+                          this.upload.current.updateProgress(current, max);
+                        }}
                         onContext={this.contextMenus.current.openForFolder}
                       />
                     )
