@@ -52,21 +52,22 @@ export default class FTP {
       return callback();
     }
 
-    const uploadFile = (item, path) => {
+    const uploadFile = (item, path, prog) => {
       return new Promise((resolve, reject) => {
+        if (typeof progress === "function") progress(prog.index, prog.max);
         let newPath = path.slice(0, -1);
         if (this.ftp.sftp) {
-          console.debug("uploading ", item.fullPath)
+          console.debug("uploading", item.fullPath)
           this.ftp.put(rootPaths[0] + item.fullPath, newPath + item.fullPath, (err) => {
             if (err) {console.error(err)}
             else resolve();
           })
         } else {
-          console.debug("reading ", item.fullPath)
+          console.debug("reading", item.fullPath)
           this.fs.readFile(rootPaths[0] + item.fullPath, (err, buffer) => {
             if (err) { alert(err); resolve(); }
             else {
-              console.debug("uploading ", item.fullPath)
+              console.debug("uploading", item.fullPath)
               this.ftp.put(buffer, newPath + item.fullPath, (err) => {
                 if (err) {
                   alert(err);
@@ -80,9 +81,11 @@ export default class FTP {
       })
     }
 
-    const createDir = (item, path) => {
+    const createDir = (item, path, prog) => {
       return new Promise((resolve, reject) => {
+        if (typeof progress === "function") progress(prog.index, prog.max);
         let newPath = path.slice(0, -1);
+        console.debug("creating", item.fullPath)
         if (this.ftp.sftp) {
           this.ftp.mkd(newPath + item.fullPath, (err) => {
             if (err) console.error(err);
@@ -148,11 +151,10 @@ export default class FTP {
         let p = Promise.resolve()
         let max = items.length;
         items.forEach((item, index) => {
-          if (typeof progress === "function") progress(index, max);
           if (item.isDirectory) {
-            p = p.then(() => createDir(item, path))
+            p = p.then(() => createDir(item, path, {index: index, max: max}))
           } else if (item.isFile) {
-            p = p.then(() => uploadFile(item, path))
+            p = p.then(() => uploadFile(item, path, {index: index, max: max}))
           }
         });
         return p;
@@ -195,7 +197,7 @@ export default class FTP {
 
   deleteExternFolderRecursively = (folder, callback) => {
     if (this.ftp.sftp) {
-      this.ftp.raw(`rm ${folder} -r`, (err, data, finished) => {
+      this.ftp.raw(`rm "${folder}" -r`, (err, data, finished) => {
         if (err) alert(err);
         callback();
       }) 
