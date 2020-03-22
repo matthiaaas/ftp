@@ -15,6 +15,7 @@ import Space from "./components/Space";
 import ContextMenus from "./components/ContextMenus";
 import NewFolder from "./components/NewFolder";
 import Upload from "./components/Upload";
+import Tag from "../../components/misc/Tag";
 
 class SessionPage extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class SessionPage extends Component {
         files: {},
         selected: [],
         selecting: false,
+        loading: true,
         newFolder: false
       }
     }
@@ -64,6 +66,7 @@ class SessionPage extends Component {
         extern: {
           ...this.state.extern,
           files: data,
+          loading: false,
           newFolder: false
         }
       });

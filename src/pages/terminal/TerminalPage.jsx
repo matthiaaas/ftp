@@ -3,79 +3,13 @@ import React, { Component } from "react";
 import Container from "../../components/misc/Container";
 import Tag from "../../components/misc/Tag";
 
-import Data from "../../components/data";
 
 import { Page, Content, Warnings } from "./styles";
 
-import Process from "./components/Process";
+import RawTerminal from "./components/RawTerminal";
+import InteractiveTerminal from "./components/InteractiveTerminal";
 
 class TerminalPage extends Component {
-  constructor(props) {
-    super(props);
-
-    this.dataSocket = new Data(this.props.socketData.host);
-
-    this.newProcess = this.newProcess.bind(this);
-
-    this.state = {
-      processes: []
-    }
-  }
-
-  componentDidMount() {
-    if (this.props.socketStatus === "online") {
-      this.newProcess();
-    } else {
-      this.setState({
-        processes: [
-          ...this.state.processes,
-          {
-            host: this.props.socketData.host,
-            user: this.props.socketData.user,
-            path: undefined,
-            onFinished: this.newProcess
-          }
-        ]
-      })
-    }
-  }
-
-  newProcess() {
-    if (this.props.socketStatus !== "online") {
-      this.setState({
-        processes: [
-          ...this.state.processes,
-          {
-            host: this.props.socketData.host,
-            user: this.props.socketData.user,
-            path: undefined,
-            onFinished: this.newProcess
-          }
-        ]
-      })
-    } else {
-      this.props.socket.raw("pwd", (err, data) => {
-        if (data) {
-          let path;
-          if (data.text.includes('"')) {
-            path = data.text.match(/"([^"]+)"/)[1];
-          } else path = data.text.split("\n")[0];
-          this.setState({
-            processes: [
-              ...this.state.processes,
-              {
-                host: this.props.socketData.host,
-                user: this.props.socketData.user,
-                path: path,
-                onFinished: this.newProcess
-              }
-            ]
-          })
-        }
-      })
-    }
-  }
-
   render() {
     return (
       <Page>
@@ -85,21 +19,20 @@ class TerminalPage extends Component {
               {this.props.socketStatus !== "online" && <Tag>You are not connected</Tag>}
               {this.props.socketData.protocol === "ftp" && <Tag>only FTP commands available</Tag>}
             </Warnings>
-            {this.state.processes.map((item, index) => {
-              return (
-                <Process
-                  key={index}
-                  socket={this.props.socket}
-                  socketStatus={this.props.socketStatus}
-                  user={item.user}
-                  host={item.host}
-                  path={item.path}
-                  protocol={this.props.socketData.protocol}
-                  onCwd={(path) => {console.log("cd:", path)}}
-                  onFinished={item.onFinished}
-                />
-              )
-            })}
+            {this.props.socketStatus === "online" && this.props.socket.sftp &&
+              <InteractiveTerminal
+                socket={this.props.socket}
+                socketData={this.props.socketData}
+                socketStatus={this.props.socketStatus}
+              />
+            }
+            {this.props.socketData.protocol !== "sftp" &&
+              <RawTerminal
+                socket={this.props.socket}
+                socketData={this.props.socketData}
+                socketStatus={this.props.socketStatus}
+              />
+            }
           </Content>
         </Container>
       </Page>

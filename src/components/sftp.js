@@ -159,4 +159,31 @@ class SFTP {
   }
 }
 
-module.exports = SFTP;
+
+class Shell {
+  constructor(socket) {
+    this.socket = socket.socket;
+  }
+
+  init(callback) {
+    this.socket.shell((err, stream) => {
+      if (err) throw err;
+      this.stream = stream;
+      this.stream.on("data", (data) => {
+        callback({text: data.toString().replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ""), isError: data.toString().startsWith("-bash:")})
+      })
+      this.stream.stderr.on("data", (data) => {
+        callback({text: data.toString(), isError: true})
+      });
+      this.stream.on("close", () => {
+        console.log("closed")
+      })
+    })
+  }
+
+  send(data) {
+    this.stream.write(`${data}\r`)
+  }
+}
+
+module.exports = {sftp: SFTP, shell: Shell};

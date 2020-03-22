@@ -111,7 +111,7 @@ class App extends Component {
       })
     } else {
       console.debug("session protocol is: sftp");
-      const sftp = require("./components/sftp");
+      const { sftp } = require("./components/sftp");
 
       this.socket = new sftp({
         host: data.host,
@@ -181,7 +181,11 @@ class App extends Component {
                 )
               }} />
               <Route exact path="/stats" component={StatsPage} />
-              <Route exact path="/settings" component={SettingsPage} />
+              <Route exact path="/settings" component={(props) => {
+                return (
+                  <SettingsPage />
+                )
+              }} />
               <Route exact path="/quickconnect" component={(props) => {
                 return (
                   <QuickConnectPage

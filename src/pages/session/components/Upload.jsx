@@ -14,8 +14,9 @@ const Wrapper = styled.div`
   padding: 16px 24px;
   width: 100%;
   max-width: 186px;
-  transition: ${props => props.progress >= 1 && `visibility 0s ease 2s`};
+  transition: ${props => props.progress >= 1 && `visibility 0s ease 2.4s, opacity 0.4s ease 2s`};
   visibility: ${props => props.progress >= 1 || props.progress < 0 ? `hidden` : `visible`};
+  opacity: ${props => props.progress >= 1 || props.progress < 0 ? `0` : `1`};
   background: var(--color-black);
 `
 
