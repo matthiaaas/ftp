@@ -1,7 +1,7 @@
 import React, { Component, createRef } from "react";
 
 import Container from "../../components/misc/Container";
-import GoBack from "../../components/misc/GoBack";
+import { GoBack } from "../../components/misc/CircleButton";
 
 import Data from "../../components/data";
 
@@ -15,7 +15,6 @@ import Space from "./components/Space";
 import ContextMenus from "./components/ContextMenus";
 import NewFolder from "./components/NewFolder";
 import Upload from "./components/Upload";
-import Tag from "../../components/misc/Tag";
 
 class SessionPage extends Component {
   constructor(props) {
@@ -108,6 +107,7 @@ class SessionPage extends Component {
       <Page>
         <Upload
           ref={this.upload}
+          onAbort={this.socket.stopUpload}
         />
         <ContextMenus
           ref={this.contextMenus}
