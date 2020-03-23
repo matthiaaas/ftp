@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import { getPathFromCmd, getNewPathFromPaths } from "../../../assets/utils/utils.js";
-
 const Wrapper = styled.div`
   font-family: var(--font-main);
   font-size: 16px;
@@ -83,21 +81,6 @@ export default class Process extends Component {
       console.debug("unable to send terminal command");
       return this.props.onFinished.call(this);
     }
-    
-    let args = cmd.split(" ");
-    let path = getPathFromCmd(cmd);
-
-    switch (args[0]) {
-      case "cd":
-        cmd = `${cmd.replace(path, "")} ${getNewPathFromPaths(this.props.path, path)}`
-        console.log(cmd)
-        break;
-      case "ls":
-        cmd = `${cmd} ${getNewPathFromPaths(this.props.path, path)}`
-        break;
-      default:
-        break;
-    }
 
     this.socket.raw(cmd, (err, data, finished) => {
       let output = this.state.output;
@@ -109,15 +92,7 @@ export default class Process extends Component {
         output.push({ content: data.text, isError: data.isError || false })
         this.setState({ output: output })
       }
-
-      let noError = !this.state.output.find(out => out.isError);
-      if (finished && noError) {
-        if (args[0] === "cd") {
-          let newPath = getNewPathFromPaths(this.props.path, path);
-          this.props.onPathChange.call(this, newPath);
-        }
-      }
-
+      
       if (finished || this.props.protocol === "ftp") this.props.onFinished.call(this);
     })
   }

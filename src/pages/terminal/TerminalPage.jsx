@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 
 import Container from "../../components/misc/Container";
-import Tag from "../../components/misc/Tag";
-
+import Tag, { TagTooltip } from "../../components/misc/Tag";
 
 import { Page, Content, Warnings } from "./styles";
 
 import RawTerminal from "./components/RawTerminal";
 import InteractiveTerminal from "./components/InteractiveTerminal";
+import Code from "../../components/misc/Code";
 
 class TerminalPage extends Component {
   render() {
@@ -16,8 +16,18 @@ class TerminalPage extends Component {
         <Container>
           <Content>
             <Warnings>
-              {this.props.socketStatus !== "online" && <Tag>You are not connected</Tag>}
-              {this.props.socketData.protocol === "ftp" && <Tag>only FTP commands available</Tag>}
+              {this.props.socketStatus !== "online" &&
+                <Tag>
+                  <span>You are not connected</span>
+                  <TagTooltip>First connect to a server from the login</TagTooltip>
+                </Tag>
+              }
+              {this.props.socketData.protocol === "ftp" &&
+                <Tag>
+                  <span>only FTP commands available</span>
+                  <TagTooltip>Shell commands like <Code>cd</Code> won't work. Try <Code>cwd</Code> instead.</TagTooltip>
+                </Tag>
+              }
             </Warnings>
             {this.props.socketStatus === "online" && this.props.socket.sftp &&
               <InteractiveTerminal

@@ -81,7 +81,7 @@ export default class Process extends Component {
                 let cmd = event.target.value;
                 if (cmd === "" || cmd === " ") this.props.onFinished.call(this);
                 else this.props.onSubmit.call(this, event.target.value);
-                this.state.isRunning = true;
+                this.setState({ isRunning: true});
                 event.target.readOnly = true;
               }
             }}
