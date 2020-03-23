@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import { ArrowLeft } from "react-feather";
+import { ArrowLeft, X } from "react-feather";
 
 const Wrapper = styled.div`
   transition: all ease 0.1s;
@@ -25,7 +25,7 @@ const Wrapper = styled.div`
   }
 `
 
-export default class GoBack extends Component {
+export class GoBack extends Component {
   render() {
     return (
       <Wrapper
@@ -39,6 +39,25 @@ export default class GoBack extends Component {
         }}
       >
         <ArrowLeft />
+      </Wrapper>
+    )
+  }
+}
+
+export class Abort extends Component {
+  render() {
+    return (
+      <Wrapper
+        bg={this.props.bg}
+        bgHover={this.props.bgHover}
+        onClick={(event) => {
+          event.preventDefault();
+          if (typeof this.props.onTrigger === "function") {
+            this.props.onTrigger.call(this);
+          }
+        }}
+      >
+        <X />
       </Wrapper>
     )
   }

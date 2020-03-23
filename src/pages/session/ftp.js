@@ -38,6 +38,13 @@ export default class FTP {
     })
   }
 
+  stopUpload = () => {
+    this.ftp.raw("abor", (err) => {
+      if (err) alert(err);
+      else console.debug("upload stopped")
+    })
+  }
+
   uploadLocalFiles = (transfer, path, callback, progress) => {
     let items = transfer.items;
     let files = transfer.files;
@@ -65,12 +72,14 @@ export default class FTP {
         } else {
           console.debug("reading", item.fullPath)
           this.fs.readFile(rootPaths[0] + item.fullPath, (err, buffer) => {
-            if (err) { alert(err); resolve(); }
+            if (err) {
+              console.log(err);
+              resolve();
+            }
             else {
               console.debug("uploading", item.fullPath)
               this.ftp.put(buffer, newPath + item.fullPath, (err) => {
                 if (err) {
-                  alert(err);
                   console.error(err);
                 }
                 else resolve();

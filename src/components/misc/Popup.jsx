@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import GoBack from "./GoBack";
+import { GoBack } from "./CircleButton";
 import Headline from "./Headline";
 
 const Wrapper = styled.div`
