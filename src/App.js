@@ -47,7 +47,7 @@ class App extends Component {
   logout() {
     console.info("logging out...");
 
-    if (this.socket === undefined) return;
+    if (this.socket === undefined || this.state.status !== "online") return;
 
     this.setState({
       socket: {
