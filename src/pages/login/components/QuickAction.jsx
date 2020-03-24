@@ -12,7 +12,7 @@ const Wrapper = styled.li`
   border: 1px solid transparent;
   border-radius: 16px;
   white-space: nowrap;
-  color: ${props => props.disabled ? `var(--color-dark-light) !important` : `var(--color-grey)`};
+  color: ${props => props.disabled ? `var(--color-grey-dark) !important` : `var(--color-grey)`};
 
   svg {
     width: 20px;
