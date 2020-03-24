@@ -26,6 +26,7 @@ export default class InteractiveTerminal extends Component {
     this.shell = new shell(this.socket);
 
     this.newProcess = this.newProcess.bind(this);
+    this.setInput = this.setInput.bind(this);
   }
 
   componentDidMount() {
@@ -44,7 +45,6 @@ export default class InteractiveTerminal extends Component {
             welcome: welcome
           })
         } else if (processes.length > 0) {
-          console.log(line)
           let process = processes.length - 1;
           processes[process].output.push({text: line, isError: data.isError});
           this.setState({
@@ -71,8 +71,8 @@ export default class InteractiveTerminal extends Component {
           host: host,
           user: user,
           path: path,
-          output: [],
-          onFinished: this.newProcess
+          input: undefined,
+          output: []
         }
       ]
     })
@@ -84,7 +84,29 @@ export default class InteractiveTerminal extends Component {
     this.setState({
       cmds: cmds
     })
-    console.log(cmds);
+  }
+
+  getNextCmd(i) {
+    let cmds = this.state.cmds;
+    let index = Math.max(i - 1, 0);
+    let cmd = cmds[index];
+    return {cmd: cmd, index: index};
+  }
+
+  getPreviousCmd(i) {
+    let cmds = this.state.cmds;
+    let index = Math.min(i + 1, this.state.processes.length - 1);
+    let cmd = cmds[index];
+    return {cmd: cmd, index: index};
+  }
+
+  setInput(process, input) {
+    let processes = this.state.processes;
+    processes[process].input = input.cmd;
+    processes[process].cmdSelected = input.index;
+    this.setState({
+      processes: processes
+    })
   }
 
   render() {
@@ -107,12 +129,19 @@ export default class InteractiveTerminal extends Component {
               host={item.host}
               path={item.path}
               protocol={this.props.socketData.protocol}
+              input={item.input}
               output={item.output}
+              cmdSelected={item.cmdSelected === undefined ? index : item.cmdSelected}
               onSubmit={(cmd) => {
                 this.shell.send(cmd);
                 this.logCmd(cmd);
               }}
-              onFinished={item.onFinished}
+              onNextCmd={(i) => {
+                this.setInput(index, this.getNextCmd(i))
+              }}
+              onPreviousCmd={(i) => {
+                this.setInput(index, this.getPreviousCmd(i))
+              }}
             />
           )
         })}

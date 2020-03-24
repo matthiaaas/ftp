@@ -9,6 +9,8 @@ export const Content = styled.div`
 `
 
 export const Warnings = styled.div`
+  display: block;
+
   >div:not(:last-child) {
     margin-right: 12px;
   }

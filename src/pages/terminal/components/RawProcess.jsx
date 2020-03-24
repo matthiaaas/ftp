@@ -1,63 +1,6 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 
-const Wrapper = styled.div`
-  font-family: var(--font-main);
-  font-size: 16px;
-
-  &:not(:first-child) {
-    margin-top: 12px;
-  }
-
-  &:last-child {
-    margin-bottom: 24px;
-  }
-`
-
-const Prompt = styled.div`
-  display: flex;
-  align-items: center;
-`
-
-const Connection = styled.span`
-  white-space: nowrap;
-  color: var(--color-white);
-`
-
-const Tree = styled.span`
-  margin-left: 4px;
-  color: var(--color-blue);
-`
-
-const Input = styled.input`
-  appearance: none;
-  outline: none;
-  user-select: all;
-  border: none;
-  margin-left: 8px;
-  font-family: var(--font-code);
-  font-size: 15px;
-  color: var(--color-grey);
-  width: 100%;
-  background: none;
-
-  &:read-only {
-    cursor: default;
-  }
-`
-
-const Output = styled.div`
-  font-family: var(--font-code);
-  font-size: 15px;
-  margin-top: 4px;
-`
-
-const Line = styled.div`
-  white-space: pre-wrap;
-  user-select: text;
-  line-height: 1.1;
-  color: ${props => props.isError ? `var(--color-red)` : `var(--color-grey)`};
-`
+import { Wrapper, Prompt, Connection, Tree, Input, Output, Line } from "./Process";
 
 export default class Process extends Component {
   constructor(props) {
@@ -104,17 +47,26 @@ export default class Process extends Component {
           <Connection>{this.props.user}{this.props.host && "@"}{this.props.host || "terminal"}</Connection>
           <Tree>~{this.props.path === undefined || this.props.path === "/" ? "$" : this.props.path + "/"}</Tree>
           <Input
+            defaultValue={this.props.input || ""}
+            type="text"
             onChange={(event) => {
               this.setState({ cmd: event.target.value })
             }}
             onKeyDown={(event) => {
               if (event.keyCode === 13) {
-                if (event.target.value === "" || event.target.value === " ") this.props.onFinished.call(this);
-                else this.execute(event.target.value);
-                event.target.readOnly = true;
+                let cmd = event.target.value;
+                this.props.onSubmit.call(this, cmd);
+                if (cmd === "" || cmd === " ") this.props.onFinished.call(this);
+                else this.execute(cmd);
+              } else if (event.keyCode === 38) {
+                if (typeof this.props.onNextCmd === "function") this.props.onNextCmd.call(this, this.props.cmdSelected);
+              } else if (event.keyCode === 40) {
+                if (typeof this.props.onPreviousCmd === "function") this.props.onPreviousCmd.call(this, this.props.cmdSelected);
               }
             }}
-            tabIndex={this.state.isRunning}
+            style={{pointerEvents: this.state.isRunning && `none`}}
+            tabIndex={(!this.state.isRunning).toString()}
+            readOnly={this.state.isRunning}
             autoFocus
           />
         </Prompt>

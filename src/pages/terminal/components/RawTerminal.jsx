@@ -7,28 +7,17 @@ export default class RawTerminal extends Component {
     super(props);
     
     this.state = {
-      processes: []
+      processes: [],
+      cmds: []
     }
     
     this.newProcess = this.newProcess.bind(this);
+    this.setInput = this.setInput.bind(this);
+    this.logCmd = this.logCmd.bind(this);
   }
 
   componentDidMount() {
-    if (this.props.socketStatus === "online") {
-      this.newProcess();
-    } else {
-      this.setState({
-        processes: [
-          ...this.state.processes,
-          {
-            host: this.props.socketData.host,
-            user: this.props.socketData.user,
-            path: undefined,
-            onFinished: this.newProcess
-          }
-        ]
-      })
-    }
+    this.newProcess();
   }
 
   newProcess() {
@@ -40,6 +29,7 @@ export default class RawTerminal extends Component {
             host: this.props.socketData.host,
             user: this.props.socketData.user,
             path: undefined,
+            input: undefined,
             onFinished: this.newProcess
           }
         ]
@@ -58,6 +48,7 @@ export default class RawTerminal extends Component {
                 host: this.props.socketData.host,
                 user: this.props.socketData.user,
                 path: path,
+                input: undefined,
                 onFinished: this.newProcess
               }
             ]
@@ -65,6 +56,37 @@ export default class RawTerminal extends Component {
         }
       })
     }
+  }
+
+  logCmd(cmd) {
+    let cmds = this.state.cmds;
+    cmds.push(cmd)
+    this.setState({
+      cmds: cmds
+    })
+  }
+
+  getNextCmd(i) {
+    let cmds = this.state.cmds;
+    let index = Math.max(i - 1, 0);
+    let cmd = cmds[index];
+    return {cmd: cmd, index: index};
+  }
+
+  getPreviousCmd(i) {
+    let cmds = this.state.cmds;
+    let index = Math.min(i + 1, this.state.processes.length - 1);
+    let cmd = cmds[index];
+    return {cmd: cmd, index: index};
+  }
+
+  setInput(process, input) {
+    let processes = this.state.processes;
+    processes[process].input = input.cmd;
+    processes[process].cmdSelected = input.index;
+    this.setState({
+      processes: processes
+    })
   }
 
   render() {
@@ -79,7 +101,16 @@ export default class RawTerminal extends Component {
               user={item.user}
               host={item.host}
               path={item.path}
+              input={item.input}
               protocol={this.props.socketData.protocol}
+              cmdSelected={item.cmdSelected === undefined ? index : item.cmdSelected}
+              onSubmit={this.logCmd}
+              onNextCmd={(i) => {
+                this.setInput(index, this.getNextCmd(i))
+              }}
+              onPreviousCmd={(i) => {
+                this.setInput(index, this.getPreviousCmd(i))
+              }}
               onFinished={item.onFinished}
             />
           )
