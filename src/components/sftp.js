@@ -170,13 +170,19 @@ class Shell {
       if (err) throw err;
       this.stream = stream;
       this.stream.on("data", (data) => {
-        callback({text: data.toString().replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, ""), isError: data.toString().startsWith("-bash:")})
+        callback({
+          text: data.toString().replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "").trim(),
+          isError: data.toString().startsWith("-bash:") || data.toString().startsWith("-sh:")
+        })
       })
       this.stream.stderr.on("data", (data) => {
-        callback({text: data.toString(), isError: true})
+        callback({text: data.toString().trim(), isError: true})
       });
+      this.stream.on("end", () => {
+        console.debug("shell stream ended")
+      })
       this.stream.on("close", () => {
-        console.log("closed")
+        console.debug("shell stream closed")
       })
     })
   }
