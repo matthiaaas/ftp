@@ -35,7 +35,7 @@ export const Item = styled.div`
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
-  color: ${props => props.disabled ? `var(--color-dark-grey) !important` : props.active ? `var(--color-grey-light)` : `var(--color-grey)`};
+  color: ${props => props.disabled ? `var(--color-grey-dark) !important` : props.active ? `var(--color-grey-light)` : `var(--color-grey)`};
 
   &:not(:last-child) {
     margin-right: 32px;

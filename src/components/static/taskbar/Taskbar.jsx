@@ -5,7 +5,7 @@ import Button from "../../../components/misc/Button";
 
 import { Search, Bookmark, Eye, RefreshCcw, X } from "react-feather";
 
-import { Header, Content, Rows, Row, Item, ItemInner, ItemOuter, ToolTip, Server, ServerStatus, ServerDisconnect, ServerRedirect } from "./styles";
+import { Header, Content, Rows, Row, Item, ItemInner, ItemOuter, ToolTip, Server, ServerStatus, ServerDisconnect } from "./styles";
 
 class Taskbar extends Component {
   constructor(props) {
