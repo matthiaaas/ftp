@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
-  border: 1px solid ${props => props.connected ? `var(--color-dark-grey)`: `transparent`};
+  border: 1px solid ${props => props.connected ? `var(--color-grey-dark)`: `transparent`};
   border-radius: 8px;
   min-width: 224px;
   margin: 12px;
@@ -29,7 +29,7 @@ const Header = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 1px solid var(--color-dark-grey);
+  border-bottom: 1px solid var(--color-grey-dark);
 `
 
 const Group = styled.div`
@@ -120,7 +120,7 @@ const Separator = styled.hr`
   margin: 0;
   border: none;
   height: 1px;
-  background: var(--color-dark-light);
+  background: var(--color-dark-grey);
 `
 
 export default class Connection extends Component {
