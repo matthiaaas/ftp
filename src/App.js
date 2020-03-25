@@ -49,25 +49,28 @@ class App extends Component {
   logout() {
     console.info("logging out...");
 
-    if (this.socket === undefined || this.state.status !== "online") return;
+    if (this.socket !== undefined || this.state.status === "online") {
+      this.socket.raw("quit", (err, data) => {
+        if (err) {
+          return alert(err);
+        }
+      });
+      if (this.state.status === "online") {
+        this.setState({
+          socket: {
+            host: "",
+            port: 0,
+            user: "",
+            pass: ""
+          }
+        })
+      }
+      this.socket.destroy();
+    }
 
-    this.setState({
-      socket: {
-        host: "",
-        port: 0,
-        user: "",
-        pass: ""
-      }
-    });
-    this.socket.raw("quit", (err, data) => {
-      if (err) {
-        return alert(err);
-      }
-    });
     this.setState({
       status: "offline"
     });
-    this.socket.destroy();
   }
 
   login(data) {
@@ -120,10 +123,11 @@ class App extends Component {
       })
     }
 
-    this.socket.auth(data.user, data.pass, (err, success) => {
+    this.socket.auth(data.user, data.pass, (err, success, end) => {
       if (err) {
         alert(err);
-        this.setState({ status: "offline" });
+        console.log(err.toString());
+        this.logout();
       }
       if (success) {
         console.info(`%c${data.user}@${data.host}:`, "color: #25CC40", success.text);

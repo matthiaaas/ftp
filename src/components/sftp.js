@@ -44,6 +44,10 @@ export default class SFTP {
       username: this.user,
       password: this.pass
     })
+
+    this.socket.on("error", (err) => {
+      callback(err)
+    })
   }
 
   /**
