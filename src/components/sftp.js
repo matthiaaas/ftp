@@ -1,6 +1,6 @@
 const ssh2Client = window.require("ssh2").Client;
 
-class SFTP {
+export default class SFTP {
   constructor(cfg) {
     this.host = cfg.host || "localhost";
     this.port = cfg.port || 22;
@@ -160,7 +160,7 @@ class SFTP {
 }
 
 
-class Shell {
+export class Shell {
   constructor(socket) {
     this.socket = socket.socket;
   }
@@ -191,5 +191,3 @@ class Shell {
     this.stream.write(`${data}\r`)
   }
 }
-
-module.exports = {sftp: SFTP, shell: Shell};

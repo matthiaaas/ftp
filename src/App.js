@@ -5,6 +5,8 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import RouteChange from "./components/RouteChange";
 import { GlobalStyles } from "./components/GlobalStyles";
 
+import SFTP from "./components/sftp";
+
 import Titlebar from "./components/static/titlebar/Titlebar";
 import Sidebar from "./components/static/sidebar/Sidebar";
 import Taskbar from "./components/static/taskbar/Taskbar";
@@ -111,9 +113,8 @@ class App extends Component {
       })
     } else {
       console.debug("session protocol is: sftp");
-      const { sftp } = require("./components/sftp");
 
-      this.socket = new sftp({
+      this.socket = new SFTP({
         host: data.host,
         port: data.port
       })

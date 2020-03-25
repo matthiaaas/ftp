@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from "react";
 import styled from "styled-components";
 
+import { Shell } from "../../../components/sftp";
+
 import Process from "./InteractiveProcess";
 
 const Messages = styled.div`
@@ -22,8 +24,7 @@ export default class InteractiveTerminal extends Component {
     
     this.socket = this.props.socket;
 
-    const { shell } = require("../../../components/sftp");
-    this.shell = new shell(this.socket);
+    this.shell = new Shell(this.socket);
 
     this.newProcess = this.newProcess.bind(this);
     this.setInput = this.setInput.bind(this);
