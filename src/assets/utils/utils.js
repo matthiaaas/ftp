@@ -1,3 +1,5 @@
+const process = window.require("process");
+
 export function toAccurateFileSize(size) {
   const units = ["B", "KB", "MB", "GB", "TB", "PB"];
   let unit = 0;
@@ -37,5 +39,14 @@ export function toAccurateDate(timestamp) {
     year: time.getFullYear(),
     month: ("0" + (time.getMonth() + 1)).slice(-2),
     day: ("0" + time.getDate()).slice(-2)
+  }
+}
+
+export function getPlatformStartCmd() {
+  switch (process.platform) { 
+     case "darwin": return "open";
+     case "win32": return "start";
+     case "win64": return "start";
+     default: return "xdg-open";
   }
 }

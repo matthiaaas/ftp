@@ -59,10 +59,10 @@ export const GlobalStyles = createGlobalStyle`
   ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     border: 1px solid var(--color-dark-light);
-    background: var(--color-dark);
+    background: var(--color-black);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-black)
+    border-color: var(--color-dark-grey);
   }
 `

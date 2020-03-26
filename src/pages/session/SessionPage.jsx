@@ -14,7 +14,8 @@ import File from "./components/File";
 import Space from "./components/Space";
 import ContextMenus from "./components/ContextMenus";
 import NewFolder from "./components/NewFolder";
-import Upload from "./components/Upload";
+import Progress from "./components/Progress";
+import KeyEvents from "../../components/misc/KeyEvents";
 
 class SessionPage extends Component {
   constructor(props) {
@@ -28,21 +29,22 @@ class SessionPage extends Component {
         path: "/",
         files: {},
         selected: [],
-        selecting: false,
         loading: true,
         newFolder: false
-      }
+      },
+      keys: {}
     }
 
     this.socket = new FTP(this.props.socket);
     this.dataSocket = new Data(this.props.socketData.host);
 
-    this.upload = createRef();
+    this.progress = createRef();
     this.contextMenus = createRef();
 
     this.updateExternFiles = this.updateExternFiles.bind(this);
     this.enterExternFolder = this.enterExternFolder.bind(this);
     this.goBackExternFolder = this.goBackExternFolder.bind(this);
+    this.selectExternFile = this.selectExternFile.bind(this);
   }
 
   componentDidMount() {
@@ -79,7 +81,8 @@ class SessionPage extends Component {
         extern: {
           ...this.state.extern,
           path: newPath,
-          files: data
+          files: data,
+          selected: []
         }
       });
     })
@@ -102,11 +105,65 @@ class SessionPage extends Component {
     }
   }
 
+  selectExternFile(file) {
+    let selected = this.state.extern.selected;
+    if (this.state.keys.cmd) {
+      if (selected.includes(file)) {
+        let i = selected.findIndex(item => item === file)
+        selected.splice(i, 1);
+      } else {
+        selected.push(file)
+      }
+    } else if (this.state.keys.shift) {
+      let files = this.state.extern.files;
+      let iStart = files.findIndex(item => item === selected[selected.length - 1]) + 1;
+      let iEnd = files.findIndex(item => item === file);
+      for (
+        let i = iStart < iEnd ? iStart : iStart - 1;
+        iStart < iEnd ? i <= iEnd : i >= iEnd;
+        iStart < iEnd ? i++ : i--
+      ) {
+        selected.push(files[i])
+      }
+    } else {
+      if (selected[0] === file && selected.length === 1) {
+        selected = [];
+      } else {
+        selected = [file];
+      }
+    }
+    // remove duplicates
+    selected = [...new Set(selected)];
+    this.setState({
+      extern: {
+        ...this.state.extern,
+        selected: selected
+      }
+    })
+  }
+
   render() {
     return (
       <Page>
-        <Upload
-          ref={this.upload}
+        <KeyEvents
+          onModifierKeys={(keys) => {
+            this.setState({
+              keys: keys
+            })
+          }}
+          onKeys={(key) => {
+            if (key === "n" && this.state.keys.shift && this.state.keys.cmd) {
+              this.setState({
+                extern: {
+                  ...this.state.extern,
+                  newFolder: true
+                }
+              })
+            }
+          }}
+        />
+        <Progress
+          ref={this.progress}
           onAbort={this.socket.stopUpload}
         />
         <ContextMenus
@@ -130,7 +187,7 @@ class SessionPage extends Component {
                 onUpload={this.socket.uploadLocalFiles}
                 onReturn={this.updateExternFiles}
                 onProgress={(current, max) => {
-                  this.upload.current.updateProgress(current, max);
+                  this.progress.current.updateProgress(current, max);
                 }}
                 onContext={(event) => {
                   this.contextMenus.current.openForSpace(event, this.state.extern.path)
@@ -165,11 +222,10 @@ class SessionPage extends Component {
                       <Folder
                         key={index + file.name + file.time}
                         folder={file}
+                        selected={this.state.extern.selected.includes(file)}
                         onEnter={this.enterExternFolder}
                         onUpload={this.socket.uploadLocalFiles}
-                        onProgress={(current, max) => {
-                          this.upload.current.updateProgress(current, max);
-                        }}
+                        onProgress={this.progress}
                         onContext={this.contextMenus.current.openForFolder}
                       />
                     )
@@ -178,28 +234,9 @@ class SessionPage extends Component {
                       <File
                         key={index + file.name + file.time}
                         file={file}
-                        onSelect={(event, file) => {
-                          let selected = this.state.extern.selected;
-                          selected.push(file)
-                          this.setState({
-                            extern: {
-                              ...this.state.extern,
-                              selecting: true,
-                              selected: selected
-                            }
-                          })
-                        }}
-                        onDeselect={(event, file) => {
-                          let selected = this.state.extern.selected;
-                          let found = selected.findIndex(item => item.name === file.name);
-                          selected.splice(found, 1);
-                          this.setState({
-                            extern: {
-                              ...this.state.extern,
-                              selecting: !selected.length === 0,
-                              selected: selected
-                            }
-                          })
+                        selected={this.state.extern.selected.includes(file)}
+                        onClick={() => {
+                          this.selectExternFile(file)
                         }}
                         onContext={this.contextMenus.current.openForFile}
                       />

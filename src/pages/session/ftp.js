@@ -1,8 +1,12 @@
+import { getPlatformStartCmd } from "../../assets/utils/utils";
+
 export default class FTP {
   constructor(ftp) {
     this.ftp = ftp;
     this.fs = window.require("fs");
     this.path = window.require("path");
+    this.tmp = window.require("tmp");
+    this.exec = window.require("child_process").exec;
   }
 
   updateExternFiles = (path, callback) => {
@@ -10,6 +14,38 @@ export default class FTP {
       if (err) alert(err);
       else callback(data);
     })
+  }
+
+  openExternFile = (file, callback) => {
+    if (this.ftp.sftp) {
+      file.extension = "." + file.name.split(".")[file.name.split(".").length - 1];
+      let tmpfile = this.tmp.fileSync({
+        prefix: file.name + "-",
+        postfix: file.extension
+      });
+      console.debug("downloading file as temporary file for editing...")
+      this.downloadExternFile(file, tmpfile.name, () => {
+        console.debug("opening file from temp directory...")
+        this.exec(`${getPlatformStartCmd()} ${tmpfile.name}`, (err) => {
+          if (err) {
+            alert(err)
+            console.error(err);
+          }
+          let oldTime = this.fs.statSync(tmpfile.name).mtimeMs;
+          const checkForChanges = () => {
+            let newTime = this.fs.statSync(tmpfile.name).mtimeMs;
+            if (newTime > oldTime) {
+              oldTime = newTime;
+              callback(tmpfile, file.path + file.name);
+            }
+            setTimeout(checkForChanges, 3000);
+          }
+          checkForChanges();
+        })
+      })
+    } else {
+      alert("Unfortunately this feature isn't implemented for ftp connections")
+    }
   }
 
   createExternFolder = (path, folder, callback) => {
@@ -30,19 +66,36 @@ export default class FTP {
     
   }
 
-  downloadExternFile = (path, file, callback) => {
+  downloadExternFile = (file, to, callback) => {
     let dlDir = window.require("downloads-folder");
-    this.ftp.get(path + file, dlDir() + "/" + file, (err) => {
+    let destination = to || dlDir() + "/" + file.name
+    this.ftp.get(file.path + file.name, destination, (err) => {
       if (err) alert(err);
       else if (typeof callback === "function") callback();
     })
   }
 
   stopUpload = () => {
-    this.ftp.raw("abor", (err) => {
-      if (err) alert(err);
-      else console.debug("upload stopped")
-    })
+    if (this.ftp.sftp) {
+      alert("Cannot stop for sftp connection")
+    } else {
+      this.ftp.raw("abor", (err) => {
+        if (err) alert(err);
+        else console.debug("upload stopped")
+      })
+    }
+  }
+
+  uploadLocalFile = (file, path, callback) => {
+    if (this.ftp.sftp) {
+      console.debug("uploading", file.name, "...")
+      this.ftp.put(file.name, path, (err) => {
+        if (err) { console.error(err) }
+        else callback();
+      })
+    } else {
+      return alert("Not supported")
+    }
   }
 
   uploadLocalFiles = (transfer, path, callback, progress) => {

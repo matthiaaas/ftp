@@ -60,8 +60,7 @@ export default class File extends Component {
     super(props);
 
     this.state = {
-      dropping: false,
-      selected: false
+      dropping: false
     }
   }
 
@@ -89,15 +88,8 @@ export default class File extends Component {
 
     return (
       <Wrapper
-        selected={this.state.selected}
-        onClick={(event) => {
-          if (this.state.selected) {
-            this.props.onDeselect.call(this, event, this.props.file);
-          } else {
-            this.props.onSelect.call(this, event, this.props.file);
-          }
-          this.setState({ selected: !this.state.selected })
-        }} 
+        selected={this.props.selected}
+        onClick={this.props.onClick}
         onContextMenu={(event) => {
           event.preventDefault();
           this.props.onContext.call(this, event, this.props.file);

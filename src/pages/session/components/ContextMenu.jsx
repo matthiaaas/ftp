@@ -57,7 +57,7 @@ export default class ContextMenuItem extends Component {
         <Shortcut>
           {this.props.shortcut.split("").map((key, index) => {
             return (
-              <Key>{key}</Key>
+              <Key key={index}>{key}</Key>
             )
           })}
         </Shortcut>

@@ -12,14 +12,14 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   padding: 7px 20px;
-  border: 1px solid ${props => props.dropping ? `var(--color-blue) !important` : `transparent`};
+  border: 1px solid ${props => props.dropping || props.selected ? `var(--color-blue) !important` : `transparent`};
   border-radius: 12px;
   outline: none;
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
-  color: ${props => props.dropping ? `var(--color-white) !important` : `var(--color-grey)`};
-  background: var(--color-dark);
+  color: ${props => props.dropping || props.selected ? `var(--color-white) !important` : `var(--color-grey)`};
+  background: ${props => props.selected ? `var(--color-blue-blur) !important` : `var(--color-dark)`};
 
   * {
     pointer-events: none;
@@ -75,6 +75,7 @@ export default class Folder extends Component {
     return (
       <Wrapper
         dropping={this.state.dropping}
+        selected={this.props.selected}
         onDragEnter={(event) => {
           event.preventDefault();
           this.setState({ dropping: true });

@@ -87,7 +87,20 @@ class ContextMenuFile extends Component {
       <ContextMenu _ref={this.props._ref} {...this.props}>
         <ContextMenuItem shortcut="⌘I" disabled>Info</ContextMenuItem>
         <Separator />
-        <ContextMenuItem shortcut="⌘O" disabled>Open</ContextMenuItem>
+        <ContextMenuItem
+          name="Open"
+          shortcut="⌘O"
+          onExecute={() => {
+            this.props.onReturn.call(this);
+            this.props.socket.openExternFile(this.props.target, (file, to) => {
+              console.debug("there had been changes to", file.name)
+              this.props.socket.uploadLocalFile(file, to, () => {
+                console.debug("applied changes")
+                this.props.onReload.call(this);
+              })
+            });
+          }}
+        />
         <Separator />
         <ContextMenuItem
           name="New Folder"
@@ -107,7 +120,7 @@ class ContextMenuFile extends Component {
           name="Download"
           shortcut="⌘D"
           onExecute={() => {
-            this.props.socket.downloadExternFile(this.props.target.path, this.props.target.name);
+            this.props.socket.downloadExternFile(this.props.target);
             this.props.onReturn.call(this);
           }}
         />
