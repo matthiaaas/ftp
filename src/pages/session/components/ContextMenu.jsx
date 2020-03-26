@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
+const process = window.require("process");
+
+const isMac = process.platform === "darwin";
+
 const Wrapper = styled.li`
   padding: 6px 24px;
   display: flex;
@@ -23,18 +27,18 @@ const Wrapper = styled.li`
 `
 
 const Name = styled.span`
-  flex: 5;
+  flex: 8;
 `
 
 const Shortcut = styled.span`
   text-align: right;
-  flex: 3;
+  flex: 6;
 `
 
 const Key = styled.div`
-  width: 16px;
+  width: ${props => props.long ? "auto" : `16px`};
   height: 16px;
-  padding: 2px;
+  padding: 2px ${props => props.long && "4px"};
   text-align: center;
   border-radius: 4px;
   display: inline-block;
@@ -56,8 +60,9 @@ export default class ContextMenuItem extends Component {
         <Name>{this.props.children || this.props.name}</Name>
         <Shortcut>
           {this.props.shortcut.split("").map((key, index) => {
+            key = key.replace("⌘", isMac ? "⌘" : "ctrl");
             return (
-              <Key key={index}>{key}</Key>
+              <Key key={index} long={key.length > 1}>{key}</Key>
             )
           })}
         </Shortcut>
