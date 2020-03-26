@@ -7,6 +7,7 @@ export default class FTP {
     this.path = window.require("path");
     this.tmp = window.require("tmp");
     this.exec = window.require("child_process").exec;
+    this.spawn = window.require("child_process").spawn;
   }
 
   updateExternFiles = (path, callback) => {
@@ -26,22 +27,18 @@ export default class FTP {
       console.debug("downloading file as temporary file for editing...")
       this.downloadExternFile(file, tmpfile.name, () => {
         console.debug("opening file from temp directory...")
-        this.exec(`${getPlatformStartCmd()} ${tmpfile.name}`, (err) => {
-          if (err) {
-            alert(err)
-            console.error(err);
+        this.spawn(getPlatformStartCmd(), [tmpfile.name]);
+        let oldTime = this.fs.statSync(tmpfile.name).mtimeMs;
+        console.debug("listening for changes to " + tmpfile.name + "...")
+        const checkForChanges = () => {
+          let newTime = this.fs.statSync(tmpfile.name).mtimeMs;
+          if (newTime > oldTime) {
+            oldTime = newTime;
+            callback(tmpfile, file.path + file.name);
           }
-          let oldTime = this.fs.statSync(tmpfile.name).mtimeMs;
-          const checkForChanges = () => {
-            let newTime = this.fs.statSync(tmpfile.name).mtimeMs;
-            if (newTime > oldTime) {
-              oldTime = newTime;
-              callback(tmpfile, file.path + file.name);
-            }
-            setTimeout(checkForChanges, 3000);
-          }
-          checkForChanges();
-        })
+          setTimeout(checkForChanges, 3000);
+        }
+        checkForChanges();
       })
     } else {
       alert("Unfortunately this feature isn't implemented for ftp connections")
