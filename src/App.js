@@ -49,28 +49,24 @@ class App extends Component {
   logout() {
     console.info("logging out...");
 
-    if (this.socket !== undefined || this.state.status === "online") {
+    if (this.socket !== undefined && this.state.status === "online") {
       this.socket.raw("quit", (err, data) => {
         if (err) {
           return alert(err);
         }
       });
-      if (this.state.status === "online") {
-        this.setState({
-          socket: {
-            host: "",
-            port: 0,
-            user: "",
-            pass: ""
-          }
-        })
-      }
       this.socket.destroy();
     }
 
     this.setState({
+      socket: {
+        host: "",
+        port: 0,
+        user: "",
+        pass: ""
+      },
       status: "offline"
-    });
+    })
   }
 
   login(data) {
