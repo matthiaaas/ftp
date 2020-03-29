@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 
 import Container from "../../components/misc/Container";
+import Code from "../../components/misc/Code";
 import Tag, { TagTooltip } from "../../components/misc/Tag";
 
 import { Page, Content, Warnings } from "./styles";
 
 import RawTerminal from "./components/RawTerminal";
 import InteractiveTerminal from "./components/InteractiveTerminal";
-import Code from "../../components/misc/Code";
 
 class TerminalPage extends Component {
   render() {

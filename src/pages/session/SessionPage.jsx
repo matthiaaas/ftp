@@ -154,8 +154,8 @@ class SessionPage extends Component {
                 newFolder: true
               }
             })
-            break;
           }
+          break;
         case "r":
           this.updateExternFiles();
           break;
