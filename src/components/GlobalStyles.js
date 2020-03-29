@@ -6,7 +6,7 @@ export const GlobalStyles = createGlobalStyle`
     --color-black: #0A0A0B;
 
     --color-dark: #141417;
-    --color-dark-blur: rgba(20, 20, 23, 0.72);
+    --color-dark-blur: rgba(10, 10, 11, 0.8);
     --color-dark-light: #1D1D21;
     --color-dark-grey: #26262C;
     --color-dark-grey-blur: rgba(36, 38, 44, 0.2);

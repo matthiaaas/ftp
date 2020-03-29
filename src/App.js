@@ -146,6 +146,7 @@ class App extends Component {
             <Sidebar ref={this.sidebar} />
             <Taskbar
               ref={this.taskbar}
+              socket={this.socket}
               socketData={this.state.socket}
               socketStatus={this.state.status}
               onRefresh={() => {if (this.state.location.pathname === "/session") this.session.current.updateExternFiles()}}

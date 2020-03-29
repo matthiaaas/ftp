@@ -1,17 +1,17 @@
 import styled from "styled-components";
 
 export const Header = styled.header`
-  z-index: 7;
+  z-index: 11;
+`
+
+export const Content = styled.div`
   border-bottom: 1px solid var(--color-dark-grey);
-  margin: 36px 0 0 200px;
+  margin: 36px 0 0 201px;
   padding: 8px 0 36px 36px;
   width: 100vw;
   position: fixed;
   background: var(--color-dark);
-`
-
-export const Content = styled.div`
-  
+  z-index: 7;
 `
 
 export const Rows = styled.div`

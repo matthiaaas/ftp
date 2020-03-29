@@ -1,34 +1,70 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import Button from "../../../components/misc/Button";
+import Button from "../../misc/Button";
+import KeyEvents from "../../misc/KeyEvents";
 
-import { Search, Bookmark, Eye, RefreshCcw, X } from "react-feather";
+import { Search as Zoom, Bookmark, Eye, RefreshCcw, X } from "react-feather";
 
 import { Header, Content, Rows, Row, Item, ItemInner, ItemOuter, ToolTip, Server, ServerStatus, ServerDisconnect } from "./styles";
+
+import Search from "./components/Search";
 
 class Taskbar extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      location: window.location.pathname
+      location: window.location.pathname,
+      search: false,
+      keys: []
     }
+
+    this.handleShortcut = this.handleShortcut.bind(this);
+    this.changeActive = this.changeActive.bind(this);
   }
 
   changeActive(location) {
     this.setState({ location: location.pathname });
   }
 
+  handleShortcut(key) {
+    if (this.state.keys.cmd) {
+      switch (key) {
+        case "f":
+          this.setState({ search: !this.state.search })
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
   render() {
     return (
       <Header>
+        <KeyEvents
+          onModifierKeys={(keys) => {
+            this.setState({
+              keys: keys
+            })
+          }}
+          onKeys={this.handleShortcut}
+        />
+        {this.state.search &&
+          <Search
+            socket={this.props.socket}
+            socketData={this.props.socketData}
+            socketStatus={this.props.socketStatus}
+            onClose={() => { this.setState({ search: false }) }}
+          />
+        }
         <Content>
           <Rows>
             <Row>
-              <Item>
+              <Item active={this.state.search} onClick={() => { this.setState({ search: true }) }}>
                 <ItemInner>
-                  <Search />
+                  <Zoom />
                   <ToolTip>Search for files and folders</ToolTip>
                 </ItemInner>
                 <ItemOuter>Search</ItemOuter>
