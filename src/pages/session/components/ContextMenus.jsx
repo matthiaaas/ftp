@@ -88,7 +88,7 @@ class ContextMenuFile extends Component {
         <ContextMenuItem shortcut="⌘I" disabled>Info</ContextMenuItem>
         <Separator />
         <ContextMenuItem
-          name="Open"
+          name="Open/Edit"
           shortcut="⌘O"
           onExecute={() => {
             this.props.onReturn.call(this);
@@ -129,6 +129,7 @@ class ContextMenuFile extends Component {
           name="Delete"
           shortcut="⌘⌫"
           onExecute={() => {
+            console.log(this.props.selected)
             this.props.socket.deleteExternFile(this.props.target.path + this.props.target.name, this.props.onReload);
             this.props.onReturn.call(this);
           }}
@@ -240,6 +241,7 @@ export default class ContextMenus extends Component {
           _ref={this.fileMenu}
           socket={this.props.socket}
           target={this.state.target}
+          selected={this.props.selected}
           onReturn={() => {
             this.closeAll();
           }}

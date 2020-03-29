@@ -51,10 +51,12 @@ export default class KeyEvents extends Component {
     }
     if (modifier) {
       this.setState(keys);
-      this.props.onModifierKeys.call(this, keys);
+      if (typeof this.props.onModifierKeys === "function") {
+        this.props.onModifierKeys.call(this, keys);
+      }
     } else {
       if (typeof this.props.onKeys === "function") {
-        this.props.onKeys.call(this, event.key.toLowerCase())
+        this.props.onKeys.call(this, event.key.toLowerCase(), event.keyCode)
       }
     }
   }
@@ -81,7 +83,9 @@ export default class KeyEvents extends Component {
     }
     if (modifier) {
       this.setState(keys);
-      this.props.onModifierKeys.call(this, keys);
+      if (typeof this.props.onModifierKeys === "function") {
+        this.props.onModifierKeys.call(this, keys);
+      }
     }
   }
 

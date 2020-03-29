@@ -1,6 +1,9 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router";
 
 import { Cloud, Terminal, PieChart, Sliders } from "react-feather";
+
+import KeyEvents from "../../misc/KeyEvents";
 
 import { Aside, Content } from "./styles";
 
@@ -11,12 +14,47 @@ class Sidebar extends Component {
     super(props);
 
     this.state = {
-      active: window.location.pathname
+      active: window.location.pathname,
+      redirect: undefined,
+      keys: []
     }
+
+    this.changeActive = this.changeActive.bind(this);
+    this.handleShortcut = this.handleShortcut.bind(this)
   }
 
   changeActive(location) {
     this.setState({ active: location.pathname });
+  }
+
+  handleShortcut(key) {
+    let redirect = this.state.redirect;
+
+    if (this.state.keys.cmd) {
+      switch (key) {
+        case "l":
+          redirect = "/"
+          break;
+        case "s":
+          redirect = "/session"
+          break;
+        case "t":
+          redirect = "/terminal"
+          break;
+        case ",":
+          redirect = "/settings"
+          break;
+        case "b":
+          redirect = "/quickconnect"
+          break;
+        default:
+          break;
+      }
+    }
+
+    this.setState({
+      redirect: redirect
+    })
   }
 
   render() {
@@ -45,6 +83,14 @@ class Sidebar extends Component {
 
     return (
       <Aside>
+        <KeyEvents
+          onModifierKeys={(keys) => {
+            this.setState({
+              keys: keys
+            })
+          }}
+          onKeys={this.handleShortcut}
+        />
         <Content>
           <Nav>
             {navItems.map((item, index) => {
@@ -59,6 +105,9 @@ class Sidebar extends Component {
             })}
           </Nav>
         </Content>
+        {this.state.redirect &&
+          <Redirect to={this.state.redirect} />
+        }
       </Aside>
     )
   }

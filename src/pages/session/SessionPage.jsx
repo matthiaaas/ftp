@@ -45,6 +45,7 @@ class SessionPage extends Component {
     this.enterExternFolder = this.enterExternFolder.bind(this);
     this.goBackExternFolder = this.goBackExternFolder.bind(this);
     this.selectExternFile = this.selectExternFile.bind(this);
+    this.handleShortcut = this.handleShortcut.bind(this);
   }
 
   componentDidMount() {
@@ -142,6 +143,28 @@ class SessionPage extends Component {
     })
   }
 
+  handleShortcut(key) {
+    if (this.state.keys.cmd) {
+      switch (key) {
+        case "n":
+          if (this.state.keys.shift) {
+            this.setState({
+              extern: {
+                ...this.state.extern,
+                newFolder: true
+              }
+            })
+            break;
+          }
+        case "r":
+          this.updateExternFiles();
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
   render() {
     return (
       <Page>
@@ -151,16 +174,7 @@ class SessionPage extends Component {
               keys: keys
             })
           }}
-          onKeys={(key) => {
-            if (key === "n" && this.state.keys.shift && this.state.keys.cmd) {
-              this.setState({
-                extern: {
-                  ...this.state.extern,
-                  newFolder: true
-                }
-              })
-            }
-          }}
+          onKeys={this.handleShortcut}
         />
         <Progress
           ref={this.progress}
@@ -169,6 +183,7 @@ class SessionPage extends Component {
         <ContextMenus
           ref={this.contextMenus}
           socket={this.socket}
+          selected={this.state.extern.selected}
           onReload={this.updateExternFiles}
           onNewFolder={() => {
             this.setState({

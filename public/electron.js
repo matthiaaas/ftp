@@ -43,6 +43,7 @@ function createWindow() {
       submenu: [
         {
           label: "New Folder",
+          enabled: false,
           accelerator: "CmdOrCtrl+Shift+N",
           click: () => {
             console.log("new folder")
@@ -59,6 +60,7 @@ function createWindow() {
         { type: "separator" },
         {
           label: "Reload",
+          enabled: false,
           accelerator: "CmdOrCtrl+R",
           click: () => {
             console.log("reloading")
@@ -100,7 +102,8 @@ function createWindow() {
       submenu: [
         {
           label: "Connect",
-          enabled: false
+          enabled: false,
+          accelerator: "CmdOrCtrl+L"
         },
         { type: "separator" },
         {
@@ -111,11 +114,13 @@ function createWindow() {
         { type: "separator" },
         {
           label: "Session",
-          enabled: false
+          enabled: false,
+          accelerator: "CmdOrCtrl+S"
         },
         {
           label: "Terminal",
-          enabled: false
+          enabled: false,
+          accelerator: "CmdOrCtrl+T"
         },
         {
           label: "Statistics",
@@ -124,7 +129,8 @@ function createWindow() {
         { type: "separator" },
         {
           label: "QuickConnect",
-          enabled: false
+          enabled: false,
+          accelerator: "CmdOrCtrl+B"
         }
       ]
     },
