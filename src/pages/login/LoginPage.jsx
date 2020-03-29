@@ -18,7 +18,7 @@ class LoginPage extends Component {
     this.state = {
       login: {
         host: "",
-        port: 21,
+        port: 22,
         user: "",
         pass: "",
         protocol: "ftp",
@@ -34,7 +34,7 @@ class LoginPage extends Component {
     if (typeof this.props.onLogin === "function") {
       let login = this.state.login;
       if(typeof login.port !== "number") {
-        login.port = 21
+        login.port = 22
       } if (login.user === "") {
         login.user = "anonymous"
       } if (login.pass === "") {
@@ -84,7 +84,7 @@ class LoginPage extends Component {
                 <Input>
                   <Label>Port</Label>
                   <Button variant="input"
-                    placeholder="21"
+                    placeholder="22"
                     type="number"
                     min="1"
                     max="9999"
@@ -118,8 +118,8 @@ class LoginPage extends Component {
                       })
                     }}
                   >
-                    <DropdownItem value="ftp">FTP</DropdownItem>
                     <DropdownItem value="sftp">SFTP</DropdownItem>
+                    <DropdownItem value="ftp">FTP</DropdownItem>
                   </Dropdown>
                 </Input>
               </Row>
