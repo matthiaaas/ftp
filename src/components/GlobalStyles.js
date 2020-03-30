@@ -32,6 +32,7 @@ export const GlobalStyles = createGlobalStyle`
 
   body,
   html {
+    overflow: overlay;
     background: var(--color-dark-light);
   }
 
