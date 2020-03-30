@@ -72,7 +72,7 @@ class ContextMenuFolder extends Component {
           name="Delete"
           shortcut="⌘⌫"
           onExecute={() => {
-            this.props.socket.deleteExternFolderRecursively(this.props.target.path + this.props.target.name, this.props.onReload);
+            this.props.socket.deleteExternFolderRecursively(this.props.target, this.props.onReload);
             this.props.onReturn.call(this);
           }}
         />
@@ -129,8 +129,30 @@ class ContextMenuFile extends Component {
           name="Delete"
           shortcut="⌘⌫"
           onExecute={() => {
-            console.log(this.props.selected)
-            this.props.socket.deleteExternFile(this.props.target.path + this.props.target.name, this.props.onReload);
+            let selected = this.props.selected;
+            if (selected.length > 0 && selected.includes(this.props.target)) {
+              const _delete = (obj) => {
+                return new Promise((resolve, reject) => {
+                  if (obj.type === 0) {
+                    this.props.socket.deleteExternFile(obj, () => {
+                      this.props.onReload();
+                      return resolve();
+                    });
+                  } else if (obj.type === 1) {
+                    this.props.socket.deleteExternFolder(obj, () => {
+                      this.props.onReload();
+                      return resolve();
+                    });
+                  }
+                })
+              }
+              let deletions = selected.map((obj) => {
+                return _delete(obj);
+              })
+              Promise.all(deletions);
+            } else {
+              this.props.socket.deleteExternFile(this.props.target, this.props.onReload);
+            }
             this.props.onReturn.call(this);
           }}
         />

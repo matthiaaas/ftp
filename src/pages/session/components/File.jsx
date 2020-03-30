@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import { Image, Volume1, Film, FileText } from "react-feather";
+import { Image, Volume1, Film, FileText, Terminal } from "react-feather";
 
 import { toAccurateDate, toAccurateFileSize, getExactFileType } from "../../../assets/utils/utils.js";
 
@@ -80,6 +80,9 @@ export default class File extends Component {
         break;
       case "vid":
         Icon = <Film />
+        break;
+      case "scr":
+        Icon = <Terminal />
         break;
       default:
         Icon = <FileText />

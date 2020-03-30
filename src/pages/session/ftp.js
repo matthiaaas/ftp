@@ -228,7 +228,7 @@ export default class FTP {
 
   deleteExternFile = (file, callback) => {
     if (this.ftp.sftp) {
-      this.ftp.rm(file, (err) => {
+      this.ftp.rm(file.path + file.name, (err) => {
         if (err) alert(err);
         else if (typeof callback === "function") callback();
       })
@@ -242,7 +242,7 @@ export default class FTP {
 
   deleteExternFolder = (folder, callback) => {
     if (this.ftp.sftp) {
-      this.ftp.rmd(folder, (err) => {
+      this.ftp.rmd(folder.path + folder.name, (err) => {
         if (err) alert(err);
         callback();
       })
@@ -256,7 +256,7 @@ export default class FTP {
 
   deleteExternFolderRecursively = (folder, callback) => {
     if (this.ftp.sftp) {
-      this.ftp.raw(`rm "${folder}" -r`, (err, data, finished) => {
+      this.ftp.raw(`rm "${folder.path + folder.name}" -r`, (err, data, finished) => {
         if (err) alert(err);
         callback();
       }) 
@@ -319,7 +319,7 @@ export default class FTP {
       const flatten = list => list.reduce(
         (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
       );
-      walk(folder).then((results) => {
+      walk(folder.path + folder.name).then((results) => {
         let deletions;
         try {
           let files = flatten(results).filter(Boolean);
