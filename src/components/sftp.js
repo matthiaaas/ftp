@@ -60,7 +60,7 @@ export default class SFTP {
       let data = [];
       list.forEach(item => data.push({
         name: item.filename,
-        type: item.attrs.mode >= 33152 && item.attrs.mode <= 33188 ? 0 : 1,
+        type: item.attrs.mode >= 33000 && item.attrs.mode <= 33999 ? 0 : 1,
         time: item.attrs.mtime * 1000,
         size: item.attrs.size
       }))
@@ -174,13 +174,17 @@ export class Shell {
       if (err) throw err;
       this.stream = stream;
       this.stream.on("data", (data) => {
+        this.stream.pause()
         callback({
           text: data.toString().replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "").trim(),
           isError: data.toString().startsWith("-bash:") || data.toString().startsWith("-sh:")
         })
+        this.stream.resume()
       })
       this.stream.stderr.on("data", (data) => {
+        this.stream.pause()
         callback({text: data.toString().trim(), isError: true})
+        this.stream.resume()
       });
       this.stream.on("end", () => {
         console.debug("shell stream ended")

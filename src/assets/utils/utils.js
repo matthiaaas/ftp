@@ -17,12 +17,14 @@ export function getExactFileType(file) {
 
   let imageExtensions = ["png", "jpg", "jpeg", "gif", "bmp", "svg"];
   let videoExtensions = ["mp4", "mov", "avi", "flv"];
-  let soundExtensions = ["mp3", "aac", "m4a", "wav"]
+  let soundExtensions = ["mp3", "aac", "m4a", "wav"];
+  let scriptExtensions = ["sh", "bash", "bat", "exe", "app", "js", "py", "cpp", "c", "java", "rb", "pl"];
 
   let extensions = {
     "img": imageExtensions,
     "vid": videoExtensions,
-    "snd": soundExtensions
+    "snd": soundExtensions,
+    "scr": scriptExtensions
   }
 
   for (let type in extensions) {
