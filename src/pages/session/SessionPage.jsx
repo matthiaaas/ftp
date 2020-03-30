@@ -201,8 +201,8 @@ class SessionPage extends Component {
                 path={this.state.extern.path}
                 onUpload={this.socket.uploadLocalFiles}
                 onReturn={this.updateExternFiles}
-                onProgress={(current, max) => {
-                  this.progress.current.updateProgress(current, max);
+                onProgress={(current, max, progress) => {
+                  this.progress.current.updateProgress(current, max, progress);
                 }}
                 onContext={(event) => {
                   this.contextMenus.current.openForSpace(event, this.state.extern.path)
@@ -240,7 +240,7 @@ class SessionPage extends Component {
                         selected={this.state.extern.selected.includes(file)}
                         onEnter={this.enterExternFolder}
                         onUpload={this.socket.uploadLocalFiles}
-                        onProgress={this.progress}
+                        onProgress={this.progress.current.updateProgress}
                         onContext={this.contextMenus.current.openForFolder}
                       />
                     )

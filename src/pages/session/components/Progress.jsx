@@ -14,8 +14,8 @@ const Wrapper = styled.div`
   border: 1px solid var(--color-dark-grey);
   border-radius: 8px;
   padding: 16px 24px;
-  width: 100%;
-  max-width: 186px;
+  box-sizing: border-box;
+  width: 216px;
   transition: ${props => props.progress >= 1 && `visibility 0s ease 2.4s, opacity 0.4s ease 2s`};
   visibility: ${props => props.progress >= 1 || props.progress < 0 ? `hidden` : `visible`};
   opacity: ${props => props.progress >= 1 || props.progress < 0 ? `0` : `1`};
@@ -77,11 +77,14 @@ const Number = styled.span`
   font-family: var(--font-code);
 `
 
-const Progress = styled.div`
+const Progress = styled.div.attrs(props => ({
+  style: {
+    transform: `translateX(${props.progress * 100 - 100}%)`
+  }
+}))`
   z-index: 1;
   position: absolute;
   transition: transform 0.2s ease;
-  transform: ${props => `translateX(${props.progress * 100 - 100}%)`};
   width: 100%;
   height: 100%;
   top: 0;
@@ -97,7 +100,7 @@ const Progress = styled.div`
     width: 100%;
     height: 1.8px;
     transition: background 0.8s ease 0.6s;
-    background: ${props => props.progress >= 1 ? `var(--color-green)` : props.cancelled ? `var(--color-red)` : `var(--color-blue)`};
+    background: ${props => props.cancelled ? `var(--color-red)` : props.progress >= 1 ? `var(--color-green)` : `var(--color-blue)`};
   }
 `
 
@@ -115,8 +118,8 @@ export default class Upload extends Component {
     this.updateProgress = this.updateProgress.bind(this);
   }
 
-  updateProgress(current, max) {
-    let progress = current / max;
+  updateProgress(current, max, prog) {
+    let progress = prog || current / max;
     this.setState({
       progress: progress,
       current: current,
@@ -137,8 +140,9 @@ export default class Upload extends Component {
     return (
       <Wrapper progress={this.state.progress} cancelled={this.state.cancelled}>
         <Title>
-          <Label>Uploading</Label>
+          <Label>{this.props.label || "Uploading"}</Label>
           <Label>
+            {/* <Number>{`${Math.round(this.state.current.size * 10) / 10}${this.state.current.unit}`}/{`${Math.round(this.state.max.size * 10) / 10}${this.state.max.unit}`}</Number> */}
             <Number highlighted>{this.state.current === this.state.max ? this.state.current : this.state.current + 1}</Number> of <Number>{this.state.max}</Number>
           </Label>
         </Title>

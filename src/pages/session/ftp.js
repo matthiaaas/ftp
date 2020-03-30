@@ -111,15 +111,17 @@ export default class FTP {
 
     const uploadFile = (item, path, prog) => {
       return new Promise((resolve, reject) => {
-        if (typeof progress === "function") progress(prog.index, prog.max);
         let newPath = path.slice(0, -1);
         if (this.ftp.sftp) {
           console.debug("uploading", item.fullPath)
           this.ftp.put(rootPaths[0] + item.fullPath, newPath + item.fullPath, (err) => {
             if (err) {console.error(err)}
             else resolve();
+          }, (transferred, total) => {
+            progress(prog.index, prog.max, transferred / total)
           })
         } else {
+          if (typeof progress === "function") progress(prog.index, prog.max);
           console.debug("reading", item.fullPath)
           this.fs.readFile(rootPaths[0] + item.fullPath, (err, buffer) => {
             if (err) {
@@ -142,7 +144,6 @@ export default class FTP {
 
     const createDir = (item, path, prog) => {
       return new Promise((resolve, reject) => {
-        if (typeof progress === "function") progress(prog.index, prog.max);
         let newPath = path.slice(0, -1);
         console.debug("creating", item.fullPath)
         if (this.ftp.sftp) {
@@ -151,6 +152,7 @@ export default class FTP {
             else resolve();
           })
         } else {
+          if (typeof progress === "function") progress(prog.index, prog.max);
           this.ftp.raw("mkd", newPath + item.fullPath, (err) => {
             if (err) alert(err);
             else resolve();
@@ -233,7 +235,7 @@ export default class FTP {
         else if (typeof callback === "function") callback();
       })
     } else {
-      this.ftp.raw("dele", file, (err) => {
+      this.ftp.raw("dele", file.path + file.name, (err) => {
         if (err) alert(err);
         else if (typeof callback === "function") callback();
       })
@@ -247,7 +249,7 @@ export default class FTP {
         callback();
       })
     } else {
-      this.ftp.raw("rmd", folder, (err) => {
+      this.ftp.raw("rmd", folder.path + folder.name, (err) => {
         if (err) alert(err);
         else if (typeof callback === "function") callback();
       })

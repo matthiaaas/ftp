@@ -139,7 +139,7 @@ class ContextMenuFile extends Component {
                       return resolve();
                     });
                   } else if (obj.type === 1) {
-                    this.props.socket.deleteExternFolder(obj, () => {
+                    this.props.socket.deleteExternFolderRecursively(obj, () => {
                       this.props.onReload();
                       return resolve();
                     });
