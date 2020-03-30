@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Search as Zoom, Loader } from "react-feather";
 
 import KeyEvents from "../../../misc/KeyEvents";
+import Tag from "../../../misc/Tag";
 
 const Wrapper = styled.div`
   z-index: 11;
@@ -20,7 +21,17 @@ const Wrapper = styled.div`
   background: var(--color-dark-blur);
 `
 
+const Space = styled.div`
+  z-index: 10;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+`
+
 const Body = styled.div`
+  z-index: 11;
   position: absolute;
   top: 128px;
   transition: all ease 0.2s;
@@ -107,10 +118,16 @@ const Action = styled.div`
   text-transform: uppercase;
   font-size: 14px;
   color: var(--color-grey-dark);
+
+  &:hover {
+    color: ${props => props.disabled || `var(--color-grey)`};
+  }
 `
 
 const Results = styled.ul`
   margin-top: 8px;
+  max-height: ${props => props.show * 32}px;
+  overflow-y: scroll;
 `
 
 const Result = styled.li`
@@ -150,6 +167,7 @@ const Match = styled.span`
 
 const Error = styled.div`
   margin-left: 24px;
+  height: 20px;
 `
 
 export default class Search extends Component {
@@ -161,6 +179,7 @@ export default class Search extends Component {
       searching: false,
       results: {
         selected: 0,
+        defaultShow: 3,
         show: 3,
         files: [],
         folders: []
@@ -178,13 +197,13 @@ export default class Search extends Component {
       let results = [];
       for (let i = 0; i < data.length; i++) {
         let result = data[i];
-        if (result === "" || !result.startsWith("/")) continue;
+        if (result === "" || !(result.startsWith("./") || result.startsWith("/"))) continue;
         let split = result.split("/");
 
         let name = split[split.length - 1];
         let depth = split.length;
         split.pop();
-        let path = split.join("/");
+        let path = split.join("/") + "/";
 
         results.push({
           name: name,
@@ -228,29 +247,44 @@ export default class Search extends Component {
     }
   }
 
-  handleShortcut(key, code) {
+  submit() {
+    let result = "";
+  }
+
+  handleShortcut(key, code, event) {
     let selected = this.state.results.selected;
 
     switch (code) {
       case 40:
         selected++;
+        event.preventDefault();
         break;
       case 38:
         selected--;
+        event.preventDefault();
         break;
       case 27:
         this.props.onClose.call(this);
+        break;
+      case 13:
+        this.submit();
+        break;
+      case 9:
+        selected++;
+        event.preventDefault();
         break;
       default:
         break;
     }
 
-    this.setState({
-      results: {
-        ...this.state.results,
-        selected: selected
-      }
-    })
+    if (selected >= 0 && selected < this.state.results.files.length + this.state.results.folders.length) {
+      this.setState({
+        results: {
+          ...this.state.results,
+          selected: selected
+        }
+      })
+    }
   }
 
   render() {
@@ -264,7 +298,11 @@ export default class Search extends Component {
               onChange={(event) => {
                 let term = event.target.value;
                 this.setState({
-                  term: term.replace("*", "")
+                  term: term.replace("*", ""),
+                  results: {
+                    ...this.state.results,
+                    show: this.state.results.defaultShow
+                  }
                 })
                 if (term.length > 0) {
                   this.search(term)
@@ -284,11 +322,23 @@ export default class Search extends Component {
           </Header>
           <Section>
             <Actions>
-              <Action>{"Files" + (this.state.results.files.length > 0 ? ` (${this.state.results.files.length})` : "")}</Action>
+              <Action disabled>{"Files" + (this.state.results.files.length > 0 ? ` (${this.state.results.files.length})` : "")}</Action>
+              {this.state.results.files.length > this.state.results.defaultShow &&
+                <Action onClick={() => {
+                  this.setState({
+                    results: {
+                      ...this.state.results,
+                      show: this.state.results.files.length
+                    }
+                  })
+                }}>Show All</Action>
+              }
             </Actions>
-            <Results>
+            <Results show={this.state.results.defaultShow}>
               {this.state.results.files.length === 0 &&
-                <Error>Nothing found</Error>
+                <Error>
+                  {this.state.term === "" || this.state.term === " " ? "Try a search term" : "Nothing found"}
+                </Error>
               }
               {this.state.results.files.slice(0, this.state.results.show).map((item, index) => {
                 let split = [item.name, ""];
@@ -322,11 +372,21 @@ export default class Search extends Component {
           </Section>
           <Section>
             <Actions>
-              <Action>Folders</Action>
+              <Action disabled>{"Folders" + (this.state.results.folders.length > 0 ? ` (${this.state.results.folders.length})` : "")}</Action>
+              <Action onClick={() => {
+                  this.setState({
+                    results: {
+                      ...this.state.results,
+                      show: this.state.results.folders.length
+                    }
+                  })
+                }}>Show All</Action>
             </Actions>
-            <Results>
+            <Results show={this.state.results.defaultShow}>
               {this.state.results.folders.length === 0 &&
-                <Error>Nothing found</Error>
+                <Error>
+                  {this.state.term === "" || this.state.term === " " ? "Try a search term" : "Nothing found"}
+                </Error>
               }
               {this.state.results.folders.slice(0, this.state.results.show).map((item, index) => {
                 let split = [item.name, ""];
@@ -365,9 +425,13 @@ export default class Search extends Component {
             {this.props.socketStatus === "online" && this.props.socketData.protocol !== "sftp" &&
               <Tip>FTP connections are not supported</Tip>
             }
-            <Tip>{this.props.socketStatus !== "online" ? "Please login first" : " "}</Tip>
+            {this.props.socketStatus !== "online" &&
+              <Tag>please login first</Tag>
+            }
+            <Tip>{" "}</Tip>
           </Tips>
         </Body>
+        <Space onClick={this.props.onClose} />
       </Wrapper>
     )
   }

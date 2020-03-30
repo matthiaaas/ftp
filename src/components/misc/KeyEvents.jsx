@@ -56,7 +56,7 @@ export default class KeyEvents extends Component {
       }
     } else {
       if (typeof this.props.onKeys === "function") {
-        this.props.onKeys.call(this, event.key.toLowerCase(), event.keyCode)
+        this.props.onKeys.call(this, event.key.toLowerCase(), event.keyCode, event)
       }
     }
   }
