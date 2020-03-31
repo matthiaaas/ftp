@@ -58,14 +58,16 @@ export default class ContextMenuItem extends Component {
         }
       }}>
         <Name>{this.props.children || this.props.name}</Name>
-        <Shortcut>
-          {this.props.shortcut.split("").map((key, index) => {
-            key = key.replace("⌘", isMac ? "⌘" : "ctrl");
-            return (
-              <Key key={index} long={key.length > 1}>{key}</Key>
-            )
-          })}
-        </Shortcut>
+        {this.props.shortcut &&
+          <Shortcut>
+            {this.props.shortcut.split("").map((key, index) => {
+              key = key.replace("⌘", isMac ? "⌘" : "ctrl");
+              return (
+                <Key key={index} long={key.length > 1}>{key}</Key>
+              )
+            })}
+          </Shortcut>
+        }
       </Wrapper>
     )
   }

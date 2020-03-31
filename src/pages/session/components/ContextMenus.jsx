@@ -64,7 +64,7 @@ class ContextMenuFolder extends Component {
         <Separator />
         <ContextMenuItem shortcut="⌘C" disabled>Copy</ContextMenuItem>
         <ContextMenuItem shortcut="⌘V" disabled>Paste</ContextMenuItem>
-        <ContextMenuItem shortcut="⌘J" disabled>Duplicate</ContextMenuItem>
+        <ContextMenuItem disabled>Rename</ContextMenuItem>
         <Separator />
         <ContextMenuItem shortcut="⌘D" disabled>Download</ContextMenuItem>
         <Separator />
@@ -114,7 +114,7 @@ class ContextMenuFile extends Component {
         <Separator />
         <ContextMenuItem shortcut="⌘C" disabled>Copy</ContextMenuItem>
         <ContextMenuItem shortcut="⌘V" disabled>Paste</ContextMenuItem>
-        <ContextMenuItem shortcut="⌘J" disabled>Duplicate</ContextMenuItem>
+        <ContextMenuItem disabled>Rename</ContextMenuItem>
         <Separator />
         <ContextMenuItem
           name="Download"
