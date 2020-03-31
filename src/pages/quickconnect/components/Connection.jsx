@@ -38,6 +38,7 @@ const Group = styled.div`
 `
 
 const Name = styled.span`
+  white-space: nowrap;
   text-overflow: ellipsis;
   color: var(--color-white);
 `
@@ -178,7 +179,7 @@ export default class Connection extends Component {
             <Dropdown toggled={this.state.editing}>
               <DropdownItem onClick={this.connect}>Connect</DropdownItem>
               <Separator />
-              <DropdownItem onClick={this.delete} delete={true}>Delete</DropdownItem>
+              <DropdownItem onClick={this.delete} delete>Delete</DropdownItem>
             </Dropdown>
           </Menu>
         </Header>

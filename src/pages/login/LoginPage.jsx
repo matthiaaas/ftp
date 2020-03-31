@@ -21,7 +21,7 @@ class LoginPage extends Component {
         port: 22,
         user: "",
         pass: "",
-        protocol: "ftp",
+        protocol: "sftp",
 
         default: this.props.default
       }

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import Button from "../../misc/Button";
+import Tag from "../../misc/Tag";
 import KeyEvents from "../../misc/KeyEvents";
 
 import { Search as Zoom, Bookmark, Eye, RefreshCcw, X } from "react-feather";
@@ -72,7 +73,7 @@ class Taskbar extends Component {
               <Item disabled={true}>
                 <ItemInner>
                   <Eye />
-                  <ToolTip>Keep track of file changes</ToolTip>
+                  <ToolTip><Tag>soon</Tag><br></br> Keep track of file changes</ToolTip>
                 </ItemInner>
                 <ItemOuter>Sync</ItemOuter>
               </Item>
