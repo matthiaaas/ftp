@@ -2,8 +2,6 @@
 
 React based Electron (S)FTP desktop application like FileZilla for uploading local files to a remote server.
 
-<!-- ![ftp client screenshot](https://mir-s3-cdn-cf.behance.net/project_modules/1400_opt_1/de16d577264959.5c82711c0becd.png) -->
-
 ## Installation
 
 ### Requirements
@@ -42,6 +40,10 @@ npm run electron-start
 ## License
 
 This app is **not** publicly **released** yet. Keep the code private. Do not pass it to third parties. Do not publish any details referencing this repository or its idea.
+
+## Usage
+
+[Manual](https://github.com/matthiaaas/ftp/blob/master/MANUAL.md)
 
 ## Packaging
 
