@@ -1,5 +1,8 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router";
 import styled from "styled-components";
+
+import Data from "../../../data";
 
 import { Search as Zoom, Loader } from "react-feather";
 
@@ -177,14 +180,21 @@ export default class Search extends Component {
     this.state = {
       term: "",
       searching: false,
+      redirect: undefined,
+      keys: {},
       results: {
         selected: 0,
-        defaultShow: 3,
-        show: 3,
+        show: {
+          default: 3,
+          files: 3,
+          folders: 3
+        },
         files: [],
         folders: []
       }
     }
+
+    this.dataSocket = new Data(this.props.socketData.host);
 
     this.search = this.search.bind(this);
     this.handleShortcut = this.handleShortcut.bind(this);
@@ -215,11 +225,13 @@ export default class Search extends Component {
     }
 
     const find = (type, callback) => {
-      this.props.socket.raw(`find . -name ${term}* -type ${type || "f"} -not -path '*/\.*'`, (err, data) => {
+      this.props.socket.raw(`find . -iname *${term}* -type ${type || "f"} -not -path '*/\.*'`, (err, data) => {
         if (err) alert(err);
         if (data) {
           let results = handleResults(data.text.split("\n"));
-          results.sort((a, b) => { return a.depth - b.depth })
+          results = results.sort((a, b) => {
+            return a.depth - b.depth + a.name.length - b.name.length
+          })
           callback(results)
         }
       })
@@ -248,7 +260,20 @@ export default class Search extends Component {
   }
 
   submit() {
-    let result = "";
+    let result;
+    let selected = this.state.results.selected;
+    let files = this.state.results.files;
+    let folders = this.state.results.folders;
+
+    if (selected >= files.length) {
+      result = folders[selected - files.length];
+    } else {
+      result = files[selected];
+    }
+
+    this.dataSocket.set("path", result.path);
+    this.setState({ redirect: "session" })
+    this.props.onClose.call(this);
   }
 
   handleShortcut(key, code, event) {
@@ -270,14 +295,23 @@ export default class Search extends Component {
         this.submit();
         break;
       case 9:
-        selected++;
+        if (!this.state.keys.shift) selected++;
+        else if (this.state.keys.shift) selected--;
         event.preventDefault();
         break;
       default:
         break;
     }
 
-    if (selected >= 0 && selected < this.state.results.files.length + this.state.results.folders.length) {
+    let show = this.state.results.show;
+    let files = this.state.results.files;
+    let folders = this.state.results.folders;
+    if (selected >= 0 && selected < files.length + folders.length) {
+      if (selected > this.state.results.selected && selected >= show.files && files.length > selected) {
+        selected += files.length - show.files;
+      } else if (selected < this.state.results.selected && selected > show.files && files.length > selected) {
+        selected -= files.length - show.files;
+      }
       this.setState({
         results: {
           ...this.state.results,
@@ -290,18 +324,29 @@ export default class Search extends Component {
   render() {
     return (
       <Wrapper>
-        <KeyEvents onKeys={this.handleShortcut} />
+        <KeyEvents
+          onModifierKeys={(keys) => {
+            this.setState({
+              keys: keys
+            })
+          }}
+          onKeys={this.handleShortcut}
+        />
         <Body>
           <Header>
             <Zoom />
             <Input
               onChange={(event) => {
-                let term = event.target.value;
+                let term = event.target.value.toLowerCase().replace("*", "");
+                let show = this.state.results.show;
+                show.files = show.default;
+                show.folders = show.default;
                 this.setState({
-                  term: term.replace("*", ""),
+                  term: term,
                   results: {
                     ...this.state.results,
-                    show: this.state.results.defaultShow
+                    show: show,
+                    selected: 0
                   }
                 })
                 if (term.length > 0) {
@@ -323,24 +368,26 @@ export default class Search extends Component {
           <Section>
             <Actions>
               <Action disabled>{"Files" + (this.state.results.files.length > 0 ? ` (${this.state.results.files.length})` : "")}</Action>
-              {this.state.results.files.length > this.state.results.defaultShow &&
+              {this.state.results.files.length > this.state.results.show.files &&
                 <Action onClick={() => {
+                  let show = this.state.results.show;
+                  show.files = this.state.results.files.length;
                   this.setState({
                     results: {
                       ...this.state.results,
-                      show: this.state.results.files.length
+                      show: show
                     }
                   })
                 }}>Show All</Action>
               }
             </Actions>
-            <Results show={this.state.results.defaultShow}>
+            <Results show={this.state.results.show.default}>
               {this.state.results.files.length === 0 &&
                 <Error>
-                  {this.state.term === "" || this.state.term === " " ? "Try a search term" : "Nothing found"}
+                  {this.state.term.length <= 1 ? "Try a search term" : "Nothing found"}
                 </Error>
               }
-              {this.state.results.files.slice(0, this.state.results.show).map((item, index) => {
+              {this.state.results.files.slice(0, this.state.results.show.files).map((item, index) => {
                 let split = [item.name, ""];
                 if (this.state.term !== "") {
                   split = item.name.split(this.state.term)
@@ -373,22 +420,26 @@ export default class Search extends Component {
           <Section>
             <Actions>
               <Action disabled>{"Folders" + (this.state.results.folders.length > 0 ? ` (${this.state.results.folders.length})` : "")}</Action>
-              <Action onClick={() => {
+              {this.state.results.folders.length > this.state.results.show.folders &&
+                <Action onClick={() => {
+                  let show = this.state.results.show;
+                  show.folders = this.state.results.folders.length;
                   this.setState({
                     results: {
                       ...this.state.results,
-                      show: this.state.results.folders.length
+                      show: show
                     }
                   })
                 }}>Show All</Action>
+              }
             </Actions>
-            <Results show={this.state.results.defaultShow}>
+            <Results show={this.state.results.show.default}>
               {this.state.results.folders.length === 0 &&
                 <Error>
-                  {this.state.term === "" || this.state.term === " " ? "Try a search term" : "Nothing found"}
+                  {this.state.term.length <= 1 ? "Try a search term" : "Nothing found"}
                 </Error>
               }
-              {this.state.results.folders.slice(0, this.state.results.show).map((item, index) => {
+              {this.state.results.folders.slice(0, this.state.results.show.folders).map((item, index) => {
                 let split = [item.name, ""];
                 if (this.state.term !== "") {
                   split = item.name.split(this.state.term)
@@ -397,12 +448,12 @@ export default class Search extends Component {
                 return (
                   <Result
                     key={item.name + item.path + index}
-                    focus={index + this.state.results.show === this.state.results.selected}
+                    focus={index + this.state.results.files.length === this.state.results.selected}
                     onClick={() => {
                       this.setState({
                         results: {
                           ...this.state.results,
-                          selected: index + this.state.results.show
+                          selected: index + this.state.results.files.length
                         }
                       })
                     }}
@@ -432,6 +483,9 @@ export default class Search extends Component {
           </Tips>
         </Body>
         <Space onClick={this.props.onClose} />
+        {this.state.redirect &&
+          <Redirect to={this.state.redirect} />
+        }
       </Wrapper>
     )
   }
