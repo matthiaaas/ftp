@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Redirect } from "react-router";
 import styled from "styled-components";
 
@@ -365,110 +365,114 @@ export default class Search extends Component {
               autoFocus
             />
           </Header>
-          <Section>
-            <Actions>
-              <Action disabled>{"Files" + (this.state.results.files.length > 0 ? ` (${this.state.results.files.length})` : "")}</Action>
-              {this.state.results.files.length > this.state.results.show.files &&
-                <Action onClick={() => {
-                  let show = this.state.results.show;
-                  show.files = this.state.results.files.length;
-                  this.setState({
-                    results: {
-                      ...this.state.results,
-                      show: show
-                    }
-                  })
-                }}>Show All</Action>
-              }
-            </Actions>
-            <Results show={this.state.results.show.default}>
-              {this.state.results.files.length === 0 &&
-                <Error>
-                  {this.state.term.length <= 1 ? "Try a search term" : "Nothing found"}
-                </Error>
-              }
-              {this.state.results.files.slice(0, this.state.results.show.files).map((item, index) => {
-                let split = [item.name, ""];
-                if (this.state.term !== "") {
-                  split = item.name.split(this.state.term)
-                }
-
-                return (
-                  <Result
-                    key={item.name + item.path + index}
-                    focus={index === this.state.results.selected}
-                    onClick={() => {
+          {this.props.socketStatus === "online" && this.props.socketData.protocol !== "ftp" &&
+            <Fragment>
+              <Section>
+                <Actions>
+                  <Action disabled>{"Files" + (this.state.results.files.length > 0 ? ` (${this.state.results.files.length})` : "")}</Action>
+                  {this.state.results.files.length > this.state.results.show.files &&
+                    <Action onClick={() => {
+                      let show = this.state.results.show;
+                      show.files = this.state.results.files.length;
                       this.setState({
                         results: {
                           ...this.state.results,
-                          selected: index
+                          show: show
                         }
                       })
-                    }}
-                  >
-                    <Path>{item.path}</Path>
-                    <File>
-                      <span>{split[0]}</span>
-                      <Match>{split.length !== 1 && this.state.term}</Match>
-                      <span>{split[1]}</span>
-                    </File>
-                  </Result>
-                )
-              })}
-            </Results>
-          </Section>
-          <Section>
-            <Actions>
-              <Action disabled>{"Folders" + (this.state.results.folders.length > 0 ? ` (${this.state.results.folders.length})` : "")}</Action>
-              {this.state.results.folders.length > this.state.results.show.folders &&
-                <Action onClick={() => {
-                  let show = this.state.results.show;
-                  show.folders = this.state.results.folders.length;
-                  this.setState({
-                    results: {
-                      ...this.state.results,
-                      show: show
+                    }}>Show All</Action>
+                  }
+                </Actions>
+                <Results show={this.state.results.show.default}>
+                  {this.state.results.files.length === 0 &&
+                    <Error>
+                      {this.state.term.length <= 1 ? "Try a search term" : "Nothing found"}
+                    </Error>
+                  }
+                  {this.state.results.files.slice(0, this.state.results.show.files).map((item, index) => {
+                    let split = [item.name, ""];
+                    if (this.state.term !== "") {
+                      split = item.name.split(this.state.term)
                     }
-                  })
-                }}>Show All</Action>
-              }
-            </Actions>
-            <Results show={this.state.results.show.default}>
-              {this.state.results.folders.length === 0 &&
-                <Error>
-                  {this.state.term.length <= 1 ? "Try a search term" : "Nothing found"}
-                </Error>
-              }
-              {this.state.results.folders.slice(0, this.state.results.show.folders).map((item, index) => {
-                let split = [item.name, ""];
-                if (this.state.term !== "") {
-                  split = item.name.split(this.state.term)
-                }
 
-                return (
-                  <Result
-                    key={item.name + item.path + index}
-                    focus={index + this.state.results.files.length === this.state.results.selected}
-                    onClick={() => {
+                    return (
+                      <Result
+                        key={item.name + item.path + index}
+                        focus={index === this.state.results.selected}
+                        onClick={() => {
+                          this.setState({
+                            results: {
+                              ...this.state.results,
+                              selected: index
+                            }
+                          })
+                        }}
+                      >
+                        <Path>{item.path}</Path>
+                        <File>
+                          <span>{split[0]}</span>
+                          <Match>{split.length !== 1 && this.state.term}</Match>
+                          <span>{split[1]}</span>
+                        </File>
+                      </Result>
+                    )
+                  })}
+                </Results>
+              </Section>
+              <Section>
+                <Actions>
+                  <Action disabled>{"Folders" + (this.state.results.folders.length > 0 ? ` (${this.state.results.folders.length})` : "")}</Action>
+                  {this.state.results.folders.length > this.state.results.show.folders &&
+                    <Action onClick={() => {
+                      let show = this.state.results.show;
+                      show.folders = this.state.results.folders.length;
                       this.setState({
                         results: {
                           ...this.state.results,
-                          selected: index + this.state.results.files.length
+                          show: show
                         }
                       })
-                    }}
-                  >
-                    <Path>{item.path}</Path>
-                    <File>
-                      <span>{split[0]}</span>
-                      <Match>{split.length !== 1 && this.state.term}</Match>
-                      <span>{split[1]}</span>
-                    </File>
-                  </Result>
-                )
-              })}
-            </Results>
-          </Section>
+                    }}>Show All</Action>
+                  }
+                </Actions>
+                <Results show={this.state.results.show.default}>
+                  {this.state.results.folders.length === 0 &&
+                    <Error>
+                      {this.state.term.length <= 1 ? "Try a search term" : "Nothing found"}
+                    </Error>
+                  }
+                  {this.state.results.folders.slice(0, this.state.results.show.folders).map((item, index) => {
+                    let split = [item.name, ""];
+                    if (this.state.term !== "") {
+                      split = item.name.split(this.state.term)
+                    }
+
+                    return (
+                      <Result
+                        key={item.name + item.path + index}
+                        focus={index + this.state.results.files.length === this.state.results.selected}
+                        onClick={() => {
+                          this.setState({
+                            results: {
+                              ...this.state.results,
+                              selected: index + this.state.results.files.length
+                            }
+                          })
+                        }}
+                      >
+                        <Path>{item.path}</Path>
+                        <File>
+                          <span>{split[0]}</span>
+                          <Match>{split.length !== 1 && this.state.term}</Match>
+                          <span>{split[1]}</span>
+                        </File>
+                      </Result>
+                    )
+                  })}
+                </Results>
+              </Section>
+            </Fragment>
+          } 
           <Tips>
             {this.state.searching &&
               <Tip><Loader /> Searching</Tip>

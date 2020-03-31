@@ -1,6 +1,7 @@
 import React, { Component, createRef } from "react";
 
 import Container from "../../components/misc/Container";
+import KeyEvents from "../../components/misc/KeyEvents";
 import { GoBack } from "../../components/misc/CircleButton";
 
 import Data from "../../components/data";
@@ -15,7 +16,6 @@ import Space from "./components/Space";
 import ContextMenus from "./components/ContextMenus";
 import NewFolder from "./components/NewFolder";
 import Progress from "./components/Progress";
-import KeyEvents from "../../components/misc/KeyEvents";
 
 class SessionPage extends Component {
   constructor(props) {

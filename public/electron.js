@@ -3,12 +3,13 @@ const { app, BrowserWindow, Menu } = require("electron");
 const isDev = require("electron-is-dev");
 
 const isMac = process.platform === "darwin";
+const isWindows = process.platform === "win32";
 
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 920,
-    height: 600,
+    height: isWindows ? 632 : 600,
     titleBarStyle: "hiddenInset",
     webPreferences: {
       nodeIntegration: true
@@ -137,7 +138,7 @@ function createWindow() {
     {
       label: "Debug",
       submenu: [
-        { role: "reload", accelerator: "CmdOrCtrl+Shift+R" },
+        isDev && { role: "reload", accelerator: "CmdOrCtrl+Shift+R" },
         { role: "toggledevtools" }
       ]
     },
@@ -147,7 +148,7 @@ function createWindow() {
         { role: "minimize" },
         { role: "zoom" },
         { type: "separator" }, 
-        { role: 'togglefullscreen' },
+        { role: "togglefullscreen" },
         isMac ? { role: "close" } : { role: "quit" }
       ]
     },
