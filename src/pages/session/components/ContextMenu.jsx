@@ -10,19 +10,23 @@ const Wrapper = styled.li`
   display: flex;
   align-items: center;
   min-width: 200px;
-  color: ${props => props.disabled ? `var(--color-grey-dark)` : `inherit`};
+  color: ${props => props.disabled ? `var(--color-grey-dark) !important` : `inherit`};
 
   >span:last-child div {
-    background: ${props => props.disabled && `var(--color-dark-grey-blur)`};
+    background: ${props => props.disabled && `var(--color-dark-grey-blur) !important`};
   }
 
   &:hover {
-    color: ${props => props.disabled ? `none` : `var(--color-grey-light)`};
-    background: ${props => props.disabled ? `none` : `var(--color-dark)`};
+    color: ${props => props.disabled || `var(--color-grey-light)`};
+    background: ${props => props.disabled || `var(--color-dark)`};
 
     >span:last-child div {
       background: ${props => props.disabled || `var(--color-dark-light)`};
     }
+  }
+
+  &:active {
+    background: ${props => props.disabled || `var(--color-dark-grey-blur)`};
   }
 `
 

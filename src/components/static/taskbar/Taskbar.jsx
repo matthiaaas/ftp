@@ -35,6 +35,9 @@ class Taskbar extends Component {
         case "f":
           this.setState({ search: !this.state.search })
           break;
+        case "d":
+          this.props.onDisconnect.call(this);
+          break;
         default:
           break;
       }
