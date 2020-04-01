@@ -9,7 +9,7 @@ import { Search as Zoom, Bookmark, Eye, RefreshCcw, X } from "react-feather";
 
 import { Header, Content, Rows, Row, Item, ItemInner, ItemOuter, ToolTip, Server, ServerStatus, ServerDisconnect } from "./styles";
 
-import Search from "./components/Search";
+import Search from "./components/search/Search";
 
 class Taskbar extends Component {
   constructor(props) {
