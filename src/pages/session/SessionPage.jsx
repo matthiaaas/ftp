@@ -4,7 +4,7 @@ import Container from "../../components/misc/Container";
 import KeyEvents from "../../components/misc/KeyEvents";
 import { GoBack } from "../../components/misc/CircleButton";
 
-import Data from "../../components/data";
+import Data from "../../components/localstorage/data";
 
 import { Page, Content, System, Path, Url, Files } from "./styles";
 
@@ -36,7 +36,7 @@ class SessionPage extends Component {
     }
 
     this.socket = new FTP(this.props.socket);
-    this.dataSocket = new Data(this.props.socketData.host);
+    this.dataSocket = new Data(this.props.socketData.host, this.props.socketData.user);
 
     this.progress = createRef();
     this.contextMenus = createRef();
@@ -76,7 +76,7 @@ class SessionPage extends Component {
   }
 
   enterExternFolder(folder) {
-    let newPath = this.state.extern.path + folder + "/";
+    let newPath = this.state.extern.path + folder.name + "/";
     this.socket.updateExternFiles(newPath, (data) => {
       this.setState({
         extern: {
@@ -91,8 +91,10 @@ class SessionPage extends Component {
   }
 
   goBackExternFolder() {
-    if (this.state.extern.path.split("/").length - 1 > 1) {
-      let newPath = this.state.extern.path.replace(this.state.extern.path.split("/")[this.state.extern.path.split("/").length - 2] + "/", "");
+    let newPath = this.state.extern.path;
+    let depth = this.state.extern.path.split("/").length - 1;
+    if (depth > 1) {
+      newPath = this.state.extern.path.replace(this.state.extern.path.split("/")[depth - 1] + "/", "");
       this.socket.updateExternFiles(newPath, (data) => {
         this.setState({
           extern: {
@@ -102,8 +104,19 @@ class SessionPage extends Component {
           }
         });
       })
-      this.dataSocket.set("path", newPath);
+    } else if (depth === 1 && this.state.extern.path.startsWith("./")) {
+      newPath = "/";
+      this.socket.updateExternFiles(newPath, (data) => {
+        this.setState({
+          extern: {
+            ...this.state.extern,
+            path: newPath,
+            files: data
+          }
+        });
+      })
     }
+    this.dataSocket.set("path", newPath);
   }
 
   selectExternFile(file) {
@@ -238,7 +251,11 @@ class SessionPage extends Component {
                         key={index + file.name + file.time}
                         folder={file}
                         selected={this.state.extern.selected.includes(file)}
-                        onEnter={this.enterExternFolder}
+                        onClick={() => {
+                          if (!this.state.keys.shift && !this.state.keys.cmd) {
+                            this.enterExternFolder(file)
+                          } else this.selectExternFile(file);
+                        }}
                         onUpload={this.socket.uploadLocalFiles}
                         onProgress={this.progress.current.updateProgress}
                         onContext={this.contextMenus.current.openForFolder}

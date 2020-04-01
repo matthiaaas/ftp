@@ -96,9 +96,7 @@ export default class Folder extends Component {
           event.preventDefault();
           this.setState({ dropping: false });
         }}
-        onClick={(event) => {
-          this.props.onEnter.call(this, this.props.folder.name);
-        }}
+        onClick={this.props.onClick}
         onContextMenu={(event) => {
           event.preventDefault();
           this.props.onContext.call(this, event, this.props.folder);
