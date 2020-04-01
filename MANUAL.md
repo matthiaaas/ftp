@@ -9,6 +9,7 @@
 | Shortcut | Action |
 | -------: | :----- |
 | `⌘Q`     | Quit application
+| `⌘D`     | Disconnect
 | `⌘R`     | Reload files and folders in current session
 | `⌘F`     | Toggle quick search
 
