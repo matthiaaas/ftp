@@ -118,12 +118,12 @@ export const Server = styled.div`
 
   &:hover {
     >div {
-      transition: visibility 0s ease 1s;
+      transition: visibility 0s ease 0.4s;
       visibility: visible;
     }
 
     >a {
-      transition: padding-left 0.2s ease 1s;
+      transition: padding-left 0.2s ease 0.4s;
       padding-left: 56px;
     }
   }
