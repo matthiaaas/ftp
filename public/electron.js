@@ -138,7 +138,11 @@ function createWindow() {
     {
       label: "Debug",
       submenu: [
-        isDev && { role: "reload", accelerator: "CmdOrCtrl+Shift+R" },
+        {
+          role: "reload",
+          enabled: isDev,
+          accelerator: "CmdOrCtrl+Shift+R"
+        },
         { role: "toggledevtools" }
       ]
     },
