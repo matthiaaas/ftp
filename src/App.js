@@ -5,6 +5,8 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import RouteChange from "./components/RouteChange";
 import { GlobalStyles } from "./components/GlobalStyles";
 
+import Alert from "./components/misc/Alert";
+
 import SFTP from "./components/sftp";
 
 import Titlebar from "./components/static/titlebar/Titlebar";
@@ -41,9 +43,17 @@ class App extends Component {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
 
+    this.alert = createRef();
+
     this.sidebar = createRef();
     this.taskbar = createRef();
     this.session = createRef();
+  }
+
+  componentDidMount() {
+    alert = (text, isError) => {
+      this.alert.current.show(text, isError);
+    }
   }
 
   logout() {
@@ -152,6 +162,7 @@ class App extends Component {
               onRefresh={() => {if (this.state.location.pathname === "/session") this.session.current.updateExternFiles()}}
               onDisconnect={this.logout}
             />
+            <Alert ref={this.alert} />
             <Switch>
               <Route exact path="/" component={(props) => {
                 return (
