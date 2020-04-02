@@ -8,6 +8,8 @@ import Data from "../../../../localstorage/data";
 import KeyEvents from "../../../../misc/KeyEvents";
 import Tag from "../../../../misc/Tag";
 
+import Find from "./components/search";
+
 import { Wrapper, Body, Header, Input, Section, Actions, Action, Tips, Tip, Space } from "./styles";
 
 import Results from "./components/Results";
@@ -41,60 +43,56 @@ export default class Search extends Component {
 
   search(term) {
     if (this.props.socketStatus !== "online") return;
-
-    const handleResults = (data) => {
-      let results = [];
-      for (let i = 0; i < data.length; i++) {
-        let result = data[i];
-        if (result === "" || !(result.startsWith("./") || result.startsWith("/"))) continue;
-        let split = result.split("/");
-
-        let name = split[split.length - 1];
-        let depth = split.length;
-        split.pop();
-        let path = split.join("/") + "/";
-
-        results.push({
-          name: name,
-          path: path,
-          depth: depth
-        })
+    this.setState({
+      results: {
+        ...this.state.results,
+        files: [],
+        folders: []
       }
-      return results;
-    }
-
-    const find = (type, callback) => {
-      this.props.socket.raw(`find . -iname *${term}* -type ${type || "f"} -not -path '*/\.*'`, (err, data) => {
-        if (err) alert(err);
-        if (data) {
-          let results = handleResults(data.text.split("\n"));
-          results = results.sort((a, b) => {
-            return a.depth - b.depth + a.name.length - b.name.length
-          })
-          callback(results);
-        }
-      })
-    }
-
+    })
     if (this.props.socket.sftp) {
       this.setState({ searching: true })
-      find("f", (results) => {
+      let find = new Find(term, this.props.socket);
+      find.find("f", (results) => {
         this.setState({
           results: {
             ...this.state.results,
             files: results
           }
         })
-        find("d", (results) => {
+        find.find("d", (results) => {
           this.setState({
             results: {
               ...this.state.results,
               folders: results
             }
           })
-          this.setState({ searching: false })
         })
+        this.setState({ searching: false })
       })
+    } else if (this.props.socket) {
+      this.setState({ searching: true })
+      let find = new Find(term, this.props.socket);
+      find.findRecursive("f", (results) => {
+        let newFiles = this.state.results.files;
+        let newFolders = this.state.results.folders;
+        results.map(result => {
+          if (result.type === 0) {
+            newFiles.push(result)
+          } else {
+            newFolders.push(result)
+          }
+        })
+        newFiles = find.resort(newFiles);
+        newFolders = find.resort(newFolders);
+        this.setState({
+          results: {
+            ...this.state.results,
+            files: newFiles,
+            folders: newFolders
+          }
+        })
+      });
     }
   }
 
@@ -138,7 +136,11 @@ export default class Search extends Component {
         this.props.onClose.call(this);
         break;
       case 13:
-        this.submit();
+        if (this.props.socketStatus === "online" && (this.props.socket.sftp || this.state.results.files.length + this.state.results.folders.length > 0)) {
+          this.submit();
+        } else {
+          this.search(this.state.term);
+        }
         break;
       case 9:
         if (!this.state.keys.shift) selected++;
@@ -189,29 +191,29 @@ export default class Search extends Component {
                 show.folders = show.default;
                 this.setState({
                   term: term,
+                  searching: false,
                   results: {
                     ...this.state.results,
                     show: show,
                     selected: 0
                   }
                 })
-                if (term.length > 0) {
-                  this.search(term)
-                } else {
-                  this.setState({
-                    results: {
-                      ...this.state.results,
-                      files: [],
-                      folders: []
-                    }
-                  })
+                if (this.props.socketStatus === "online" && this.props.socket.sftp && term.length > 0) {
+                  this.search(term);
                 }
+                this.setState({
+                  results: {
+                    ...this.state.results,
+                    files: [],
+                    folders: []
+                  }
+                })
               }}
               placeholder="Search for files and folders"
               autoFocus
             />
           </Header>
-          {this.props.socketStatus === "online" && this.props.socketData.protocol !== "ftp" &&
+          {this.props.socketStatus === "online" &&
             <Fragment>
               <Section>
                 <Actions>
