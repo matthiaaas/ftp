@@ -114,6 +114,18 @@ class App extends Component {
             family: family
           }
         });
+      } if (address === this.state.socket.host) {
+        this.dns.reverse(address, (err, hostnames) => {
+          if (err) console.debug("unable to find hostname for ip address");
+          if (hostnames) {
+            this.setState({
+              socket: {
+                ...this.state.socket,
+                host: hostnames[0]
+              }
+            })
+          }
+        })
       }
     })
 
