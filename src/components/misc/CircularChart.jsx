@@ -3,10 +3,15 @@ import styled from "styled-components";
 
 const Wrapper = styled.div`
   position: relative;
+  width: 120px;
+  height: 120px;
 `
 
 const CircleSvg = styled.svg`
   display: inline-block;
+  position: absolute;
+  top: ${props => props.inner ? `10px` : `0`};
+  left: ${props => props.inner ? `10px` : `0`};
   width: ${props => props.inner ? `100px` : `120px`};
   height: ${props => props.inner ? `100px` : `120px`};
 `
@@ -63,6 +68,20 @@ export default class CircularChart extends Component {
           />
           <Circle 
             percentage={this.props.outer.percentage}
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+          />
+        </CircleSvg>
+        <CircleSvg inner viewBox="0 0 36 36">
+          <Placeholder
+            d="M18 2.0845
+              a 15.9155 15.9155 0 0 1 0 31.831
+              a 15.9155 15.9155 0 0 1 0 -31.831"
+          />
+          <Circle
+            color="var(--color-white)"
+            percentage={this.props.inner.percentage}
             d="M18 2.0845
               a 15.9155 15.9155 0 0 1 0 31.831
               a 15.9155 15.9155 0 0 1 0 -31.831"

@@ -53,6 +53,7 @@ export const Chart = styled.div`
 export const Info = styled.div`
   border-top: 1px solid var(--color-dark-grey);
   padding: 12px 24px;
+  text-align: center;
 `
 
 export const BoxSection = styled.div`
@@ -78,5 +79,48 @@ export const Icon = styled.div`
 `
 
 export const Text = styled.div`
+  position: relative;
+  display: block;
   color: ${props => props.highlighted ? `var(--color-white)` : `var(--color-grey)`};
+
+  &:hover >div {
+    transition: all 0s;
+    transition-delay: 1s;
+    transform: scaleY(1);
+  }
+`
+
+export const Ip = styled.span`
+  display: block;
+  user-select: all;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 184px;
+`
+
+export const ToolTip = styled.div`
+  position: absolute;
+  z-index: 9 !important;
+  user-select: all;
+  bottom: calc(100% + 24px);
+  left: 50%;
+  padding: 8px 12px;
+  line-height: 1.2;
+  border-radius: 4px;
+  font-size: 16px;
+  text-transform: initial;
+  color: var(--color-grey);
+  background: var(--color-black);
+
+  &::after {
+    content: " ";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: var(--color-black) transparent transparent transparent;
+  }
 `

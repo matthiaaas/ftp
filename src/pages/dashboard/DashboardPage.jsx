@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 
 import { Database, Shield, ShieldOff, GitCommit } from "react-feather";
 
@@ -7,7 +7,7 @@ import Headline from "../../components/misc/Headline";
 import ServerStatus from "../../components/misc/ServerStatus";
 import CircularChart from "../../components/misc/CircularChart";
 
-import { Page, Content, Header, Dashboard, Column, Item, Label, Box, Chart, Info, BoxSection, Icon, Text } from "./styles";
+import { Page, Content, Header, Dashboard, Column, Item, Label, Box, Chart, Info, BoxSection, Icon, Text, ToolTip, Ip } from "./styles";
 
 class DashboardPage extends Component {
   constructor(props) {
@@ -18,7 +18,7 @@ class DashboardPage extends Component {
         error: false,
         loading: true,
         used: 0,
-        available: 1,
+        available: 0,
         max: 1
       }
     }
@@ -53,7 +53,7 @@ class DashboardPage extends Component {
             }
             data.push(item);
           })
-          let i = 6;
+          let i = 0;
           if (data[i] !== undefined) {
             this.setState({
               storage: {
@@ -103,10 +103,24 @@ class DashboardPage extends Component {
                     <Chart>
                       <CircularChart
                         outer={{percentage: this.state.storage.used / this.state.storage.max}}
+                        inner={{percentage: this.state.storage.available / this.state.storage.max}}
                         icon={<Database />}
                       />
                     </Chart>
-                    <Info>{this.state.storage.loading ? "Loading..." : this.state.storage.error ? "Unable to load" : this.state.storage.used + "/" + this.state.storage.max}</Info>
+                    <Info>
+                      {
+                        this.state.storage.loading ? "Loading..." : 
+                        this.state.storage.error ? "Unable to load" : 
+                        <Fragment>
+                          <span style={{color: "var(--color-blue)"}}>
+                            {Math.round((this.state.storage.used / 1000 + Number.EPSILON) * 100) / 100}
+                          </span>
+                          <span>
+                            {"/" + Math.round((this.state.storage.max / 1000 + Number.EPSILON) * 100) / 100 + "GB"}
+                          </span>
+                        </Fragment>
+                      }
+                    </Info>
                   </Box>
                 </Item>
               </Column>
@@ -115,7 +129,10 @@ class DashboardPage extends Component {
                   <Label>Connection</Label>
                   <Box>
                     <BoxSection>
-                      <Text style={{userSelect: "all"}} highlighted>{data.ip} </Text>
+                      <Text highlighted>
+                        <Ip>{data.ip}</Ip>
+                        {/* <ToolTip>{data.ip}</ToolTip> */}
+                      </Text>
                       <Icon style={{margin: "0 4px", color: "var(--color-white)"}}><GitCommit /></Icon>
                       <Text style={{userSelect: "all"}} highlighted>{data.port}</Text>
                     </BoxSection>
