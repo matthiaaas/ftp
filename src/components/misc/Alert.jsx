@@ -18,6 +18,7 @@ const Wrapper = styled.div`
 
 const Body = styled.div`
   pointer-events: all;
+  -webkit-app-region: no-drag;
   padding: 16px 24px;
   border-radius: 0 0 8px 8px;
   border: 1px solid var(--color-dark-grey);
@@ -56,6 +57,7 @@ const Text = styled.span`
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
+  user-select: text;
   color: inherit;
 `
 
@@ -66,7 +68,7 @@ const Time = styled.div`
   width: 100%;
   height: 1px;
   animation: ${props => props.hidden || `progress 9s linear 0.1s 1`};
-  background: var(--color-red);
+  background: ${props => props.isError ? `var(--color-red)` : `var(--color-blue)`};
 
   @keyframes progress {
     from {
@@ -95,13 +97,14 @@ export default class Alert extends Component {
 
   show(text, isError) {
     let timestamp = new Date().getTime();
+    isError = isError === undefined ? true : false;
 
     this.setState({ hidden: true })
 
     setTimeout(() => {
       this.setState({
         text: text.toString(),
-        isError: isError || true,
+        isError: isError,
         timestamp: timestamp,
         hidden: false
       })
@@ -124,7 +127,6 @@ export default class Alert extends Component {
     return (
       <Wrapper
         hidden={this.state.hidden}
-        isError={this.state.isError}
         style={{transform: this.state.hidden || "translateY(0)"}}
       >
         <Body>
@@ -132,7 +134,7 @@ export default class Alert extends Component {
             <Text>{this.state.text}</Text>
             <Dismiss onClick={this.close}><X /></Dismiss>
           </Header>
-          <Time hidden={this.state.hidden} />
+          <Time hidden={this.state.hidden} isError={this.state.isError} />
         </Body>
       </Wrapper>
     )
