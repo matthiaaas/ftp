@@ -6,8 +6,9 @@ import Container from "../../components/misc/Container";
 import Headline from "../../components/misc/Headline";
 import Dropdown, { DropdownItem } from "../../components/misc/Dropdown";
 import Button from "../../components/misc/Button";
+import ServerStatus from "../../components/misc/ServerStatus";
 
-import { Page, Content, Header, ServerStatus, Login, Row, Input, Label, Tip, QuickActions } from "./styles";
+import { Page, Content, Header, Login, Row, Input, Label, Tip, QuickActions } from "./styles";
 
 import QuickAction from "./components/QuickAction";
 

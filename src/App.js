@@ -14,6 +14,7 @@ import Sidebar from "./components/static/sidebar/Sidebar";
 import Taskbar from "./components/static/taskbar/Taskbar";
 
 import LoginPage from "./pages/login/LoginPage";
+import DashboardPage from "./pages/dashboard/DashboardPage";
 import SessionPage from "./pages/session/SessionPage";
 import TerminalPage from "./pages/terminal/TerminalPage";
 import StatsPage from "./pages/stats/StatsPage";
@@ -34,7 +35,10 @@ class App extends Component {
         port: 0,
         user: "",
         pass: "",
-        protocol: "ftp"
+        key: false,
+        protocol: "ftp",
+        ip: "",
+        family: 4
       },
       status: "offline"
     }
@@ -70,6 +74,7 @@ class App extends Component {
 
     this.setState({
       socket: {
+        ...this.state.socket,
         host: "",
         port: 0,
         user: "",
@@ -97,10 +102,18 @@ class App extends Component {
       }
     });
 
-    this.dns.lookup(data.host, (err) => {
+    this.dns.lookup(data.host, {verbatim: true}, (err, address, family) => {
       if (err) {
         this.setState({ status: "offline" });
         return alert(`Unable to resolve '${data.host}'`)
+      } if (address) {
+        this.setState({
+          socket: {
+            ...this.state.socket,
+            ip: address,
+            family: family
+          }
+        });
       }
     })
 
@@ -133,7 +146,6 @@ class App extends Component {
       if (err) {
         alert(err);
         console.log(err.toString());
-        this.logout();
       }
       if (success) {
         console.info(`%c${data.user}@${data.host}:`, "color: #25CC40", success.text);
@@ -171,6 +183,15 @@ class App extends Component {
                     socketStatus={this.state.status}
                     onLogin={this.login}
                     onLogout={this.logout}
+                  />
+                );
+              }} />
+              <Route exact path="/dashboard" component={(props) => {
+                return (
+                  <DashboardPage
+                    socket={this.socket}
+                    socketData={this.state.socket}
+                    socketStatus={this.state.status}
                   />
                 );
               }} />

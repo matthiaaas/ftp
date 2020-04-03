@@ -129,18 +129,6 @@ export const Server = styled.div`
   }
 `
 
-export const ServerStatus = styled.div`
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  margin: 0 -4px 0 8px;
-
-  background: ${
-    props => props.status === "online" ? `var(--color-green)`
-    : props.status === "afk" ? `var(--color-yellow)` : `var(--color-red)`
-  };
-`
-
 export const ServerDisconnect = styled.div`
   position: absolute;
   visibility: hidden;
