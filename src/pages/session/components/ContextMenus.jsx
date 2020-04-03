@@ -40,7 +40,14 @@ class ContextMenuSpace extends Component {
             this.props.onNewFolder.call(this);
           }}
         />
-        <ContextMenuItem shortcut="⇧⌘F" disabled>New File</ContextMenuItem>
+        <ContextMenuItem
+          name="New File"
+          shortcut="⇧⌘F"
+          onExecute={() => {
+            this.props.onReturn.call(this);
+            this.props.onNewFile.call(this);
+          }}
+        />
       </ContextMenu>
     )
   }
@@ -60,7 +67,14 @@ class ContextMenuFolder extends Component {
             this.props.onNewFolder.call(this);
           }}
         />
-        <ContextMenuItem shortcut="⇧⌘F" disabled>New File</ContextMenuItem>
+        <ContextMenuItem
+          name="New File"
+          shortcut="⇧⌘F"
+          onExecute={() => {
+            this.props.onReturn.call(this);
+            this.props.onNewFile.call(this);
+          }}
+        />
         <Separator />
         <ContextMenuItem shortcut="⌘C" disabled>Copy</ContextMenuItem>
         <ContextMenuItem shortcut="⌘V" disabled>Paste</ContextMenuItem>
@@ -116,7 +130,14 @@ class ContextMenuFile extends Component {
             this.props.onNewFolder.call(this);
           }}
         />
-        <ContextMenuItem shortcut="⇧⌘F" disabled>New File</ContextMenuItem>
+        <ContextMenuItem
+          name="New File"
+          shortcut="⇧⌘F"
+          onExecute={() => {
+            this.props.onReturn.call(this);
+            this.props.onNewFile.call(this);
+          }}
+        />
         <Separator />
         <ContextMenuItem shortcut="⌘C" disabled>Copy</ContextMenuItem>
         <ContextMenuItem shortcut="⌘V" disabled>Paste</ContextMenuItem>
@@ -269,6 +290,7 @@ export default class ContextMenus extends Component {
             this.props.onReload.call(this);
           }}
           onRename={this.props.onRename}
+          onNewFile={this.props.onNewFile}
           onNewFolder={this.props.onNewFolder}
           hidden={this.state.folder}
         />
@@ -284,6 +306,7 @@ export default class ContextMenus extends Component {
             this.props.onReload.call(this);
           }}
           onRename={this.props.onRename}
+          onNewFile={this.props.onNewFile}
           onNewFolder={this.props.onNewFolder}
           hidden={this.state.file}
         />
@@ -297,6 +320,7 @@ export default class ContextMenus extends Component {
           onReload={() => {
             this.props.onReload.call(this);
           }}
+          onNewFile={this.props.onNewFile}
           onNewFolder={this.props.onNewFolder}
           hidden={this.state.space}
         />

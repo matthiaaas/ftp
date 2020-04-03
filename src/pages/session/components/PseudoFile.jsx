@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import styled from "styled-components";
 
-import { FolderPlus, Type } from "react-feather";
+import { FilePlus, FolderPlus, Type } from "react-feather";
 
 const Wrapper = styled.div`
   outline: none;
@@ -54,6 +54,53 @@ const Input = styled.input`
     color: var(--color-grey);
   }
 `
+
+export class NewFile extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      name: ""
+    }
+
+    this.submit = this.submit.bind(this);
+  }
+
+  submit() {
+    console.debug("submitting new file:", this.state.name)
+    if (typeof this.props.onSubmit === "function") {
+      this.props.onSubmit.call(this, this.props.path, this.state.name);
+      this.props.onClose.call(this);
+    }
+  }
+
+  render() {
+    return (
+      <Wrapper>
+        <FilePlus />
+        <Input
+          type="text"
+          placeholder="my file"
+          onChange={(event) => {
+            this.setState({ name: event.target.value })
+          }}
+          onKeyDown={(event) => {
+            if (event.keyCode === 13) {
+              if (this.state.name !== "") this.submit();
+            } else if (event.keyCode === 27) {
+              this.props.onClose.call(this);
+            }
+          }}
+          onBlur={(event) => {
+            if (this.state.name !== "") this.submit();
+            else this.props.onClose.call(this);
+          }}
+          autoFocus
+        />
+      </Wrapper>
+    )
+  }
+}
 
 export class NewFolder extends Component {
   constructor(props) {

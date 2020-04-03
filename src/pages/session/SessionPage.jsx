@@ -15,7 +15,7 @@ import Folder from "./components/Folder";
 import Space from "./components/Space";
 import Progress from "./components/Progress";
 import ContextMenus from "./components/ContextMenus";
-import { NewFolder, Rename } from "./components/PseudoFile";
+import { NewFile, NewFolder, Rename } from "./components/PseudoFile";
 
 class SessionPage extends Component {
   constructor(props) {
@@ -31,6 +31,7 @@ class SessionPage extends Component {
         selected: [],
         loading: true,
         onRename: false,
+        onNewFile: false,
         onNewFolder: false
       },
       keys: {}
@@ -209,6 +210,14 @@ class SessionPage extends Component {
               }
             })
           }}
+          onNewFile={() => {
+            this.setState({
+              extern: {
+                ...this.state.extern,
+                onNewFile: true
+              }
+            })
+          }}
           onNewFolder={() => {
             this.setState({
               extern: {
@@ -237,6 +246,21 @@ class SessionPage extends Component {
                 <Url>{this.state.extern.path}</Url>
               </Path>
               <Files>
+                {this.state.extern.onNewFile &&
+                  <NewFile
+                    path={this.state.extern.path}
+                    onSubmit={this.socket.createExternFile}
+                    onClose={() => {
+                      this.setState({
+                        extern: {
+                          ...this.state.extern,
+                          onNewFile: false
+                        }
+                      });
+                      setTimeout(this.updateExternFiles, 100)
+                    }}
+                  />
+                }
                 {this.state.extern.onNewFolder &&
                   <NewFolder
                     path={this.state.extern.path}
@@ -263,7 +287,7 @@ class SessionPage extends Component {
                           onRename: false
                         }
                       });
-                      this.updateExternFiles();
+                      setTimeout(this.updateExternFiles, 100)
                     }}
                   />
                 }

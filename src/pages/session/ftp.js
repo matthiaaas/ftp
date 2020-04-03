@@ -41,7 +41,7 @@ export default class FTP {
         checkForChanges();
       })
     } else {
-      alert("Unfortunately this feature isn't implemented for ftp connections")
+      alert("Unfortunately this feature isn't implemented for ftp connections", false);
     }
   }
 
@@ -59,8 +59,15 @@ export default class FTP {
     }
   }
 
-  createExternFile = (path, file, callback) => {
-    
+  createExternFile = (path, name, callback) => {
+    if (this.ftp.sftp) {
+      this.ftp.raw(`touch "${path + name}"`, (err) => {
+        if (err) alert(err);
+        else if (typeof callback === "function") callback();
+      })
+    } else {
+      alert("Unfortunately this feature isn't implemented for ftp connections", false);
+    }
   }
 
   renameExternFile = (file, newName, callback) => {
