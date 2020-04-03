@@ -46,19 +46,20 @@ export default class Find {
     })
   }
 
-  findRecursive = (type, callback) => {
+  findRecursive = (callback) => {
     console.debug("searching recursive...");
     
-    const list = (dir, callback) => {
+    const list = (dir) => {
       return new Promise((resolve, reject) => {
         this.socket.ls(dir, (err, files) => {
           if (err) { return alert(err); }
           let results = [];
+          let path = dir !== "/" && dir !== "./" ? dir + "/" : dir;
           files.map(file => {
             results.push({
               name: file.name,
               type: file.type,
-              path: dir,
+              path: path,
               depth: dir.split("/").length - 1
             })
           })
@@ -66,12 +67,9 @@ export default class Find {
         });
       })
     }
-    const handleReturn = (files, callback) => {
-      callback(files)
-    }
     const walk = (dir, callback) => {
       return list(dir).then((files) => {
-        handleReturn(files, callback)
+        callback(files)
         if (files.length === 0) {
           return Promise.resolve();
         }
@@ -83,9 +81,6 @@ export default class Find {
         });
       });
     }
-    const flatten = list => list.reduce(
-      (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
-    );
     const getMatches = (results) => {
       let matches = [];
       results.map(result => {
@@ -101,9 +96,5 @@ export default class Find {
         callback(matches);
       }
     })
-    // .then((results) => {
-    //   results = flatten(results).filter(Boolean);
-    //   console.log(results);
-    // });
   }
 }
