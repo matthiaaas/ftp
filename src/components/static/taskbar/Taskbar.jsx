@@ -31,7 +31,7 @@ class Taskbar extends Component {
   }
 
   handleShortcut(key) {
-    if (this.state.keys.cmd) {
+    if (this.state.keys.cmd && !this.state.keys.shift) {
       switch (key) {
         case "f":
           this.setState({ search: !this.state.search })

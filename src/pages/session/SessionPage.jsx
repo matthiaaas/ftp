@@ -171,6 +171,16 @@ class SessionPage extends Component {
             })
           }
           break;
+        case "f":
+          if (this.state.keys.shift) {
+            this.setState({
+              extern: {
+                ...this.state.extern,
+                onNewFile: true
+              }
+            })
+          }
+          break;
         case "r":
           this.updateExternFiles();
           break;
