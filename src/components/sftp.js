@@ -7,6 +7,8 @@ export default class SFTP {
     this.user = cfg.user || "anonymous";
     this.pass = cfg.pass || "anonymous";
     this.key = cfg.key || false;
+    
+    this.absPath = undefined;
 
     this.sftp = undefined;
 
@@ -33,6 +35,7 @@ export default class SFTP {
         this.sftp = sftp;
         this.authenticated = true;
         this.sftp.realpath(".", (err, absPath) => {
+          this.absPath = absPath;
           let isUnix = absPath.startsWith("/");
           this.platform = isUnix ? "unix" : "windows";
           if (callback) callback(null, {text: `Login successful; path is ${absPath} on platform ${isUnix ? "Unix" : "Windows"}`});

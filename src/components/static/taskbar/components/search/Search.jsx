@@ -78,9 +78,9 @@ export default class Search extends Component {
         let newFolders = this.state.results.folders;
         results.map(result => {
           if (result.type === 0) {
-            newFiles.push(result)
+            return newFiles.push(result)
           } else {
-            newFolders.push(result)
+            return newFolders.push(result)
           }
         })
         newFiles = find.resort(newFiles);
