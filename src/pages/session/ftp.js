@@ -27,7 +27,11 @@ export default class FTP {
       console.debug("downloading file as temporary file for editing...")
       this.downloadExternFile(file, tmpfile.name, () => {
         console.debug("opening file from temp directory...")
-        this.spawn(getPlatformStartCmd(), [tmpfile.name]);
+        let start = this.spawn(getPlatformStartCmd(), [tmpfile.name]);
+        start.stderr.on("data", () => {
+          console.debug("no default app found: opening in default text editor instead...")
+          start = this.spawn(getPlatformStartCmd(), [tmpfile.name, "-t"]);
+        })
         let oldTime = this.fs.statSync(tmpfile.name).mtimeMs;
         console.debug("listening for changes to " + tmpfile.name + "...")
         const checkForChanges = () => {
@@ -129,7 +133,7 @@ export default class FTP {
         if (this.ftp.sftp) {
           console.debug("uploading", item.fullPath)
           this.ftp.put(rootPaths[0] + item.fullPath, newPath + item.fullPath, (err) => {
-            if (err) {console.error(err)}
+            if (err) { console.error(err) }
             else resolve();
           }, (transferred, total) => {
             progress(prog.index, prog.max, transferred / total)
