@@ -142,6 +142,13 @@ export default class SFTP {
     })
   }
 
+  rename(filePath, newPath, callback) {
+    if (!this.authenticated) return;
+    this.sftp.rename(filePath, newPath, (err) => {
+      callback(err);
+    })
+  }
+
   /**
    * @param {String} cmd 
    * @param {Function} callback 

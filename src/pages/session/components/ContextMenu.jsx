@@ -10,6 +10,7 @@ const Wrapper = styled.li`
   display: flex;
   align-items: center;
   min-width: 200px;
+  height: 20px;
   color: ${props => props.disabled ? `var(--color-grey-dark) !important` : `inherit`};
 
   >span:last-child div {

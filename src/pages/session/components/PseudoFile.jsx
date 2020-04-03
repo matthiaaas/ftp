@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import styled from "styled-components";
 
-import { FolderPlus } from "react-feather";
+import { FolderPlus, Type } from "react-feather";
 
 const Wrapper = styled.div`
   outline: none;
@@ -55,7 +55,7 @@ const Input = styled.input`
   }
 `
 
-export default class NewFolder extends Component {
+export class NewFolder extends Component {
   constructor(props) {
     super(props);
 
@@ -81,6 +81,53 @@ export default class NewFolder extends Component {
         <Input
           type="text"
           placeholder="my folder"
+          onChange={(event) => {
+            this.setState({ name: event.target.value })
+          }}
+          onKeyDown={(event) => {
+            if (event.keyCode === 13) {
+              if (this.state.name !== "") this.submit();
+            } else if (event.keyCode === 27) {
+              this.props.onClose.call(this);
+            }
+          }}
+          onBlur={(event) => {
+            if (this.state.name !== "") this.submit();
+            else this.props.onClose.call(this);
+          }}
+          autoFocus
+        />
+      </Wrapper>
+    )
+  }
+}
+
+export class Rename extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      name: ""
+    }
+
+    this.submit = this.submit.bind(this);
+  }
+
+  submit() {
+    console.debug("renaming file to:", this.state.name)
+    if (typeof this.props.onSubmit === "function") {
+      this.props.onSubmit.call(this, this.props.target, this.state.name);
+      this.props.onClose.call(this);
+    }
+  }
+
+  render() {
+    return (
+      <Wrapper>
+        <Type />
+        <Input
+          type="text"
+          placeholder={this.props.target.name}
           onChange={(event) => {
             this.setState({ name: event.target.value })
           }}

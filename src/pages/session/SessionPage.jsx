@@ -10,12 +10,12 @@ import { Page, Content, System, Path, Url, Files } from "./styles";
 
 import FTP from "./ftp";
 
-import Folder from "./components/Folder";
 import File from "./components/File";
+import Folder from "./components/Folder";
 import Space from "./components/Space";
-import ContextMenus from "./components/ContextMenus";
-import NewFolder from "./components/NewFolder";
 import Progress from "./components/Progress";
+import ContextMenus from "./components/ContextMenus";
+import { NewFolder, Rename } from "./components/PseudoFile";
 
 class SessionPage extends Component {
   constructor(props) {
@@ -30,7 +30,8 @@ class SessionPage extends Component {
         files: {},
         selected: [],
         loading: true,
-        newFolder: false
+        onRename: false,
+        onNewFolder: false
       },
       keys: {}
     }
@@ -69,7 +70,7 @@ class SessionPage extends Component {
           ...this.state.extern,
           files: data,
           loading: false,
-          newFolder: false
+          onNewFolder: false
         }
       });
     })
@@ -164,7 +165,7 @@ class SessionPage extends Component {
             this.setState({
               extern: {
                 ...this.state.extern,
-                newFolder: true
+                onNewFolder: true
               }
             })
           }
@@ -198,11 +199,21 @@ class SessionPage extends Component {
           socket={this.socket}
           selected={this.state.extern.selected}
           onReload={this.updateExternFiles}
+          onRename={(target) => {
+            this.setState({
+              extern: {
+                ...this.state.extern,
+                onRename: {
+                  target: target
+                }
+              }
+            })
+          }}
           onNewFolder={() => {
             this.setState({
               extern: {
                 ...this.state.extern,
-                newFolder: true
+                onNewFolder: true
               }
             })
           }}
@@ -226,7 +237,7 @@ class SessionPage extends Component {
                 <Url>{this.state.extern.path}</Url>
               </Path>
               <Files>
-                {this.state.extern.newFolder &&
+                {this.state.extern.onNewFolder &&
                   <NewFolder
                     path={this.state.extern.path}
                     onSubmit={this.socket.createExternFolder}
@@ -234,7 +245,22 @@ class SessionPage extends Component {
                       this.setState({
                         extern: {
                           ...this.state.extern,
-                          newFolder: false
+                          onNewFolder: false
+                        }
+                      });
+                      this.updateExternFiles();
+                    }}
+                  />
+                }
+                {this.state.extern.onRename &&
+                  <Rename
+                    target={this.state.extern.onRename.target}
+                    onSubmit={this.socket.renameExternFile}
+                    onClose={() => {
+                      this.setState({
+                        extern: {
+                          ...this.state.extern,
+                          onRename: false
                         }
                       });
                       this.updateExternFiles();

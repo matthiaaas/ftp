@@ -63,6 +63,13 @@ export default class FTP {
     
   }
 
+  renameExternFile = (file, newName, callback) => {
+    this.ftp.rename(file.path + file.name, file.path + newName, (err) => {
+      if (err) alert(err);
+      else if (typeof callback === "function") callback();
+    })
+  }
+
   downloadExternFile = (file, to, callback) => {
     let dlDir = window.require("downloads-folder");
     let destination = to || dlDir() + "/" + file.name
