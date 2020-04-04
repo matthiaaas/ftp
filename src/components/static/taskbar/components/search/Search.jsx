@@ -22,6 +22,7 @@ export default class Search extends Component {
       term: "",
       searching: false,
       redirect: undefined,
+      recursive: false,
       keys: {},
       results: {
         selected: 0,
@@ -41,6 +42,23 @@ export default class Search extends Component {
     this.handleShortcut = this.handleShortcut.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.socket) {
+      if (this.props.socket.sftp) {
+        this.props.socket.raw("find -maxdepth 1", (err, data) => {
+          if (err) console.log(err);
+          if (data) {
+            if (data.text.startsWith("-bash: ") || data.text.startsWith("-sh: ")) {
+              this.setState({ recursive: true });
+            }
+          }
+        })
+      } else {
+        this.setState({ recursive: true });
+      }
+    }
+  }
+
   search(term) {
     if (this.props.socketStatus !== "online") return;
     this.setState({
@@ -50,7 +68,7 @@ export default class Search extends Component {
         folders: []
       }
     })
-    if (this.props.socket.sftp) {
+    if (!this.state.recursive) {
       this.setState({ searching: true })
       let find = new Find(term, this.props.socket);
       find.find("f", (results) => {
@@ -70,10 +88,10 @@ export default class Search extends Component {
         })
         this.setState({ searching: false })
       })
-    } else if (this.props.socket) {
+    } else {
       this.setState({ searching: true })
       let find = new Find(term, this.props.socket);
-      find.findRecursive("f", (results) => {
+      find.findRecursive((results) => {
         let newFiles = this.state.results.files;
         let newFolders = this.state.results.folders;
         results.map(result => {
@@ -136,7 +154,7 @@ export default class Search extends Component {
         this.props.onClose.call(this);
         break;
       case 13:
-        if (this.props.socketStatus === "online" && (this.props.socket.sftp || this.state.results.files.length + this.state.results.folders.length > 0)) {
+        if (this.props.socketStatus === "online" && (!this.state.recursive || this.state.results.files.length + this.state.results.folders.length > 0)) {
           this.submit();
         } else {
           this.search(this.state.term);
@@ -198,7 +216,7 @@ export default class Search extends Component {
                     selected: 0
                   }
                 })
-                if (this.props.socketStatus === "online" && this.props.socket.sftp && term.length > 0) {
+                if (this.props.socketStatus === "online" && !this.state.recursive && term.length > 0) {
                   this.search(term);
                 }
                 this.setState({
