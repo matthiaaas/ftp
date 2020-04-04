@@ -48,6 +48,8 @@ export default class Find {
 
   findRecursive = (callback) => {
     console.debug("searching recursive...");
+    let maxDepth = 16;
+    let depth = 0;
     
     const list = (dir) => {
       return new Promise((resolve, reject) => {
@@ -70,12 +72,13 @@ export default class Find {
     const walk = (dir, callback) => {
       return list(dir).then((files) => {
         callback(files)
+        depth++;
         if (files.length === 0) {
           return Promise.resolve();
         }
         files.map((file) => {
           file.filepath = path.join(dir, file.name);
-          if (file.type === 1 && !file.name.startsWith(".")) {
+          if (file.type === 1 && !file.name.startsWith(".") && depth <= maxDepth) {
             walk(path.join(dir, file.name), callback);
           }
         });
