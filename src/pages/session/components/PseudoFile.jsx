@@ -174,6 +174,7 @@ export class Rename extends Component {
         <Type />
         <Input
           type="text"
+          defaultValue={this.props.target.name}
           placeholder={this.props.target.name}
           onChange={(event) => {
             this.setState({ name: event.target.value })
@@ -184,6 +185,9 @@ export class Rename extends Component {
             } else if (event.keyCode === 27) {
               this.props.onClose.call(this);
             }
+          }}
+          onFocus={(event) => {
+            event.target.select();
           }}
           onBlur={(event) => {
             if (this.state.name !== "") this.submit();
