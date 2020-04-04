@@ -9,6 +9,8 @@ import Alert from "./components/misc/Alert";
 
 import SFTP from "./components/sftp";
 
+import Settings from "./components/localstorage/settings";
+
 import Titlebar from "./components/static/titlebar/Titlebar";
 import Sidebar from "./components/static/sidebar/Sidebar";
 import Taskbar from "./components/static/taskbar/Taskbar";
@@ -46,6 +48,8 @@ class App extends Component {
 
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
+
+    this.settings = new Settings();
 
     this.alert = createRef();
 
@@ -242,7 +246,7 @@ class App extends Component {
                 )
               }} />
             </Switch>
-            <Redirect to="/" />
+            <Redirect to={this.settings.get("start_screen")} />
           </RouteChange>
         </BrowserRouter>
       </Fragment>

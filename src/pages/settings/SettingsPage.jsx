@@ -1,18 +1,74 @@
 import React, { Component } from "react";
 
-import Container from "../../components/misc/Container";
-import Button from "../../components/misc/Button";
+import { Layout, Cloud, Settings } from "react-feather";
 
-import { Page, Content } from "./styles";
+import Container from "../../components/misc/Container";
+
+import { Page, Content, Tabs } from "./styles";
+
+import TabItem from "./components/TabItem";
+
+import AppearanceTab from "./tabs/AppearanceTab";
+import GeneralTab from "./tabs/GeneralTab";
 
 class SettingsPage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      active: "/appearance"
+    }
+
+    this.changeActive = this.changeActive.bind(this);
+  }
+
+  changeActive(to) {
+    this.setState({
+      active: to
+    })
+  }
+
   render() {
+    const tabItems = [
+      {
+        name: "Appearance",
+        loc: "/appearance",
+        icon: <Layout />
+      },
+      {
+        name: "Transfer",
+        loc: "/transfer",
+        icon: <Cloud />
+      },
+      {
+        name: "General",
+        loc: "/general",
+        icon: <Settings />
+      }
+    ];
+
     return (
       <Page>
         <Container>
+          <Tabs>
+            {tabItems.map((item, index) => {
+              return (
+                <TabItem key={index}
+                  name={item.name}
+                  loc={item.loc}
+                  icon={item.icon}
+                  active={item.loc === this.state.active}
+                  onNavigate={this.changeActive}
+                />
+              )
+            })}
+          </Tabs>
           <Content>
-            <Button variant="button" primary>Save settings</Button>
-            <Button variant="button">Save</Button>
+            {this.state.active === "/appearance" && <AppearanceTab />}
+            {this.state.active === "/transfer" && <div>Transfer</div>}
+            {this.state.active === "/general" && <GeneralTab />}
+            {/* <Button variant="button" primary>Save settings</Button>
+            <Button variant="button">Save</Button> */}
           </Content>
         </Container>
       </Page>
