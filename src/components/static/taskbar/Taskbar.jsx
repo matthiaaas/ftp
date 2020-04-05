@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
-import Button from "../../misc/Button";
 import Tag from "../../misc/Tag";
 import KeyEvents from "../../misc/KeyEvents";
 import ServerStatus from "../../misc/ServerStatus";
 
-import { Search as Zoom, Bookmark, Eye, RefreshCcw, X } from "react-feather";
+import { Search as Zoom, Bookmark, Eye, RefreshCcw, X, Plus } from "react-feather";
 
-import { Header, Content, Rows, Row, Item, ItemInner, ItemOuter, ToolTip, Server, ServerDisconnect } from "./styles";
+import { Header, Content, Rows, Row, Item, ItemInner, ItemOuter, ToolTip, Server, ServerDisconnect, ServerName } from "./styles";
 
 import Search from "./components/search/Search";
 
@@ -97,13 +96,22 @@ class Taskbar extends Component {
               </Item>
             </Row>
             <Row>
-              <Server>
-                <ServerDisconnect onClick={this.props.onDisconnect}><X /></ServerDisconnect>
-                <Button to={this.props.socketStatus === "online" ? "/dashboard" : "/"} tabIndex="-1">
-                  <span>{this.props.socketData.host === "" || this.props.socketData.host === undefined ? "/" : this.props.socketData.host}</span>
-                  <ServerStatus style={{margin: "0 -4px 0 8px"}} status={this.props.socketStatus} />
-                </Button>
-              </Server>
+              {this.props.socketStatus !== "offline" &&
+                <Server active={this.state.location === "/dashboard"}>
+                  <ServerDisconnect onClick={this.props.onDisconnect}><X /></ServerDisconnect>
+                  <ServerName to="/dashboard">
+                    <span>{this.props.socketData.host === "" || this.props.socketData.host === undefined ? "/" : this.props.socketData.host}</span>
+                    <ServerStatus style={{margin: "0 -4px 0 8px"}} status={this.props.socketStatus} />
+                  </ServerName>
+                </Server>
+              }
+              <Item active={this.state.location === "/"}>
+                <Link to="/">
+                  <ItemInner>
+                    <Plus />
+                  </ItemInner>
+                </Link>
+              </Item>
             </Row>
           </Rows>
         </Content>

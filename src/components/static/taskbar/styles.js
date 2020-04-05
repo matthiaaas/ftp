@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const Header = styled.header`
   z-index: 11;
@@ -115,6 +116,13 @@ export const Server = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  margin-right: 12px;
+
+  >a {
+    color: ${props => props.disabled ? `var(--color-grey-dark) !important` : props.active ? `var(--color-grey-light)` : `var(--color-white)`};
+    border: 1px solid ${props => props.disabled ? `var(--color-dark-light) !important` : props.active ? `var(--color-dark-grey)` : `transparent`};
+    background: ${props => props.disabled ? `transparent !important` : props.active && `var(--color-dark) !important`};
+  }
 
   &:hover {
     >div {
@@ -126,6 +134,32 @@ export const Server = styled.div`
       transition: padding-left 0.2s ease 0.4s;
       padding-left: 56px;
     }
+  }
+`
+
+export const ServerName = styled(Link)`
+  transition: all ease 0.1s;
+  padding: 13px 24px;
+  border: 1px solid transparent;
+  border-radius: 24px;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  font-family: var(--font-main);
+  font-weight: 400;
+  font-size: 16px;
+  text-decoration: none;
+  color: var(--color-white);
+  background: var(--color-dark-light);
+
+  &:hover {
+    border: 1px solid var(--color-dark-grey);
+    color: var(--color-grey-light);
+    background: var(--color-dark);
+  }
+
+  &:active {
+    background: var(--color-dark-grey-blur);
   }
 `
 
