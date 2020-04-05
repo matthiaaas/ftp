@@ -18,7 +18,6 @@ const Wrapper = styled.div`
 
 const Body = styled.div`
   pointer-events: all;
-  -webkit-app-region: no-drag;
   padding: 16px 24px;
   border-radius: 0 0 8px 8px;
   border: 1px solid var(--color-dark-grey);

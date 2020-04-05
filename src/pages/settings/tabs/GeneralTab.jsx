@@ -10,7 +10,7 @@ export default class GeneralTab extends Component {
     this.settings = new Settings();
 
     this.state = {
-      startScreen: this.settings.get("start_screen")
+      startScreen: this.settings.get("start_screen") || "/"
     }
   }
 

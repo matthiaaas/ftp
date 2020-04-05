@@ -184,6 +184,7 @@ class LoginPage extends Component {
                     protocol: this.props.socketData.protocol
                   });
                   window.localStorage.setItem("registered_connections", JSON.stringify(connections));
+                  alert("Saved connection as a bookmark in QuickConnect", false)
                 }}
               >
                 <Bookmark />
