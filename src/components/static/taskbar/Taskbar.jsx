@@ -66,7 +66,7 @@ class Taskbar extends Component {
         <Content>
           <Rows>
             <Row>
-              <Item active={this.state.search} onClick={() => { this.setState({ search: true }) }}>
+              <Item disabled={this.props.socketStatus !== "online"} active={this.state.search} onClick={() => { this.setState({ search: true }) }}>
                 <ItemInner>
                   <Zoom />
                   <ToolTip>Search for files and folders</ToolTip>
@@ -99,14 +99,14 @@ class Taskbar extends Component {
               {this.props.socketStatus !== "offline" &&
                 <Server active={this.state.location === "/dashboard"}>
                   <ServerDisconnect onClick={this.props.onDisconnect}><X /></ServerDisconnect>
-                  <ServerName to="/dashboard">
+                  <ServerName to="/dashboard" tabIndex="-1">
                     <span>{this.props.socketData.host === "" || this.props.socketData.host === undefined ? "/" : this.props.socketData.host}</span>
                     <ServerStatus style={{margin: "0 -4px 0 8px"}} status={this.props.socketStatus} />
                   </ServerName>
                 </Server>
               }
               <Item active={this.state.location === "/"}>
-                <Link to="/">
+                <Link to="/" tabIndex="-1">
                   <ItemInner>
                     <Plus />
                   </ItemInner>

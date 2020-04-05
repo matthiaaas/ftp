@@ -303,9 +303,6 @@ export default class Search extends Component {
             {this.state.searching &&
               <Tip><Loader /> Searching</Tip>
             }
-            {this.props.socketStatus === "online" && this.props.socketData.protocol !== "sftp" &&
-              <Tip>FTP connections are not supported</Tip>
-            }
             {this.props.socketStatus !== "online" &&
               <Tag>please login first</Tag>
             }
