@@ -130,12 +130,12 @@ class SessionPage extends Component {
       } else {
         selected.push(file)
       }
-    } else if (this.state.keys.shift) {
+    } else if (this.state.keys.shift && selected.length > 0) {
       let files = this.state.extern.files;
-      let iStart = files.findIndex(item => item === selected[selected.length - 1]) + 1;
+      let iStart = files.findIndex(item => item === selected[selected.length - 1]);
       let iEnd = files.findIndex(item => item === file);
       for (
-        let i = iStart < iEnd ? iStart : iStart - 1;
+        let i = iStart < iEnd ? iStart : iStart;
         iStart < iEnd ? i <= iEnd : i >= iEnd;
         iStart < iEnd ? i++ : i--
       ) {
@@ -244,6 +244,14 @@ class SessionPage extends Component {
                 path={this.state.extern.path}
                 onUpload={this.socket.uploadLocalFiles}
                 onReturn={this.updateExternFiles}
+                onClick={() => {
+                  this.setState({
+                    extern: {
+                      ...this.state.extern,
+                      selected: []
+                    }
+                  })
+                }}
                 onProgress={(current, max, progress) => {
                   this.progress.current.updateProgress(current, max, progress);
                 }}

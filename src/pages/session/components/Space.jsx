@@ -47,6 +47,7 @@ export default class Space extends Component {
           event.preventDefault();
           this.setState({ dropping: false });
         }}
+        onClick={this.props.onClick}
         onContextMenu={(event) => {
           event.preventDefault();
           this.props.onContext.call(this, event);
