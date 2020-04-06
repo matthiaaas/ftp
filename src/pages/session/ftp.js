@@ -6,6 +6,7 @@ export default class FTP {
     this.fs = window.require("fs");
     this.path = window.require("path");
     this.tmp = window.require("tmp");
+    this.dlDir = window.require("downloads-folder");
     this.exec = window.require("child_process").exec;
     this.spawn = window.require("child_process").spawn;
   }
@@ -81,8 +82,7 @@ export default class FTP {
   }
 
   downloadExternFile = (file, to, callback) => {
-    let dlDir = window.require("downloads-folder");
-    let destination = to || dlDir() + "/" + file.name
+    let destination = to || this.dlDir() + "/" + file.name;
     if (this.ftp.sftp) {
       this.ftp.get(file.path + file.name, destination, (err) => {
         if (err) alert(err);
@@ -105,6 +105,82 @@ export default class FTP {
         socket.resume();
       })
     }
+  }
+
+  downloadExternFiles = (files, to, callback, progress) => {
+    let destination = to || this.dlDir() + "/";
+
+    const getBasePath = () => {
+      let i = files.findIndex(file => file.type === 0);
+      return files[i < 0 ? 0 : i].path
+    }
+
+    let basePath = getBasePath();
+
+    const downloadFile = (file, to, prog) => {
+      console.debug("downloading", file.name)
+      to = to + file.name;
+      return new Promise((resolve, reject) => {
+        if (this.ftp.sftp) {
+          this.ftp.get(file.path + file.name, to, (err) => {
+            if (err) alert(err);
+            else resolve();
+          }, (transferred, total) => {
+            progress(prog.index, prog.max, transferred / total)
+          })
+        } else {
+          progress(prog.index, prog.max);
+          let content = "";
+          console.debug("reading", file.name)
+          this.ftp.get(file.path + file.name, (err, socket) => {
+            if (err) alert(err);
+            if (socket) {
+              socket.on("data", (data) => {
+                content += data.toString();
+              })
+              socket.on("close", (err) => {
+                if (err) alert(err);
+                console.debug("downloading", file.name)
+                this.fs.writeFile(to, content, (err) => {
+                  if (err) alert(err);
+                  else resolve();
+                })
+              })
+              socket.resume();
+            }
+          })
+        }
+      })
+    }
+
+    const createDir = (file, to, prog) => {
+      console.debug("creating")
+      to = to + file.path.replace(basePath, "") + file.name;
+      return new Promise((resolve, reject) => {
+        !this.fs.existsSync(to) && this.fs.mkdirSync(to);
+        resolve()
+      })
+    }
+
+    let runTasks = () => {
+      let p = Promise.resolve()
+      let max = files.length;
+      files.forEach((file, index) => {
+        if (file.type === 0) {
+          p = p.then(() => downloadFile(file, destination, {index: index, max: max}));
+        // } else if (file.type === 1) {
+        //   p = p.then(() => createDir(file, destination, {index: index, max: max}))
+        }
+      });
+      return p;
+    }
+
+    runTasks().then(() => {
+      console.log("downloaded all files")
+      alert("Downloaded all files to your downloads folder", false)
+      progress(files.length, files.length);
+      callback();
+    })
   }
 
   stopUpload = () => {
@@ -202,7 +278,6 @@ export default class FTP {
             else resolve();
           })
         }
-        
       })
     }
 
@@ -284,6 +359,28 @@ export default class FTP {
         else if (typeof callback === "function") callback();
       })
     }
+  }
+
+  deleteExternFiles = (files, callback) => {
+    const _delete = (obj) => {
+      return new Promise((resolve, reject) => {
+        if (obj.type === 0) {
+          this.deleteExternFile(obj, () => {
+            callback();
+            return resolve();
+          });
+        } else if (obj.type === 1) {
+          this.deleteExternFolderRecursively(obj, () => {
+            callback();
+            return resolve();
+          });
+        }
+      })
+    }
+    let deletions = files.map((obj) => {
+      return _delete(obj);
+    })
+    Promise.all(deletions);
   }
 
   deleteExternFolder = (folder, callback) => {

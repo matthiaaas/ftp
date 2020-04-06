@@ -40,7 +40,8 @@ class SessionPage extends Component {
     this.socket = new FTP(this.props.socket);
     this.dataSocket = new Data(this.props.socketData.host, this.props.socketData.user);
 
-    this.progress = createRef();
+    this.upload = createRef();
+    this.download = createRef();
     this.contextMenus = createRef();
 
     this.updateExternFiles = this.updateExternFiles.bind(this);
@@ -70,6 +71,7 @@ class SessionPage extends Component {
         extern: {
           ...this.state.extern,
           files: data,
+          selected: [],
           loading: false,
           onNewFolder: false
         }
@@ -202,13 +204,21 @@ class SessionPage extends Component {
           onKeys={this.handleShortcut}
         />
         <Progress
-          ref={this.progress}
-          onAbort={this.socket.stopUpload}
+          ref={this.upload}
+          onAbort={() => {alert("Aborting an upload is temporary deactivated")}}
+        />
+        <Progress
+          ref={this.download}
+          label="Downloading"
+          onAbort={() => {alert("Aborting a download is temporary deactivated")}}
         />
         <ContextMenus
           ref={this.contextMenus}
           socket={this.socket}
           selected={this.state.extern.selected}
+          onProgress={(current, max, progress) => {
+            this.download.current.updateProgress(current, max, progress);
+          }}
           onReload={this.updateExternFiles}
           onRename={(target) => {
             this.setState({
@@ -253,7 +263,7 @@ class SessionPage extends Component {
                   })
                 }}
                 onProgress={(current, max, progress) => {
-                  this.progress.current.updateProgress(current, max, progress);
+                  this.upload.current.updateProgress(current, max, progress);
                 }}
                 onContext={(event) => {
                   this.contextMenus.current.openForSpace(event, this.state.extern.path)
@@ -325,7 +335,7 @@ class SessionPage extends Component {
                           } else this.selectExternFile(file);
                         }}
                         onUpload={this.socket.uploadLocalFiles}
-                        onProgress={this.progress.current.updateProgress}
+                        onProgress={this.upload.current.updateProgress}
                         onContext={this.contextMenus.current.openForFolder}
                       />
                     )

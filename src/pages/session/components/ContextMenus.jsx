@@ -86,7 +86,29 @@ class ContextMenuFolder extends Component {
           }}
         />
         <Separator />
-        <ContextMenuItem shortcut="⌘D" disabled>Download</ContextMenuItem>
+        <ContextMenuItem
+          name="Download"
+          shortcut="⌘G"
+          onExecute={() => {
+            let selected = this.props.selected;
+            if (selected.length > 0 && selected.includes(this.props.target)) {
+              this.props.socket.downloadExternFiles(
+                selected, 
+                undefined,
+                this.props.onReload,
+                this.props.onProgress
+              );
+            } else {
+              this.props.socket.downloadExternFiles(
+                [this.props.target], 
+                undefined,
+                this.props.onReload,
+                this.props.onProgress
+              );
+            }
+            this.props.onReturn.call(this);
+          }}
+        />
         <Separator />
         <ContextMenuItem
           name="Delete"
@@ -151,9 +173,24 @@ class ContextMenuFile extends Component {
         <Separator />
         <ContextMenuItem
           name="Download"
-          shortcut="⌘D"
+          shortcut="⌘G"
           onExecute={() => {
-            this.props.socket.downloadExternFile(this.props.target);
+            let selected = this.props.selected;
+            if (selected.length > 0 && selected.includes(this.props.target)) {
+              this.props.socket.downloadExternFiles(
+                selected, 
+                undefined,
+                this.props.onReload,
+                this.props.onProgress
+              );
+            } else {
+              this.props.socket.downloadExternFiles(
+                [this.props.target], 
+                undefined,
+                this.props.onReload,
+                this.props.onProgress
+              );
+            }
             this.props.onReturn.call(this);
           }}
         />
@@ -164,25 +201,7 @@ class ContextMenuFile extends Component {
           onExecute={() => {
             let selected = this.props.selected;
             if (selected.length > 0 && selected.includes(this.props.target)) {
-              const _delete = (obj) => {
-                return new Promise((resolve, reject) => {
-                  if (obj.type === 0) {
-                    this.props.socket.deleteExternFile(obj, () => {
-                      this.props.onReload();
-                      return resolve();
-                    });
-                  } else if (obj.type === 1) {
-                    this.props.socket.deleteExternFolderRecursively(obj, () => {
-                      this.props.onReload();
-                      return resolve();
-                    });
-                  }
-                })
-              }
-              let deletions = selected.map((obj) => {
-                return _delete(obj);
-              })
-              Promise.all(deletions);
+              this.props.socket.deleteExternFiles(selected, this.props.onReload);
             } else {
               this.props.socket.deleteExternFile(this.props.target, this.props.onReload);
             }
@@ -283,12 +302,12 @@ export default class ContextMenus extends Component {
           _ref={this.folderMenu}
           socket={this.props.socket}
           target={this.state.target}
-          onReturn={() => {
-            this.closeAll();
-          }}
+          selected={this.props.selected}
+          onReturn={this.closeAll}
           onReload={() => {
             this.props.onReload.call(this);
           }}
+          onProgress={this.props.onProgress}
           onRename={this.props.onRename}
           onNewFile={this.props.onNewFile}
           onNewFolder={this.props.onNewFolder}
@@ -299,12 +318,11 @@ export default class ContextMenus extends Component {
           socket={this.props.socket}
           target={this.state.target}
           selected={this.props.selected}
-          onReturn={() => {
-            this.closeAll();
-          }}
+          onReturn={this.closeAll}
           onReload={() => {
             this.props.onReload.call(this);
           }}
+          onProgress={this.props.onProgress}
           onRename={this.props.onRename}
           onNewFile={this.props.onNewFile}
           onNewFolder={this.props.onNewFolder}
@@ -314,9 +332,7 @@ export default class ContextMenus extends Component {
           _ref={this.spaceMenu}
           socket={this.props.socket}
           target={this.state.target}
-          onReturn={() => {
-            this.closeAll();
-          }}
+          onReturn={this.closeAll}
           onReload={() => {
             this.props.onReload.call(this);
           }}

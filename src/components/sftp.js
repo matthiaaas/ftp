@@ -102,10 +102,12 @@ export default class SFTP {
    * @param {String} to 
    * @param {Function} callback 
    */
-  get(from, to, callback) {
+  get(from, to, callback, progress) {
     if (!this.authenticated) return;
-    this.sftp.fastGet(from, to, (err) => {
-      callback(err);
+    this.sftp.fastGet(from, to, {step: (transferred, chunk, total) => {
+      if (typeof progress === "function") progress(transferred, total);
+    }}, (err) => {
+      callback(err)
     })
   }
 

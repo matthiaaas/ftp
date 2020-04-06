@@ -145,7 +145,7 @@ class DashboardPage extends Component {
                     </BoxSection>
                   </Box>
                 </Item>
-                <Item style={{opacity: "0.4"}}>
+                <Item>
                   <Label>System</Label>
                   <Box>
                     <BoxSection>
