@@ -160,7 +160,7 @@ class SessionPage extends Component {
     })
   }
 
-  handleShortcut(key) {
+  handleShortcut(key, code) {
     if (this.state.keys.cmd) {
       switch (key) {
         case "n":
@@ -183,11 +183,26 @@ class SessionPage extends Component {
             })
           }
           break;
+        case "g":
+          if (this.state.extern.selected.length > 0) {
+            this.socket.downloadExternFiles(
+              this.state.extern.selected, 
+              undefined,
+              this.updateExternFiles,
+              this.download.current.updateProgress
+            );
+          }
         case "r":
           this.updateExternFiles();
           break;
         default:
           break;
+      }
+
+      if (code === 8) {
+        if (this.state.extern.selected.length > 0) {
+          this.socket.deleteExternFiles(this.state.extern.selected, this.updateExternFiles);
+        }
       }
     }
   }

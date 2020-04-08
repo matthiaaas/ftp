@@ -18,7 +18,9 @@
 | Shortcut | Action |
 | -------: | :----- |
 | `⇧⌘N`    | Create new folder in current directory
-| `⌘⌫`     | Delete selection
+| `⇧⌘F`    | Create new file in current directory
+| `⌘G`     | Download selected files
+| `⌘⌫`     | Delete selected files
 
 
 ### View
