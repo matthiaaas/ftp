@@ -67,7 +67,7 @@ export class NewFile extends Component {
   }
 
   submit() {
-    console.debug("submitting new file:", this.state.name)
+    console.debug("submitting new file", this.state.name)
     if (typeof this.props.onSubmit === "function") {
       this.props.onSubmit.call(this, this.props.path, this.state.name);
       this.props.onClose.call(this);
@@ -114,7 +114,7 @@ export class NewFolder extends Component {
   }
 
   submit() {
-    console.debug("submitting new folder:", this.state.name)
+    console.debug("submitting new folder", this.state.name)
     if (typeof this.props.onSubmit === "function") {
       this.props.onSubmit.call(this, this.props.path, this.state.name);
       this.props.onClose.call(this);
@@ -161,7 +161,7 @@ export class Rename extends Component {
   }
 
   submit() {
-    console.debug("renaming file to:", this.state.name)
+    console.debug("renaming file to", this.state.name)
     if (typeof this.props.onSubmit === "function") {
       this.props.onSubmit.call(this, this.props.target, this.state.name);
       this.props.onClose.call(this);

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import { Image, Volume1, Film, FileText, Terminal } from "react-feather";
+import { Image, Volume1, Film, FileText, Terminal, File as FileBasic } from "react-feather";
 
 import { toAccurateDate, toAccurateFileSize, getExactFileType } from "../../../assets/utils/utils.js";
 
@@ -60,7 +60,8 @@ export default class File extends Component {
     super(props);
 
     this.state = {
-      dropping: false
+      dropping: false,
+      clicked: false
     }
   }
 
@@ -84,15 +85,28 @@ export default class File extends Component {
       case "scr":
         Icon = <Terminal />
         break;
+      case "txt":
+        Icon = <FileText />
+        break;
       default:
+        // Icon = <FileBasic />
         Icon = <FileText />
         break;
     }
 
     return (
       <Wrapper
+        draggable
         selected={this.props.selected}
         onClick={this.props.onClick}
+        onDragStart={(event) => {
+          event.dataTransfer.setData("native", "true")
+          let files = [this.props.file]
+          if (this.props.selection.includes(this.props.file)) {
+            files = this.props.selection;
+          }
+          event.dataTransfer.setData("nativeFiles", JSON.stringify(files))
+        }}
         onContextMenu={(event) => {
           event.preventDefault();
           this.props.onContext.call(this, event, this.props.file);

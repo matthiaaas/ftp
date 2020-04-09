@@ -67,6 +67,25 @@ export default class Folder extends Component {
     this.state = {
       dropping: false
     }
+
+    this.onDrop = this.onDrop.bind(this);
+  }
+
+  onDrop(event) {
+    this.setState({ dropping: false });
+    let transfer = event.dataTransfer;
+    const isNative = Boolean(transfer.getData("native"));
+    let files = JSON.parse(transfer.getData("nativeFiles"));
+    if (isNative) {
+      this.props.onMove.call(this, files, this.props.folder.path + this.props.folder.name + "/", this.props.onReturn)
+    } else {
+      this.props.onUpload.call(
+        this, event.dataTransfer,
+        this.props.folder.path + this.props.folder.path + "/",
+        () => {},
+        this.props.onProgress
+      );
+    }
   }
 
   render() {
@@ -74,8 +93,17 @@ export default class Folder extends Component {
 
     return (
       <Wrapper
+        draggable
         dropping={this.state.dropping}
         selected={this.props.selected}
+        onDragStart={(event) => {
+          event.dataTransfer.setData("native", "true")
+          let files = [this.props.folder]
+          if (this.props.selection.includes(this.props.folder)) {
+            files = this.props.selection;
+          }
+          event.dataTransfer.setData("nativeFiles", JSON.stringify(files))
+        }}
         onDragEnter={(event) => {
           event.preventDefault();
           this.setState({ dropping: true });
@@ -83,15 +111,7 @@ export default class Folder extends Component {
         onDragOver={(event) => {
           event.preventDefault();
         }}
-        onDrop={(event) => {
-          this.props.onUpload.call(
-            this, event.dataTransfer,
-            this.props.folder.path + this.props.folder.name + "/",
-            () => {},
-            this.props.onProgress
-          );
-          this.setState({ dropping: false });
-        }}
+        onDrop={this.onDrop}
         onDragLeave={(event) => {
           event.preventDefault();
           this.setState({ dropping: false });

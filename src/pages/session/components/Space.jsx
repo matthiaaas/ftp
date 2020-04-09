@@ -36,12 +36,16 @@ export default class Space extends Component {
         }}
         onDrop={(event) => {
           this.setState({ dropping: false });
-          this.props.onUpload.call(this,
-            event.dataTransfer,
-            this.props.path,
-            this.props.onReturn,
-            this.props.onProgress
-          );
+          let transfer = event.dataTransfer;
+          const isNative = Boolean(transfer.getData("native"));
+          if (!isNative) {
+            this.props.onUpload.call(this,
+              transfer,
+              this.props.path,
+              this.props.onReturn,
+              this.props.onProgress
+            );
+          }
         }}
         onDragLeave={(event) => {
           event.preventDefault();

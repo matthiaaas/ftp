@@ -343,15 +343,18 @@ class SessionPage extends Component {
                       <Folder
                         key={index + file.name + file.time}
                         folder={file}
+                        selection={this.state.extern.selected}
                         selected={this.state.extern.selected.includes(file)}
                         onClick={() => {
                           if (!this.state.keys.shift && !this.state.keys.cmd) {
                             this.enterExternFolder(file)
                           } else this.selectExternFile(file);
                         }}
+                        onMove={this.socket.moveExternFiles}
                         onUpload={this.socket.uploadLocalFiles}
                         onProgress={this.upload.current.updateProgress}
                         onContext={this.contextMenus.current.openForFolder}
+                        onReturn={this.updateExternFiles}
                       />
                     )
                   } else {
@@ -359,8 +362,10 @@ class SessionPage extends Component {
                       <File
                         key={index + file.name + file.time}
                         file={file}
+                        selection={this.state.extern.selected}
                         selected={this.state.extern.selected.includes(file)}
-                        onClick={() => {
+                        onClick={(doubleclicked) => {
+                          console.log(doubleclicked)
                           this.selectExternFile(file)
                         }}
                         onContext={this.contextMenus.current.openForFile}

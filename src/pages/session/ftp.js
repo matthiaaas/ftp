@@ -24,6 +24,10 @@ export default class FTP {
       prefix: file.name + "-",
       postfix: file.extension
     });
+    console.log(file.size)
+    if (file.size > 10 ** 6) {
+      alert("You're opening a file > 1 MB. Downloading might take a while.", false)
+    }
     console.debug("downloading file as temporary file for editing...")
     this.downloadExternFile(file, tmpfile.name, () => {
       console.debug("opening file from temp directory...")
@@ -78,6 +82,30 @@ export default class FTP {
     this.ftp.rename(file.path + file.name, file.path + newName, (err) => {
       if (err) alert(err);
       else if (typeof callback === "function") callback();
+    })
+  }
+
+  moveExternFiles = (files, to, callback) => {
+    const move = (file) => {
+      console.debug("moving", file.name);
+      return new Promise((resolve, reject) => {
+        this.ftp.rename(file.path + file.name, to + file.name, (err) => {
+          if (err) alert(err);
+          else resolve();
+        })
+      })
+    }
+
+    let runTasks = () => {
+      let p = Promise.resolve()
+      files.forEach((file, index) => {
+        p = p.then(() => move(file))
+      });
+      return p;
+    }
+    runTasks().then(() => {
+      console.log("moved all files")
+      return typeof callback === "function" ? callback() : {};
     })
   }
 

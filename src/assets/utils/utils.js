@@ -1,3 +1,4 @@
+const path = require("path")
 const process = window.require("process");
 
 export function toAccurateFileSize(size) {
@@ -13,18 +14,20 @@ export function toAccurateFileSize(size) {
 }
 
 export function getExactFileType(file) {
-  let extension = file.toLowerCase().split(".")[file.toLowerCase().split(".").length - 1];
+  let extension = path.extname(file).substr(1);
 
   let imageExtensions = ["png", "jpg", "jpeg", "gif", "bmp", "svg"];
   let videoExtensions = ["mp4", "mov", "avi", "flv"];
   let soundExtensions = ["mp3", "aac", "m4a", "wav"];
   let scriptExtensions = ["sh", "bash", "bat", "exe", "app", "js", "py", "cpp", "c", "java", "rb", "pl"];
+  let textExtensions = ["txt", "md", "html", "htm", "rtf", "doc", "docx", "pages", "odt", "apt", "rtx", "man"];
 
   let extensions = {
     "img": imageExtensions,
     "vid": videoExtensions,
     "snd": soundExtensions,
-    "scr": scriptExtensions
+    "scr": scriptExtensions,
+    "txt": textExtensions
   }
 
   for (let type in extensions) {
