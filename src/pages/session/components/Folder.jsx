@@ -1,7 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import styled from "styled-components";
 
 import { Folder as FolderIcon } from "react-feather";
+
+import DragIcon from "./DragIcon.jsx";
 
 import { toAccurateDate } from "../../../assets/utils/utils.js";
 
@@ -68,6 +70,8 @@ export default class Folder extends Component {
       dropping: false
     }
 
+    this.dragIcon = createRef();
+
     this.onDrop = this.onDrop.bind(this);
   }
 
@@ -101,6 +105,9 @@ export default class Folder extends Component {
           let files = [this.props.folder]
           if (this.props.selection.includes(this.props.folder)) {
             files = this.props.selection;
+            if (this.props.selection.length > 1) {
+              event.dataTransfer.setDragImage(this.dragIcon.current, 16, 16)
+            }
           }
           event.dataTransfer.setData("nativeFiles", JSON.stringify(files))
         }}
@@ -126,6 +133,10 @@ export default class Folder extends Component {
         <Info priority={3}>{this.props.folder.name}</Info>
         <Info right></Info>
         <Info right>{timestamp.day + "/" + timestamp.month + "/" + timestamp.year}</Info>
+        <DragIcon
+          _ref={this.dragIcon}
+          count={this.props.selection.length}
+        />
       </Wrapper>
     )
   }

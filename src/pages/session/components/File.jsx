@@ -1,7 +1,9 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import styled from "styled-components";
 
 import { Image, Volume1, Film, FileText, Terminal, File as FileBasic } from "react-feather";
+
+import DragIcon from "./DragIcon.jsx";
 
 import { toAccurateDate, toAccurateFileSize, getExactFileType } from "../../../assets/utils/utils.js";
 
@@ -59,10 +61,7 @@ export default class File extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      dropping: false,
-      clicked: false
-    }
+    this.dragIcon = createRef();
   }
 
   render() {
@@ -104,6 +103,9 @@ export default class File extends Component {
           let files = [this.props.file]
           if (this.props.selection.includes(this.props.file)) {
             files = this.props.selection;
+            if (this.props.selection.length > 1) {
+              event.dataTransfer.setDragImage(this.dragIcon.current, 16, 16)
+            }
           }
           event.dataTransfer.setData("nativeFiles", JSON.stringify(files))
         }}
@@ -116,6 +118,10 @@ export default class File extends Component {
         <Info priority={3}>{this.props.file.name}</Info>
         <Info right>{size}</Info>
         <Info right>{timestamp.day + "/" + timestamp.month + "/" + timestamp.year}</Info>
+        <DragIcon
+          _ref={this.dragIcon}
+          count={this.props.selection.length}
+        />
       </Wrapper>
     )
   }
