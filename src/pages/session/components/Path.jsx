@@ -33,10 +33,18 @@ const Dir = styled.div`
 
   &:hover {
     color: var(--color-grey-light);
+
+    &:first-child&::after {
+      opacity: 1;
+    }
   }
 
   &:active {
     color: var(--color-grey);
+
+    &:first-child&::after {
+      opacity: 0.5;
+    }
   }
 
   &::after {

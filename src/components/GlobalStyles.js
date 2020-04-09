@@ -32,6 +32,7 @@ export const GlobalStyles = createGlobalStyle`
 
   body,
   html {
+    overflow: hidden overlay;
     background: var(--color-dark-light);
   }
 
@@ -53,16 +54,16 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--color-dark);
+    background: transparent;
   }
   
   ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    border: 1px solid var(--color-dark-light);
+    border: 1px solid var(--color-dark-grey);
     background: var(--color-black);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    border-color: var(--color-dark-grey);
+    border-color: var(--color-grey-dark);
   }
 `
