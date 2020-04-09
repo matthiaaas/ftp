@@ -42,7 +42,7 @@ const Wrapper = styled.div`
 `
 
 const Info = styled.span`
-  flex: ${props => props.priority ? props.priority : `1`};  
+  flex: ${props => props.priority || `1`};  
   display: inline-block;
   white-space: nowrap;
   overflow-x: hidden;
@@ -75,13 +75,13 @@ export default class Folder extends Component {
     this.setState({ dropping: false });
     let transfer = event.dataTransfer;
     const isNative = Boolean(transfer.getData("native"));
-    let files = JSON.parse(transfer.getData("nativeFiles"));
     if (isNative) {
-      this.props.onMove.call(this, files, this.props.folder.path + this.props.folder.name + "/", this.props.onReturn)
+      let files = JSON.parse(transfer.getData("nativeFiles"));
+      this.props.onMove.call(this, files, this.props.folder.path + this.props.folder.name + "/", this.props.onReload)
     } else {
       this.props.onUpload.call(
-        this, event.dataTransfer,
-        this.props.folder.path + this.props.folder.path + "/",
+        this, transfer,
+        this.props.folder.path + this.props.folder.name + "/",
         () => {},
         this.props.onProgress
       );

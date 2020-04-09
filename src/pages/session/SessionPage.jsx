@@ -2,14 +2,14 @@ import React, { Component, createRef } from "react";
 
 import Container from "../../components/misc/Container";
 import KeyEvents from "../../components/misc/KeyEvents";
-import { GoBack } from "../../components/misc/CircleButton";
 
 import Data from "../../components/localstorage/data";
 
-import { Page, Content, System, Path, Url, Files } from "./styles";
+import { Page, Content, System, Files } from "./styles";
 
 import FTP from "./ftp";
 
+import Path from "./components/Path";
 import File from "./components/File";
 import Folder from "./components/Folder";
 import Space from "./components/Space";
@@ -192,6 +192,7 @@ class SessionPage extends Component {
               this.download.current.updateProgress
             );
           }
+          break;
         case "r":
           this.updateExternFiles();
           break;
@@ -284,10 +285,25 @@ class SessionPage extends Component {
                   this.contextMenus.current.openForSpace(event, this.state.extern.path)
                 }}
               />
-              <Path>
-                <GoBack onTrigger={this.goBackExternFolder} />
-                <Url>{this.state.extern.path}</Url>
-              </Path>
+              <Path
+                path={this.state.extern.path}
+                onGoBack={this.goBackExternFolder}
+                onJumpTo={(path) => {
+                  this.setState({
+                    extern: {
+                      ...this.state.extern,
+                      path: path
+                    }
+                  })
+                  this.updateExternFiles(path);
+                }}
+                onMove={this.socket.moveExternFiles}
+                onUpload={this.socket.uploadLocalFiles}
+                onProgress={(current, max, progress) => {
+                  this.upload.current.updateProgress(current, max, progress);
+                }}
+                onReload={this.updateExternFiles}
+              />
               <Files>
                 {this.state.extern.onNewFile &&
                   <NewFile
@@ -354,7 +370,7 @@ class SessionPage extends Component {
                         onUpload={this.socket.uploadLocalFiles}
                         onProgress={this.upload.current.updateProgress}
                         onContext={this.contextMenus.current.openForFolder}
-                        onReturn={this.updateExternFiles}
+                        onReload={this.updateExternFiles}
                       />
                     )
                   } else {
@@ -364,8 +380,7 @@ class SessionPage extends Component {
                         file={file}
                         selection={this.state.extern.selected}
                         selected={this.state.extern.selected.includes(file)}
-                        onClick={(doubleclicked) => {
-                          console.log(doubleclicked)
+                        onClick={() => {
                           this.selectExternFile(file)
                         }}
                         onContext={this.contextMenus.current.openForFile}

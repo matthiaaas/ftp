@@ -15,24 +15,6 @@ export const System = styled.section`
   min-width: 300px;
 `
 
-export const Path = styled.div`
-  z-index: 3;
-  position: fixed;
-  width: 100%;
-  padding: 28px 0 20px 0;
-  color: var(--color-grey);
-  display: flex;
-  align-items: center;
-  background: var(--color-dark-light);
-`
-
-export const Url = styled.span`
-  font-family: var(--font-main);
-  font-weight: 400;
-  font-size: 16px;
-  margin-left: 16px;
-`
-
 export const Files = styled.div`
   margin-top: 80px;
 `
