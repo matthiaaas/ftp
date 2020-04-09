@@ -1,6 +1,6 @@
 {
   "name": "FTP",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Matthias Halfmann",
   "description": "React based Electron (S)FTP desktop application",
   "homepage": "./",
