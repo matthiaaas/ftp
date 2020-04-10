@@ -102,7 +102,6 @@ class QuickConnectPage extends Component {
                   />
                 )
               })}
-              {this.state.connections.length % 2 === 1 && <div style={{flex: 1, marginLeft: "24px"}}></div>}
             </Connections>
           </Content>
         </Container>

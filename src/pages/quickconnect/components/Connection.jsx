@@ -9,9 +9,10 @@ const Wrapper = styled.div`
   font-size: 16px;
   border: 1px solid ${props => props.connected ? `var(--color-grey-dark)`: `transparent`};
   border-radius: 8px;
-  min-width: 224px;
+  min-width: 280px;
   margin: 12px;
-  flex: 1;
+  flex: 0 1 310px;
+  width: 100%;
   background: ${props => props.connected ? `var(--color-dark-grey-blur)` : `var(--color-dark)`};
 
   &:hover {
@@ -38,8 +39,11 @@ const Group = styled.div`
 `
 
 const Name = styled.span`
+  width: 200px;
+  height: 17px;
   white-space: nowrap;
   text-overflow: ellipsis;
+  overflow: hidden visible;
   color: var(--color-white);
 `
 
