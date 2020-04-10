@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import { Tab, Setting, Label, Radios, Radio } from "./styles";
+
 import Settings from "../../../components/localstorage/settings";
 
 export default class GeneralTab extends Component {

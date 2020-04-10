@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import RouteChange from "./components/RouteChange";
 import { GlobalStyles } from "./components/GlobalStyles";
+import ThemeProvider from "./components/ThemeProvider";
 
 import Alert from "./components/misc/Alert";
 
@@ -24,6 +25,7 @@ import SettingsPage from "./pages/settings/SettingsPage";
 import QuickConnectPage from "./pages/quickconnect/QuickConnectPage";
 
 import "./assets/css/reset.css";
+import "./assets/css/style.css";
 
 class App extends Component {
   constructor(props) {
@@ -38,7 +40,7 @@ class App extends Component {
         user: "",
         pass: "",
         key: false,
-        protocol: "ftp",
+        protocol: "sftp",
         ip: "",
         family: 4
       },
@@ -50,6 +52,7 @@ class App extends Component {
     this.logout = this.logout.bind(this);
 
     this.settings = new Settings();
+    this.themeProvider = new ThemeProvider();
 
     this.alert = createRef();
 
@@ -61,6 +64,11 @@ class App extends Component {
   componentDidMount() {
     alert = (text, isError) => {
       this.alert.current.show(text, isError);
+    }
+
+    let theme = this.settings.get("theme");
+    if (theme) {
+      this.themeProvider.changeTheme(theme)
     }
   }
 

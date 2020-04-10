@@ -4,24 +4,22 @@ import ThemeProvider from "../../../components/ThemeProvider";
 
 import { Tab, Setting, Label, Radios, Radio } from "./styles";
 
+import Settings from "../../../components/localstorage/settings";
+
 import { ThemeSwitch, Theme } from "../components/ThemeSwitch";
 
 export default class AppearanceTab extends Component {
   constructor(props) {
     super(props);
 
+    this.settings = new Settings();
+
     this.state = {
-      activeTheme: undefined,
+      activeTheme: this.settings.get("theme") || "theme:dark",
       display: "beautiful"
     }
 
     this.themeProvider = new ThemeProvider();
-  }
-
-  componentDidMount() {
-    this.setState({
-      activeTheme: this.themeProvider.active
-    })
   }
 
   render() {
@@ -50,11 +48,12 @@ export default class AppearanceTab extends Component {
                   id={item.id}
                   color1={item.colors["--color-dark-light"]}
                   color2={item.colors["--color-dark"]}
-                  active={item.id === this.themeProvider.active}
+                  active={item.id === this.state.activeTheme}
                   onSelect={(id) => {
+                    this.settings.set("theme", id);
                     this.themeProvider.changeTheme(id)
                     this.setState({
-                      activeTheme: this.themeProvider.active
+                      activeTheme: id
                     })
                   }}
                 />

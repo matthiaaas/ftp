@@ -1,7 +1,6 @@
 export default class ThemeProvider {
   constructor() {
-    this.active = "theme:dark";
-
+    // preinstalled themes
     this.themes = [
       {
         name: "default-dark",
@@ -78,11 +77,14 @@ export default class ThemeProvider {
   }
 
   changeTheme(id) {
-    this.active = id;
-    let theme = this.themes[this.themes.findIndex(theme => theme.id === this.active)];
+    let theme = this.themes[this.themes.findIndex(theme => theme.id === id)];
+    document.getElementsByTagName("html")[0].classList.add("theme-transition");
     Object.keys(theme.colors).map((key) => {
       const value = theme.colors[key];
       return document.documentElement.style.setProperty(key, value);
     })
+    setTimeout(() => {
+      document.getElementsByTagName("html")[0].classList.remove("theme-transition");
+    }, 800);
   }
 }

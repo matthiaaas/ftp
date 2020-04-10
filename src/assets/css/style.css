@@ -1,0 +1,7 @@
+html.theme-transition {
+  transition: all ease 0.8s !important;
+}
+
+html.theme-transition * {
+  transition: all ease 0.8s !important;
+}
