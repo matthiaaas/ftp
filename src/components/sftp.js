@@ -28,7 +28,8 @@ export default class SFTP {
     }
 
     if (user) this.user = user;
-    if (pass) this.pass = pass;
+    if (typeof pass === "string") this.pass = pass;
+    if (typeof pass === "object") this.key = pass;
 
     this.socket.once("ready", () => {
       this.socket.sftp((err, sftp) => {
@@ -41,7 +42,12 @@ export default class SFTP {
           if (callback) callback(null, {text: `Login successful; path is ${absPath} on platform ${isUnix ? "Unix" : "Windows"}`});
         })
       })
-    }).connect({
+    }).connect(this.key ? {
+      host: this.host,
+      port: this.port,
+      username: this.user,
+      privateKey: this.key
+    } : {
       host: this.host,
       port: this.port,
       username: this.user,

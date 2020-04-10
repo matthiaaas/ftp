@@ -1,7 +1,8 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { Link } from "react-router-dom";
+import { Upload } from "react-feather";
 
 const WrappedLink = styled(Link)`
   transition: all ease 0.1s;
@@ -18,7 +19,7 @@ const WrappedLink = styled(Link)`
   background: ${props => props.bg ? this.props.bg : `var(--color-dark-light)`};
 
   &:hover {
-    border: 1px solid var(--color-dark-grey);
+    border-color: var(--color-dark-grey);
     color: var(--color-grey-light);
     background: var(--color-dark);
   }
@@ -44,7 +45,7 @@ const WrappedButton = styled.button`
   background: ${props => props.primary ? `var(--color-blue)` : `transparent`};
 
   &:hover {
-    border: 1px solid ${props => props.primary || `var(--color-grey)`};
+    border-color: ${props => props.primary || `var(--color-grey)`};
     color: ${props => props.primary ? `var(--color-white)` : `var(--color-grey-light)`};
     background: ${props => props.primary ? `var(--color-blue-blur)` : `var(--color-dark-grey-blur)`};
   }
@@ -71,17 +72,82 @@ const WrappedInput = styled.input`
   }
 
   &:focus {
-    border: 1px solid var(--color-dark-grey);
+    border-color: var(--color-dark-grey);
   }
 
   &:invalid {
-    border: 1px solid var(--color-red);
+    border-color: var(--color-red);
   }
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
+`
+
+const WrappedBrowse = styled.div`
+  appearance: none;
+  outline: none;
+  user-select: all;
+  font-family: var(--font-main);
+  font-weight: 400;
+  font-size: 16px;
+  text-decoration: none;
+  color: var(--color-grey);
+  width: 200px;
+  height: 44px;
+  padding-left: 60px;
+  box-sizing: border-box;
+  border-radius: 24px;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  background: transparent;
+
+  &:hover {
+    color: var(--color-grey-light);
+  }
+
+  &:focus {
+    >button {
+      border-color: var(--color-dark-grey);
+    }
+  }
+`
+
+const BrowseIcon = styled.button`
+  appearance: none;
+  outline: none;
+  user-select: all;
+  pointer-events: none;
+  height: 100%;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 24px;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: inherit;
+  background: var(--color-black);
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`
+
+const BrowseInput = styled.input`
+  opacity: 0;
+  width: 0;
+  height: 0;
+`
+
+const BrowseText = styled.span`
+  pointer-events: none;
+  color: ${props => props.placeholder ? `inherit` : `var(--color-white)`};
 `
 
 export default class Button extends Component {
@@ -95,6 +161,23 @@ export default class Button extends Component {
     } else if (this.props.variant === "input") {
       return (
         <WrappedInput bg={this.props.bg} {...this.props} />
+      )
+    } else if (this.props.variant === "browse") {
+      return (
+        <WrappedBrowse
+          tabIndex={1}
+          onChange={this.props.onChange}
+          onClick={(event) => {
+            let input = event.target.querySelector("input");
+            if (input) input.click();
+          }}
+        >
+          <BrowseIcon tabIndex={-1}>
+            <Upload />
+          </BrowseIcon>
+          <BrowseInput tabIndex={-1} type="file" />
+          <BrowseText placeholder={this.props.defaultValue ? false : true}>{this.props.defaultValue || "Browse..."}</BrowseText>
+        </WrappedBrowse>
       )
     } else {
       return (

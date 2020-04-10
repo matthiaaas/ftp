@@ -3,8 +3,8 @@ import React, { Component, Fragment, createRef } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import RouteChange from "./components/RouteChange";
-import { GlobalStyles } from "./components/GlobalStyles";
 import ThemeProvider from "./components/ThemeProvider";
+import { GlobalStyles } from "./components/GlobalStyles";
 
 import Alert from "./components/misc/Alert";
 
@@ -90,7 +90,8 @@ class App extends Component {
         host: "",
         port: 0,
         user: "",
-        pass: ""
+        pass: "",
+        key: false
       },
       status: "offline"
     })
@@ -101,7 +102,7 @@ class App extends Component {
     
     console.info(`logging in to ${data.host}...`);
 
-    data.protocol = data.protocol || "ftp";
+    data.protocol = data.protocol || "sftp";
 
     this.setState({
       status: "afk",
@@ -110,6 +111,7 @@ class App extends Component {
         port: data.port,
         user: data.user,
         pass: data.pass,
+        key: data.key,
         protocol: data.protocol
       }
     });
@@ -166,7 +168,7 @@ class App extends Component {
       })
     }
 
-    this.socket.auth(data.user, data.pass, (err, success, end) => {
+    this.socket.auth(data.user, data.pass || data.key, (err, success, end) => {
       if (err) {
         alert(err);
         console.log(err.toString());

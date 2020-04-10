@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import { MoreVertical, GitCommit, Shield, Lock, ShieldOff, Unlock } from "react-feather";
+import { MoreVertical, GitCommit, Shield, Lock, ShieldOff, Unlock, Key } from "react-feather";
 
 const Wrapper = styled.div`
   font-family: var(--font-main);
@@ -147,6 +147,7 @@ export default class Connection extends Component {
         port: this.props.port,
         user: this.props.user,
         pass: this.props.pass,
+        key: this.props.keyData,
         protocol: this.props.protocol
       });
     }
@@ -199,7 +200,7 @@ export default class Connection extends Component {
             </Item>
           </Group>
           <Item>
-            {!this.props.password ? <Lock /> : <Unlock />}
+            {this.props.keyData ? <Key /> : this.props.password ? <Unlock /> : <Lock /> }
           </Item>
         </Body>
       </Wrapper>

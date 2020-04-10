@@ -31,8 +31,6 @@ export const Row = styled.div`
 
 export const Input = styled.div`
   position: relative;
-  /* width: 100%;
-  max-width: 216px; */
   margin-bottom: 24px;
 
   &:not(:last-child) {
@@ -54,6 +52,9 @@ export const Label = styled.label`
   color: var(--color-grey);
   display: block;
   margin-bottom: 16px;
+`
+
+export const BrowseKeyFile = styled.div`
 `
 
 export const Tip = styled.div`

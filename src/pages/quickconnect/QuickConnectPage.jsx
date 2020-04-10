@@ -41,10 +41,16 @@ class QuickConnectPage extends Component {
   }
 
   connect(connection) {
-    if (connection.pass === undefined || connection.pass === "" || connection.pass === false) {
+    const noPassProvided = connection.pass === undefined || connection.pass === false || connection.pass === "";
+    if (noPassProvided && connection.key === false) {
       connection.preview = `${connection.user}@${connection.host}`
       this.setState({ target: connection });
-    } else this.props.onLogin.call(this, connection);
+    } else {
+      if (connection.key) {
+        connection.key = window.Buffer.from(connection.key, "utf-8");
+      }
+      this.props.onLogin.call(this, connection);
+    }
   }
 
   render() {
@@ -97,6 +103,7 @@ class QuickConnectPage extends Component {
                     pass={item.pass}
                     protocol={item.protocol}
                     password={item.pass ? true : false}
+                    keyData={item.key}
                     onConnect={this.connect}
                     onDelete={this.loadConnections}
                   />

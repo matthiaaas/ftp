@@ -141,7 +141,7 @@ class DashboardPage extends Component {
                     </BoxSection>
                     <BoxSection>
                       <Icon>{data.protocol === "ftp" ? <ShieldOff /> : <Shield />}</Icon>
-                      <Text>{data.protocol.toUpperCase()} over {data.key ? "ssh key" : "password"}</Text>
+                      <Text>{data.protocol.toUpperCase()} over {data.key ? "SSH key" : "password"}</Text>
                     </BoxSection>
                   </Box>
                 </Item>

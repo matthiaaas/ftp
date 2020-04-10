@@ -22,6 +22,7 @@ class LoginPage extends Component {
         port: 22,
         user: "",
         pass: "",
+        keyFile: false,
         protocol: "sftp",
 
         default: this.props.default
@@ -34,12 +35,14 @@ class LoginPage extends Component {
   submitLoginData() {
     if (typeof this.props.onLogin === "function") {
       let login = this.state.login;
-      if(typeof login.port !== "number") {
-        login.port = 22
+      if (typeof login.port !== "number") {
+        login.port = 22;
       } if (login.user === "") {
-        login.user = "anonymous"
+        login.user = "anonymous";
       } if (login.pass === "") {
-        login.pass = "anonymous"
+        login.pass = login.protocol !== "ssh" ? "anonymous" : false;
+      } if (login.keyFile) {
+        login.key = window.require("fs").readFileSync(login.keyFile.path)
       }
       this.props.onLogin.call(this, login);
     }
@@ -67,7 +70,8 @@ class LoginPage extends Component {
               <Row>
                 <Input>
                   <Label>Server</Label>
-                  <Button variant="input"
+                  <Button
+                    variant="input"
                     placeholder="example.com"
                     type="text"
                     value={this.state.login.host}
@@ -84,7 +88,8 @@ class LoginPage extends Component {
                 </Input>
                 <Input>
                   <Label>Port</Label>
-                  <Button variant="input"
+                  <Button
+                    variant="input"
                     placeholder="22"
                     type="number"
                     min="1"
@@ -120,6 +125,7 @@ class LoginPage extends Component {
                     }}
                   >
                     <DropdownItem value="sftp">SFTP</DropdownItem>
+                    <DropdownItem value="ssh">SSH</DropdownItem>
                     <DropdownItem value="ftp">FTP</DropdownItem>
                   </Dropdown>
                 </Input>
@@ -127,7 +133,8 @@ class LoginPage extends Component {
               <Row>
                 <Input>
                   <Label>User</Label>
-                  <Button variant="input"
+                  <Button
+                    variant="input"
                     placeholder="root"
                     type="text"
                     onChange={(event) => {
@@ -141,20 +148,37 @@ class LoginPage extends Component {
                   />
                 </Input>
                 <Input>
-                  <Label>Password</Label>
-                  <Button variant="input"
-                    placeholder="••••"
-                    type="password"
-                    onChange={(event) => {
-                      this.setState({
-                        login: {
-                          ...this.state.login,
-                          pass: event.target.value
-                        }
-                      });
-                    }}
-                    onFocus={(event) => { event.target.parentElement.classList.add("show-tip") }}
-                  />
+                  <Label>{this.state.login.protocol === "ssh" ? "Private SSH key" : "Password"}</Label>
+                  {this.state.login.protocol === "ssh" ?
+                    <Button
+                      variant="browse"
+                      type="file"
+                      defaultValue={this.state.login.keyFile.name}
+                      onChange={(event) => {
+                        this.setState({
+                          login: {
+                            ...this.state.login,
+                            keyFile: event.target.files[0] || false
+                          }
+                        });
+                      }}
+                      onFocus={(event) => { event.target.parentElement.classList.add("show-tip") }}
+                    /> :
+                    <Button
+                      variant="input"
+                      placeholder="••••"
+                      type="password"
+                      onChange={(event) => {
+                        this.setState({
+                          login: {
+                            ...this.state.login,
+                            pass: event.target.value
+                          }
+                        });
+                      }}
+                      onFocus={(event) => { event.target.parentElement.classList.add("show-tip") }}
+                    />
+                  }
                   <Tip className="tip">
                     <span>Hit <span onClick={this.submitLoginData} className="highlighted">Enter</span> to connect</span>
                   </Tip>
@@ -181,6 +205,7 @@ class LoginPage extends Component {
                     user: this.props.socketData.user,
                     port: this.props.socketData.port,
                     pass: this.props.socketData.pass === "anonymous" && this.props.socketData.pass,
+                    key: this.props.socketData.key.toString() || false,
                     protocol: this.props.socketData.protocol
                   });
                   window.localStorage.setItem("registered_connections", JSON.stringify(connections));
