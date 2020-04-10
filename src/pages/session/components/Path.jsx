@@ -73,7 +73,9 @@ class Directory extends Component {
     const isNative = Boolean(transfer.getData("native"));
     if (isNative) {
       let files = JSON.parse(transfer.getData("nativeFiles"));
-      this.props.onMove.call(this, files, this.props.path, this.props.onReload)
+      if (files[0].path !== this.props.path) {
+        this.props.onMove.call(this, files, this.props.path, this.props.onReload)
+      }
     } else {
       this.props.onUpload.call(
         this, transfer,
