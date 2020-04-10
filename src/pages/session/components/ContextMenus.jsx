@@ -132,15 +132,10 @@ class ContextMenuFile extends Component {
         <ContextMenuItem
           name="Open/Edit"
           shortcut="⌘O"
+          disabled={this.props.selected.length > 1 && this.props.selected.includes(this.props.target)}
           onExecute={() => {
             this.props.onReturn.call(this);
-            this.props.socket.openExternFile(this.props.target, (file, to) => {
-              console.debug("there had been changes to", file.name)
-              this.props.socket.uploadLocalFile(file, to, () => {
-                console.debug("applied changes")
-                this.props.onReload.call(this);
-              })
-            });
+            this.props.socket.openExternFile(this.props.target, this.props.onReload);
           }}
         />
         <Separator />

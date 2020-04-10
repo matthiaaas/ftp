@@ -193,6 +193,11 @@ class SessionPage extends Component {
             );
           }
           break;
+        case "o":
+          if (this.state.extern.selected.length === 1 && this.state.extern.selected[0].type === 0) {
+            this.socket.openExternFile(this.state.extern.selected[0], () => {  this.updateExternFiles() });
+          }
+          break;
         case "r":
           this.updateExternFiles();
           break;

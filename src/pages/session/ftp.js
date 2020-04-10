@@ -41,7 +41,15 @@ export default class FTP {
       const checkForChanges = () => {
         let newTime = this.fs.statSync(tmpfile.name).mtimeMs;
         if (newTime > oldTime) {
+          console.debug("there had been changes to", tmpfile.name);
           oldTime = newTime;
+          this.uploadLocalFile(tmpfile, file.path + file.name, (err) => {
+            if (err) alert(err);
+            else {
+              console.debug("applied changes to remote", file.name);
+              callback();
+            }
+          })
           callback(tmpfile, file.path + file.name);
         }
         setTimeout(checkForChanges, 3000);
