@@ -81,16 +81,13 @@ class SessionPage extends Component {
 
   enterExternFolder(folder) {
     let newPath = this.state.extern.path + folder.name + "/";
-    this.socket.updateExternFiles(newPath, (data) => {
-      this.setState({
-        extern: {
-          ...this.state.extern,
-          path: newPath,
-          files: data,
-          selected: []
-        }
-      });
-    })
+    this.setState({
+      extern: {
+        ...this.state.extern,
+        path: newPath
+      }
+    });
+    this.updateExternFiles(newPath)
     this.dataSocket.set("path", newPath);
   }
 
@@ -301,6 +298,7 @@ class SessionPage extends Component {
                     }
                   })
                   this.updateExternFiles(path);
+                  this.dataSocket.set("path", path);
                 }}
                 onMove={this.socket.moveExternFiles}
                 onUpload={this.socket.uploadLocalFiles}

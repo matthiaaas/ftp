@@ -67,13 +67,15 @@ export default class SFTP {
     if (!this.authenticated) return;
     this.sftp.readdir(filePath, (err, list) => {
       let data = [];
-      list.forEach(item => data.push({
-        name: item.filename,
-        type: item.attrs.mode >= 33000 && item.attrs.mode <= 33999 ? 0 : 1,
-        time: item.attrs.mtime * 1000,
-        size: item.attrs.size
-      }))
-      data.sort((a, b) => a.name.localeCompare(b.name));
+      if (list) {
+        list.forEach(item => data.push({
+          name: item.filename,
+          type: item.attrs.mode >= 33000 && item.attrs.mode <= 33999 ? 0 : 1,
+          time: item.attrs.mtime * 1000,
+          size: item.attrs.size
+        }))
+        data.sort((a, b) => a.name.localeCompare(b.name));
+      }
       callback(err, data)
     })
   }

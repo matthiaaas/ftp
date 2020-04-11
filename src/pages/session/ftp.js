@@ -14,7 +14,7 @@ export default class FTP {
   updateExternFiles = (path, callback) => {
     this.ftp.ls(path, (err, data) => {
       if (err) alert(err);
-      else callback(data);
+      callback(data);
     })
   }
 
