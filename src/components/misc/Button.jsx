@@ -147,7 +147,7 @@ const BrowseInput = styled.input`
 
 const BrowseText = styled.span`
   pointer-events: none;
-  color: ${props => props.placeholder ? `inherit` : `var(--color-white)`};
+  color: ${props => props.highlighted ? `var(--color-white)` : `inherit`};
 `
 
 export default class Button extends Component {
@@ -167,6 +167,12 @@ export default class Button extends Component {
         <WrappedBrowse
           tabIndex={1}
           onChange={this.props.onChange}
+          onKeyDown={(event) => {
+            if (event.keyCode === 40) {
+              let input = event.target.querySelector("input");
+              if (input) input.click();
+            }
+          }}
           onClick={(event) => {
             let input = event.target.querySelector("input");
             if (input) input.click();
@@ -176,7 +182,7 @@ export default class Button extends Component {
             <Upload />
           </BrowseIcon>
           <BrowseInput tabIndex={-1} type="file" />
-          <BrowseText placeholder={this.props.defaultValue ? false : true}>{this.props.defaultValue || "Browse..."}</BrowseText>
+          <BrowseText highlighted={this.props.defaultValue ? true : false}>{this.props.defaultValue || "Browse..."}</BrowseText>
         </WrappedBrowse>
       )
     } else {

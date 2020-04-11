@@ -46,6 +46,7 @@ class App extends Component {
       },
       status: "offline"
     }
+    
     this.dns = window.require("dns");
 
     this.login = this.login.bind(this);
