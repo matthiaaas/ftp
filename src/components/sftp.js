@@ -13,6 +13,7 @@ export default class SFTP {
     this.sftp = undefined;
 
     this.authenticated = false;
+    this.events = {};
 
     this.socket = new ssh2Client();
   }
@@ -57,6 +58,23 @@ export default class SFTP {
     this.socket.on("error", (err) => {
       callback(err)
     })
+
+    this.socket.on("close", () => {
+      this.authenticated = false;
+      if (Object.keys(this.events).includes("close")) {
+        this.events["close"].callback();
+      }
+    })
+  }
+
+  /**
+   * @param {String} event 
+   * @param {Function} callback 
+   */
+  on(event, callback) {
+    this.events[event] = {
+      callback: callback
+    }
   }
 
   /**

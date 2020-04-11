@@ -46,7 +46,7 @@ class App extends Component {
       },
       status: "offline"
     }
-    
+
     this.dns = window.require("dns");
 
     this.login = this.login.bind(this);
@@ -154,10 +154,21 @@ class App extends Component {
       });
 
       this.socket.on("error", (err) => {
-        console.error(err);
-        if (err.toString().includes("ECONNRESET")) {
-          alert(err);
-        }
+        let errors = {
+          "ECONNRESET": {
+            text: "Connection closed abruptly",
+            isError: true
+          },
+          "ECONNREFUSED": {
+            text: "Connection refused by server",
+            isError: true
+          }
+        };
+        Object.keys(errors).forEach(error => {
+          if (err.toString().includes(error)) {
+            alert(errors[error].text, errors[error].isError)
+          }
+        })
         this.setState({ status: "offline" });
       })
     } else {
@@ -168,6 +179,11 @@ class App extends Component {
         port: data.port
       })
     }
+
+    this.socket.on("close", () => {
+      console.info(`%c${data.user}@${data.host}:`, "color: #FF6157", "disconnected");
+      this.logout();
+    })
 
     this.socket.auth(data.user, data.pass || data.key, (err, success, end) => {
       if (err) {
