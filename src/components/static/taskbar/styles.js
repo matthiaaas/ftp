@@ -30,6 +30,7 @@ export const Row = styled.div`
 
 export const Item = styled.div`
   cursor: default;
+  pointer-events: ${props => props.disabled && "none"};
   transition: all ease 0.1s;
   display: inline-flex;
   align-items: center;
