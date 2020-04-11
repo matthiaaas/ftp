@@ -17,6 +17,7 @@
 
 | Shortcut | Action |
 | -------: | :----- |
+| `⌘O`     | Open/Edit selected file
 | `⇧⌘N`    | Create new folder in current directory
 | `⇧⌘F`    | Create new file in current directory
 | `⌘G`     | Download selected files
@@ -37,8 +38,8 @@
 
 | Shortcut | Action |
 | -------: | :----- |
-| `⇥` / `↑`| Select result above
-| `⇧⇥` / `↓`| Select result below
+| `⇧⇥` / `↑`| Select result above
+| `⇥` / `↓`| Select result below
 | `↵`      | Jump to result
 
 ### Debug
