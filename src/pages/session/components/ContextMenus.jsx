@@ -247,11 +247,11 @@ export default class ContextMenus extends Component {
     this.setState({ file: false, disable: false, target: file });
 
     let menu = this.fileMenu.current;
-    menu.style.top = event.pageY - 280 + "px";
+    menu.style.top = event.pageY - 264 + "px";
     menu.style.left = event.pageX + 5 + "px";
 
     if (event.pageY + 200 > window.innerHeight) {
-      menu.style.top = window.innerHeight - 400 + "px";
+      menu.style.top = window.innerHeight - 336 + "px";
     }
   }
 
@@ -259,11 +259,11 @@ export default class ContextMenus extends Component {
     this.setState({ folder: false, disable: false, target: folder });
 
     let menu = this.folderMenu.current;
-    menu.style.top = event.pageY - 280 + "px";
+    menu.style.top = event.pageY - 264 + "px";
     menu.style.left = event.pageX + 5 + "px";
 
     if (event.pageY + 200 > window.innerHeight) {
-      menu.style.top = window.innerHeight - 400 + "px";
+      menu.style.top = window.innerHeight - 336 + "px";
     }
   }
 
