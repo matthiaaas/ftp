@@ -55,7 +55,11 @@ class LoginPage extends Component {
           if (event.keyCode === 13) {
             event.preventDefault();
             if (this.state.login.host !== "") {
-              this.submitLoginData();
+              if (this.state.login.protocol === "ssh" && !this.state.login.keyFile) {
+                return;
+              } else {
+                this.submitLoginData();
+              }
             }
           }
         }}
@@ -199,13 +203,13 @@ class LoginPage extends Component {
               <QuickAction
                 disabled={!(this.props.socketStatus === "online")}
                 onAction={(event) => {
-                  let connections = JSON.parse(window.localStorage.getItem("registered_connections"));
+                  let connections = JSON.parse(window.localStorage.getItem("registered_connections")) || [];
                   connections.push({
                     name: this.props.socketData.host,
                     user: this.props.socketData.user,
                     port: this.props.socketData.port,
                     pass: this.props.socketData.pass === "anonymous" && this.props.socketData.pass,
-                    key: this.props.socketData.key.toString() || false,
+                    key: this.props.socketData.key ? this.props.socketData.key.toString() : false,
                     protocol: this.props.socketData.protocol
                   });
                   window.localStorage.setItem("registered_connections", JSON.stringify(connections));
