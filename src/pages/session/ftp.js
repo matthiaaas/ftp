@@ -24,7 +24,6 @@ export default class FTP {
       prefix: file.name + "-",
       postfix: file.extension
     });
-    console.log(file.size)
     if (file.size > 10 ** 6) {
       alert("You're opening a file > 1 MB. Downloading might take a while.", false)
     }

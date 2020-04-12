@@ -52,7 +52,7 @@ export const Chart = styled.div`
 
 export const Info = styled.div`
   border-top: 1px solid var(--color-dark-grey);
-  padding: 12px 24px;
+  padding: 12px 0;
   text-align: center;
 `
 
