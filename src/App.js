@@ -74,32 +74,30 @@ class App extends Component {
   }
 
   logout() {
-    console.info("logging out...");
+    return new Promise((resolve, reject) => {
+      console.info("logging out...");
 
-    if (this.socket !== undefined && this.state.status === "online") {
-      this.socket.raw("quit", (err, data) => {
-        if (err) {
-          return alert(err);
-        }
-      });
-      this.socket.destroy();
-    }
+      this.setState({
+        socket: {
+          ...this.state.socket,
+          host: "",
+          port: 0,
+          user: "",
+          pass: "",
+          key: false
+        },
+        status: "offline"
+      })
 
-    this.setState({
-      socket: {
-        ...this.state.socket,
-        host: "",
-        port: 0,
-        user: "",
-        pass: "",
-        key: false
-      },
-      status: "offline"
+      if (this.socket) {
+        this.socket.destroy();
+      }
+      resolve();
     })
   }
 
-  login(data) {
-    this.logout();
+  async login(data) {
+    await this.logout();
     
     console.info(`logging in to ${data.host}...`);
 
@@ -133,6 +131,7 @@ class App extends Component {
         this.dns.reverse(address, (err, hostnames) => {
           if (err) console.debug("unable to find hostname for ip address");
           if (hostnames) {
+            console.debug("found hostname for", address)
             this.setState({
               socket: {
                 ...this.state.socket,
@@ -166,7 +165,10 @@ class App extends Component {
         };
         Object.keys(errors).forEach(error => {
           if (err.toString().includes(error)) {
-            alert(errors[error].text, errors[error].isError)
+            if (data.host === this.state.socket.host) {
+              alert(errors[error].text, errors[error].isError);
+            }
+            console.debug(data.host, err, errors[error].text)
           }
         })
         this.setState({ status: "offline" });
@@ -182,13 +184,17 @@ class App extends Component {
 
     this.socket.on("close", () => {
       console.info(`%c${data.user}@${data.host}:`, "color: #FF6157", "disconnected");
-      this.logout();
+      if (data.host === this.state.socket.host || this.state.socket.host === "") {
+        this.logout();
+      }
     })
 
     this.socket.auth(data.user, data.pass || data.key, (err, success, end) => {
       if (err) {
-        alert(err);
-        console.log(err.toString());
+        if (data.host === this.state.socket.host) {
+          alert(err);
+        }
+        console.debug(data.host, err.toString());
       }
       if (success) {
         console.info(`%c${data.user}@${data.host}:`, "color: #25CC40", success.text);
