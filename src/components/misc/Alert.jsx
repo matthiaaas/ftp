@@ -96,6 +96,7 @@ export default class Alert extends Component {
 
   show(text, isError) {
     let timestamp = new Date().getTime();
+    isError = isError === undefined && isError !== true ? true : false;
 
     this.setState({ hidden: true })
 
