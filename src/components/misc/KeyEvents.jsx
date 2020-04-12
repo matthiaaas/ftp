@@ -15,6 +15,7 @@ export default class KeyEvents extends Component {
       shift: false
     }
 
+    this.reset = this.reset.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
@@ -27,6 +28,8 @@ export default class KeyEvents extends Component {
   componentWillUnmount() {
     window.removeEventListener("keydown", this.handleKeyDown)
     window.removeEventListener("keyup", this.handleKeyUp)
+
+    this.reset();
   }
 
   handleKeyDown(event) {
@@ -86,6 +89,19 @@ export default class KeyEvents extends Component {
       if (typeof this.props.onModifierKeys === "function") {
         this.props.onModifierKeys.call(this, keys);
       }
+    }
+  }
+
+  reset() {
+    this.setState({
+      cmd: false,
+      alt: false,
+      ctrl: false,
+      shift: false
+    });
+
+    if (typeof this.props.onModifierKeys === "function") {
+      this.props.onModifierKeys.call(this, {cmd: false, alt: false, ctrl: false, shift: false});
     }
   }
 
