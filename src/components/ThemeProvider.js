@@ -28,12 +28,15 @@ export default class ThemeProvider {
         author: "default",
         description: "default light theme",
         colors: {
-          "--color-dark": "white",
-          "--color-dark-light": "#F5F6FA",
+          "--color-dark": "#f8f8f8",
+          "--color-dark-light": "#edeef2",
           "--color-dark-grey": "#ebeef5",
+          "--color-grey": "#727a81",
+          "--color-grey-light": "#3c4459",
+          "--color-grey-dark": "#ebeef5",
           "--color-dark-grey-blur": "#f7f7f7",
-          "--color-black": "#f9f9f9",
-          "--color-white": "#3c4459"
+          "--color-black": "white",
+          "--color-white": "#354353"
         }
       },
       {
