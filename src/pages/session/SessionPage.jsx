@@ -29,6 +29,7 @@ class SessionPage extends Component {
         path: "/",
         files: {},
         selected: [],
+        highlighted: undefined,
         loading: true,
         onRename: false,
         onNewFile: false,
@@ -239,30 +240,16 @@ class SessionPage extends Component {
           }}
           onReload={this.updateExternFiles}
           onRename={(target) => {
-            this.setState({
-              extern: {
-                ...this.state.extern,
-                onRename: {
-                  target: target
-                }
-              }
-            })
+            setTimeout(() => { this.setState({ extern: { ...this.state.extern, onRename: { target: target } }})}, 0)
           }}
           onNewFile={() => {
-            this.setState({
-              extern: {
-                ...this.state.extern,
-                onNewFile: true
-              }
-            })
+            this.setState({ extern: { ...this.state.extern, onNewFile: true }})
           }}
           onNewFolder={() => {
-            this.setState({
-              extern: {
-                ...this.state.extern,
-                onNewFolder: true
-              }
-            })
+            this.setState({ extern: { ...this.state.extern, onNewFolder: true }})
+          }}
+          onClose={() => {
+            this.setState({ extern: { ...this.state.extern, highlighted: undefined }})
           }}
         />
         <Container>
@@ -364,6 +351,7 @@ class SessionPage extends Component {
                         folder={file}
                         selection={this.state.extern.selected}
                         selected={this.state.extern.selected.includes(file)}
+                        highlighted={this.state.extern.highlighted === file}
                         onClick={() => {
                           if (!this.state.keys.shift && !this.state.keys.cmd) {
                             this.enterExternFolder(file)
@@ -372,7 +360,10 @@ class SessionPage extends Component {
                         onMove={this.socket.moveExternFiles}
                         onUpload={this.socket.uploadLocalFiles}
                         onProgress={this.upload.current.updateProgress}
-                        onContext={this.contextMenus.current.openForFolder}
+                        onContext={(event) => {
+                          this.contextMenus.current.openForFolder(event, file);
+                          this.setState({ extern: { ...this.state.extern, highlighted: file }})
+                        }}
                         onReload={this.updateExternFiles}
                       />
                     )
@@ -383,10 +374,14 @@ class SessionPage extends Component {
                         file={file}
                         selection={this.state.extern.selected}
                         selected={this.state.extern.selected.includes(file)}
+                        highlighted={this.state.extern.highlighted === file}
                         onClick={() => {
                           this.selectExternFile(file)
                         }}
-                        onContext={this.contextMenus.current.openForFile}
+                        onContext={(event) => {
+                          this.contextMenus.current.openForFile(event, file);
+                          this.setState({ extern: { ...this.state.extern, highlighted: file }})
+                        }}
                       />
                     )
                   }

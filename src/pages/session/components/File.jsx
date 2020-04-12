@@ -20,8 +20,8 @@ const Wrapper = styled.div`
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
-  color: ${props => props.selected ? `var(--color-white) !important` : `var(--color-grey)`};
-  background: ${props => props.selected ? `var(--color-blue-blur) !important` : `var(--color-dark)`};
+  color: ${props => props.selected ? `var(--color-white) !important` : props.highlighted ? `var(--color-grey-light)` : `var(--color-grey)`};
+  background: ${props => props.selected ? `var(--color-blue-blur) !important` : props.highlighted ? `var(--color-black)` : `var(--color-dark)`};
   
   &:not(:last-child) {
     margin-bottom: 8px;
@@ -36,6 +36,10 @@ const Wrapper = styled.div`
   &:hover {
     color: var(--color-grey-light);
     background: var(--color-black);
+  }
+
+  &:active {
+    color: var(--color-grey);
   }
 `
 
@@ -97,6 +101,7 @@ export default class File extends Component {
       <Wrapper
         draggable
         selected={this.props.selected}
+        highlighted={this.props.highlighted}
         onClick={this.props.onClick}
         onDragStart={(event) => {
           event.dataTransfer.setData("native", "true")
@@ -111,7 +116,7 @@ export default class File extends Component {
         }}
         onContextMenu={(event) => {
           event.preventDefault();
-          this.props.onContext.call(this, event, this.props.file);
+          this.props.onContext.call(this, event);
         }}
       >
         {Icon}

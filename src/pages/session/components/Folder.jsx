@@ -20,8 +20,8 @@ const Wrapper = styled.div`
   font-family: var(--font-main);
   font-weight: 400;
   font-size: 16px;
-  color: ${props => props.dropping || props.selected ? `var(--color-white) !important` : `var(--color-grey)`};
-  background: ${props => props.selected ? `var(--color-blue-blur) !important` : `var(--color-dark)`};
+  color: ${props => props.dropping || props.selected ? `var(--color-white) !important` : props.highlighted ? `var(--color-grey-light)` : `var(--color-grey)`};
+  background: ${props => props.selected ? `var(--color-blue-blur) !important` : props.highlighted ? `var(--color-black)` : `var(--color-dark)`};
 
   * {
     pointer-events: none;
@@ -40,6 +40,10 @@ const Wrapper = styled.div`
   &:hover {
     color: var(--color-grey-light);
     background: var(--color-black);
+  }
+
+  &:active {
+    color: var(--color-grey);
   }
 `
 
@@ -100,6 +104,7 @@ export default class Folder extends Component {
         draggable
         dropping={this.state.dropping}
         selected={this.props.selected}
+        highlighted={this.props.highlighted}
         onDragStart={(event) => {
           event.dataTransfer.setData("native", "true")
           let files = [this.props.folder]

@@ -251,7 +251,7 @@ export default class ContextMenus extends Component {
     menu.style.left = event.pageX + 5 + "px";
 
     if (event.pageY + 200 > window.innerHeight) {
-      menu.style.top = window.innerHeight - 336 + "px";
+      menu.style.top = window.innerHeight - 384 + "px";
     }
   }
 
@@ -263,7 +263,7 @@ export default class ContextMenus extends Component {
     menu.style.left = event.pageX + 5 + "px";
 
     if (event.pageY + 200 > window.innerHeight) {
-      menu.style.top = window.innerHeight - 336 + "px";
+      menu.style.top = window.innerHeight - 344 + "px";
     }
   }
 
@@ -286,6 +286,8 @@ export default class ContextMenus extends Component {
       space: true,
       disable: true
     });
+
+    this.props.onClose.call(this);
   }
 
   render() {
