@@ -52,7 +52,6 @@ const ServerStatus = styled.div`
   height: 6px;
   border-radius: 50%;
   margin: 0 -4px 0 8px;
-
   background: ${props => props.connected ? `var(--color-green)` : `none`};
 `
 

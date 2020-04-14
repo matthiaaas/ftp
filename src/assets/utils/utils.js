@@ -1,4 +1,4 @@
-const path = require("path")
+const path = window.require("path")
 const process = window.require("process");
 
 export function toAccurateFileSize(size) {

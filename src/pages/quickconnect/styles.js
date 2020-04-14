@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Page = styled.main`
-
+  overflow: hidden;
 `
 
 export const Content = styled.div`

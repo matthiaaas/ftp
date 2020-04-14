@@ -73,7 +73,7 @@ const Label = styled.span`
 `
 
 const Number = styled.span`
-  color: ${props => props.highlighted && `white`};
+  color: ${props => props.highlighted && `var(--color-white)`};
   font-family: var(--font-code);
 `
 
