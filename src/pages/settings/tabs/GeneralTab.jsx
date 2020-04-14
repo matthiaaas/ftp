@@ -11,7 +11,8 @@ export default class GeneralTab extends Component {
     this.settings = new Settings();
 
     this.state = {
-      startScreen: this.settings.get("start_screen") || "/"
+      startScreen: this.settings.get("start_screen") || "/",
+      defaultApp: this.settings.get("default_app") || false
     }
   }
 
@@ -26,6 +27,24 @@ export default class GeneralTab extends Component {
         name: "QuickConnect",
         id: "quickconnect",
         setting: "/quickconnect"
+      }
+    ]
+
+    const defaultAppOptions = [
+      {
+        name: "Auto-Detect",
+        id: "auto",
+        setting: false
+      },
+      {
+        name: "IDE",
+        id: "ide",
+        setting: "visual studio code"
+      },
+      {
+        name: "Text Edit",
+        id: "atom",
+        setting: "atom"
       }
     ]
 
@@ -50,8 +69,24 @@ export default class GeneralTab extends Component {
             })}
           </Radios>
         </Setting>
-        <Setting>
+        <Setting disabled>
           <Label>Default app for opening a file</Label>
+          <Radios>
+            {defaultAppOptions.map((item, index) => {
+              return (
+                <Radio
+                  key={item.id + index}
+                  selected={this.state.defaultApp === item.setting}
+                  onClick={() => {
+                    this.setState({
+                      defaultApp: item.setting
+                    })
+                    this.settings.set("default_app", item.setting)
+                  }}
+                >{item.name}</Radio>
+              )
+            })}
+          </Radios>
         </Setting>
       </Tab>
     )

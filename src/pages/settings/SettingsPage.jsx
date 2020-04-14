@@ -9,6 +9,7 @@ import { Page, Content, Tabs } from "./styles";
 import TabItem from "./components/TabItem";
 
 import AppearanceTab from "./tabs/AppearanceTab";
+import TransferTab from "./tabs/TransferTab";
 import GeneralTab from "./tabs/GeneralTab";
 
 class SettingsPage extends Component {
@@ -33,17 +34,20 @@ class SettingsPage extends Component {
       {
         name: "Appearance",
         loc: "/appearance",
-        icon: <Layout />
+        icon: <Layout />,
+        component: <AppearanceTab />
       },
       {
         name: "Transfer",
         loc: "/transfer",
-        icon: <Cloud />
+        icon: <Cloud />,
+        component: <TransferTab />
       },
       {
         name: "General",
         loc: "/general",
-        icon: <Settings />
+        icon: <Settings />,
+        component: <GeneralTab />
       }
     ];
 
@@ -64,11 +68,11 @@ class SettingsPage extends Component {
             })}
           </Tabs>
           <Content>
-            {this.state.active === "/appearance" && <AppearanceTab />}
-            {this.state.active === "/transfer" && <div>Transfer</div>}
-            {this.state.active === "/general" && <GeneralTab />}
-            {/* <Button variant="button" primary>Save settings</Button>
-            <Button variant="button">Save</Button> */}
+            {tabItems.map((item, index) => {
+              if (this.state.active === item.loc) {
+                return item.component
+              }
+            })}
           </Content>
         </Container>
       </Page>

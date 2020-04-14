@@ -31,8 +31,8 @@ export default class AppearanceTab extends Component {
         id: "beautiful"
       },
       {
-        name: "Advanced",
-        id: "advanced"
+        name: "Efficient",
+        id: "efficient"
       }
     ]
 
