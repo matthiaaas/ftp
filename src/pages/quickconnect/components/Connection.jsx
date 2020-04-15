@@ -38,7 +38,7 @@ const Group = styled.div`
   align-items: center;
 `
 
-const Name = styled.span`
+const Name = styled.span`o
   max-width: 200px;
   height: 17px;
   white-space: nowrap;
@@ -135,13 +135,13 @@ export default class Connection extends Component {
       editing: false
     }
 
-    this.connect = this.connect.bind(this);
+    this.submit = this.submit.bind(this);
     this.delete = this.delete.bind(this);
   }
 
-  connect() {
+  submit() {
     if (!this.props.connected) {
-      this.props.onConnect.call(this, {
+      this.props.onSubmit.call(this, {
         host: this.props.name,
         port: this.props.port,
         user: this.props.user,
@@ -166,7 +166,7 @@ export default class Connection extends Component {
     return (
       <Wrapper
         connected={this.props.connected}
-        onClick={this.connect}
+        onClick={this.submit}
       >
         <Header>
           <Group>

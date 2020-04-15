@@ -20,6 +20,7 @@ class QuickConnectPage extends Component {
     }
 
     this.loadConnections = this.loadConnections.bind(this);
+    this.submit = this.submit.bind(this);
     this.connect = this.connect.bind(this);
   }
 
@@ -40,7 +41,7 @@ class QuickConnectPage extends Component {
     this.setState({ connections: connections })
   }
 
-  connect(connection) {
+  submit(connection) {
     const noPassProvided = connection.pass === undefined || connection.pass === false || connection.pass === "";
     if (noPassProvided && connection.key === false) {
       connection.preview = `${connection.user}@${connection.host}`
@@ -49,14 +50,16 @@ class QuickConnectPage extends Component {
       if (connection.key) {
         connection.key = window.Buffer.from(connection.key, "utf-8");
       }
-      this.props.onLogin.call(this, connection, (err, success) => {
-        if (success) {
-          setTimeout(() => {
-            this.props.history.push("/session")
-          }, 100)
-        }
-      });
+      this.connect(connection)
     }
+  }
+
+  connect(login) {
+    this.props.onLogin.call(this, login, (err, success) => {
+      if (success) {
+        this.props.history.push("/session")
+      }
+    });
   }
 
   render() {
@@ -77,7 +80,7 @@ class QuickConnectPage extends Component {
                   event.preventDefault();
                   let connection = this.state.target;
                   connection.pass = event.target.value;
-                  this.props.onLogin.call(this, connection);
+                  this.connect(connection)
                 }
               }}
               autoFocus
@@ -110,7 +113,7 @@ class QuickConnectPage extends Component {
                     protocol={item.protocol}
                     password={item.pass ? true : false}
                     keyData={item.key}
-                    onConnect={this.connect}
+                    onSubmit={this.submit}
                     onDelete={this.loadConnections}
                   />
                 )
