@@ -142,11 +142,7 @@ class SessionPage extends Component {
         selected.push(files[i])
       }
     } else {
-      if (selected[0] === file && selected.length === 1) {
-        selected = [];
-      } else {
-        selected = [file];
-      }
+      selected = [file];
     }
     // remove duplicates
     selected = [...new Set(selected)];
@@ -366,8 +362,11 @@ class SessionPage extends Component {
                         selection={this.state.extern.selected}
                         selected={this.state.extern.selected.includes(file)}
                         highlighted={this.state.extern.highlighted === file}
-                        onClick={() => {
-                          this.selectExternFile(file)
+                        onClick={this.selectExternFile}
+                        onDoubleClick={() => {
+                          if (!this.state.keys.cmd && !this.state.keys.shift) {
+                            this.socket.openExternFile(file)
+                          }
                         }}
                         onContext={(event) => {
                           this.contextMenus.current.openForFile(event, file);
