@@ -306,6 +306,9 @@ export default class Search extends Component {
             {this.props.socketStatus !== "online" &&
               <Tag>please login first</Tag>
             }
+            {this.state.recursive && this.state.results.files.length + this.state.results.folders.length === 0 && !this.state.searching &&
+              <Tip>Hit Enter to search</Tip>
+            }
             <Tip>{" "}</Tip>
           </Tips>
         </Body>
