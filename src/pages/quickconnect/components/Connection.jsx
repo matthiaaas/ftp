@@ -39,7 +39,7 @@ const Group = styled.div`
 `
 
 const Name = styled.span`
-  width: 200px;
+  max-width: 200px;
   height: 17px;
   white-space: nowrap;
   text-overflow: ellipsis;
