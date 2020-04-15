@@ -84,7 +84,7 @@ const Progress = styled.div.attrs(props => ({
 }))`
   z-index: 1;
   position: absolute;
-  transition: transform 0.2s ease;
+  transition: ${props => props.progress <= 0 || props.progress >= 1 ? `transform 0s ease` : `transform 0.2s ease`};
   width: 100%;
   height: 100%;
   top: 0;
@@ -95,7 +95,7 @@ const Progress = styled.div.attrs(props => ({
     z-index: inherit;
     content: "";
     position: absolute;
-    bottom: 16px;
+    bottom: 14px;
     left: 0;
     width: 100%;
     height: 1.8px;
@@ -120,18 +120,22 @@ export default class Upload extends Component {
 
   updateProgress(current, max, prog) {
     let progress = prog || current / max;
+    
     this.setState({
       progress: progress,
       current: current,
       max: max
     })
+
     if (progress >= 1) {
       setTimeout(() => {
-        this.setState({
-          progress: -1,
-          current: -1,
-          max: 0
-        })
+        if (this.state.progress === 1) {
+          this.setState({
+            progress: -1,
+            current: -1,
+            max: 0
+          })
+        }
       }, 2500);
     }
   }
