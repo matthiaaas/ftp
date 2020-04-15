@@ -124,15 +124,15 @@ export default class FTP {
         else if (typeof callback === "function") callback();
       })
     } else {
-      let content = "";
+      let content = [];
       this.ftp.get(file.path + file.name, (err, socket) => {
         if (err) alert(err);
         socket.on("data", (data) => {
-          content += data.toString();
+          content.push(data)
         })
         socket.on("close", (err) => {
           if (err) alert(err);
-          this.fs.writeFile(destination, content, (err) => {
+          this.fs.writeFile(destination, window.Buffer.concat(content), (err) => {
             if (err) alert(err);
             else if (typeof callback === "function") callback();
           })
