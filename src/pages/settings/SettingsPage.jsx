@@ -35,19 +35,20 @@ class SettingsPage extends Component {
         name: "Appearance",
         loc: "/appearance",
         icon: <Layout />,
-        component: <AppearanceTab />
+        component: <AppearanceTab key="appearance" />
       },
       {
         name: "Transfer",
         loc: "/transfer",
         icon: <Cloud />,
-        component: <TransferTab />
+        component: <TransferTab key="transfer" />
       },
       {
+       
         name: "General",
         loc: "/general",
         icon: <Settings />,
-        component: <GeneralTab />
+        component: <GeneralTab  key="general" />
       }
     ];
 
@@ -57,7 +58,8 @@ class SettingsPage extends Component {
           <Tabs>
             {tabItems.map((item, index) => {
               return (
-                <TabItem key={index}
+                <TabItem
+                  key={index}
                   name={item.name}
                   loc={item.loc}
                   icon={item.icon}
