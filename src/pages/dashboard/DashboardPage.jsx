@@ -25,7 +25,11 @@ class DashboardPage extends Component {
   }
 
   componentDidMount() {
-    this.getSpace();
+    if (this.props.socketStatus === "offline") {
+      this.props.history.push("/")
+    } else {
+      this.getSpace();
+    }
   }
 
   getSpace() {
