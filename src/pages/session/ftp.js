@@ -251,15 +251,15 @@ export default class FTP {
   }
 
   uploadLocalFiles = (transfer, path, callback, progress) => {
-    let items = transfer.items;
     let files = transfer.files;
+    let items = transfer.items;
 
     let rootPaths = []
 
     for (let i = 0; i < items.length; i++) {
       rootPaths.push(this.path.dirname(files[i].path))
     }
-    if (!rootPaths.some((val) => val === rootPaths[0])) {
+    if (!rootPaths.some(val => val === rootPaths[0])) {
       alert("Uploading files and folder from different root directories is currently not supported. Please move all files and folders in the same root folder e.g. on your Desktop")
       return callback();
     }
@@ -269,6 +269,7 @@ export default class FTP {
         let newPath = path.slice(0, -1);
         if (this.ftp.sftp) {
           console.debug("uploading", item.fullPath)
+          progress(prog.index, prog.max, 0)
           this.ftp.put(rootPaths[0] + item.fullPath, newPath + item.fullPath, (err) => {
             if (err) { console.error(err) }
             else resolve();
@@ -353,7 +354,7 @@ export default class FTP {
       (a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
     );
 
-    walk(items).then((results) => {
+    const handleResults = (results) => {
       let items = flatten(results).filter(Boolean);
       items = items.sort((a, b) => {
         return (a.fullPath.split("/").length - 1) > (b.fullPath.split("/").length - 1) ? 1 : -1
@@ -378,6 +379,35 @@ export default class FTP {
         console.log("uploaded all files")
         if (typeof progress === "function") progress(items.length, items.length);
         return typeof callback === "function" ? callback() : {};
+      })
+    }
+
+    const checkForAlreadyExistingFiles = () => {
+      return new Promise((resolve, reject) => {
+        this.ftp.ls(path, (err, data) => {
+          let alreadyExistingFiles = [];
+    
+          data.forEach(entry => {
+            Array.from(files).forEach(file => {
+              if (entry.name === file.name) {
+                alreadyExistingFiles.push(entry.name)
+              }
+            })
+          })
+
+          resolve(alreadyExistingFiles)
+        })
+      })
+    }
+    
+    walk(items).then((results) => {
+      checkForAlreadyExistingFiles(results).then((alreadyExistingFiles) => {
+        if (alreadyExistingFiles.length > 0) {
+          console.debug("found already existing files in upload", alreadyExistingFiles)
+          return alert("Unable to upload. Transflow won't overwrite already existing files automatically. Delete them manually.", false)
+        } else {
+          handleResults(results)
+        }
       })
     })
   }
