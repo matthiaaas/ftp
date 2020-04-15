@@ -127,8 +127,9 @@ export const Server = styled.div`
 
   &:hover {
     >div {
-      transition: visibility 0s ease 0.4s;
+      transition: visibility 0s ease 0.4s, opacity 0.2s ease 0.4s;
       visibility: visible;
+      opacity: 1;
     }
 
     >a {
@@ -168,6 +169,7 @@ export const ServerDisconnect = styled.div`
   position: absolute;
   visibility: hidden;
   z-index: 1;
+  opacity: 0;
   padding: 10.5px 11px 8.5px 12px;
   border-radius: 50%;
   border: 1px solid var(--color-dark-grey);
