@@ -20,9 +20,9 @@
 | `⌘O`     | Open/Edit selected file
 | `⇧⌘N`    | Create new folder in current directory
 | `⇧⌘F`    | Create new file in current directory
+| `⌘A`     | Select all files
 | `⌘G`     | Download selected files
 | `⌘⌫`     | Delete selected files
-
 
 ### View
 

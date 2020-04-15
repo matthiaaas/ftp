@@ -27,7 +27,7 @@ class SessionPage extends Component {
       },
       extern: {
         path: "/",
-        files: {},
+        files: [],
         selected: [],
         highlighted: undefined,
         loading: true,
@@ -163,31 +163,19 @@ class SessionPage extends Component {
       switch (key) {
         case "n":
           if (this.state.keys.shift) {
-            this.setState({
-              extern: {
-                ...this.state.extern,
-                onNewFolder: true
-              }
-            })
+            this.setState({ extern: {...this.state.extern, onNewFolder: true} })
           }
           break;
         case "f":
           if (this.state.keys.shift) {
-            this.setState({
-              extern: {
-                ...this.state.extern,
-                onNewFile: true
-              }
-            })
+            this.setState({ extern: {...this.state.extern, onNewFile: true} })
           }
           break;
         case "g":
           if (this.state.extern.selected.length > 0) {
             this.socket.downloadExternFiles(
-              this.state.extern.selected, 
-              undefined,
-              this.updateExternFiles,
-              this.download.current.updateProgress
+              this.state.extern.selected, undefined,
+              this.updateExternFiles, this.download.current.updateProgress
             );
           }
           break;
@@ -195,6 +183,9 @@ class SessionPage extends Component {
           if (this.state.extern.selected.length === 1 && this.state.extern.selected[0].type === 0) {
             this.socket.openExternFile(this.state.extern.selected[0], () => {  this.updateExternFiles() });
           }
+          break;
+        case "a":
+          this.setState({ extern: {...this.state.extern, selected: this.state.extern.files} })
           break;
         case "r":
           this.updateExternFiles();
