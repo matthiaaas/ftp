@@ -49,7 +49,13 @@ class QuickConnectPage extends Component {
       if (connection.key) {
         connection.key = window.Buffer.from(connection.key, "utf-8");
       }
-      this.props.onLogin.call(this, connection);
+      this.props.onLogin.call(this, connection, (err, success) => {
+        if (success) {
+          setTimeout(() => {
+            this.props.history.push("/session")
+          }, 100)
+        }
+      });
     }
   }
 

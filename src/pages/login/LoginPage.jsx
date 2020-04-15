@@ -1,12 +1,13 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
 import { WifiOff, Bookmark } from "react-feather";
 
 import Container from "../../components/misc/Container";
 import Headline from "../../components/misc/Headline";
-import Dropdown, { DropdownItem } from "../../components/misc/Dropdown";
 import Button from "../../components/misc/Button";
 import ServerStatus from "../../components/misc/ServerStatus";
+import Dropdown, { DropdownItem } from "../../components/misc/Dropdown";
 
 import { Page, Content, Header, Login, Row, Input, Label, Tip, QuickActions } from "./styles";
 
@@ -17,6 +18,7 @@ class LoginPage extends Component {
     super(props);
 
     this.state = {
+      redirect: false,
       login: {
         host: "",
         port: 22,
@@ -30,6 +32,7 @@ class LoginPage extends Component {
     }
 
     this.submitLoginData = this.submitLoginData.bind(this);
+    this.saveConnection = this.saveConnection.bind(this);
   }
 
   submitLoginData() {
@@ -44,8 +47,26 @@ class LoginPage extends Component {
       } if (login.keyFile) {
         login.key = window.require("fs").readFileSync(login.keyFile.path)
       }
-      this.props.onLogin.call(this, login);
+      this.props.onLogin.call(this, login, (err, success) => {
+        if (success) {
+          this.props.history.push("/session")
+        }
+      });
     }
+  }
+
+  saveConnection() {
+    let connections = JSON.parse(window.localStorage.getItem("registered_connections")) || [];
+    connections.push({
+      name: this.props.socketData.host,
+      user: this.props.socketData.user,
+      port: this.props.socketData.port,
+      pass: this.props.socketData.pass === "anonymous" && this.props.socketData.pass,
+      key: this.props.socketData.key ? this.props.socketData.key.toString() : false,
+      protocol: this.props.socketData.protocol
+    });
+    window.localStorage.setItem("registered_connections", JSON.stringify(connections));
+    alert("Saved connection as a bookmark in QuickConnect", false)
   }
 
   render() {
@@ -191,30 +212,14 @@ class LoginPage extends Component {
             </Login>
             <QuickActions>
               <QuickAction
-                onAction={(event) => {
-                  if (typeof this.props.onLogout === "function") {
-                    this.props.onLogout.call(this);
-                  }
-                }}
+                onAction={this.props.onLogout}
               >
                 <WifiOff />
                 <span>Disconnect</span>
               </QuickAction>
               <QuickAction
                 disabled={!(this.props.socketStatus === "online")}
-                onAction={(event) => {
-                  let connections = JSON.parse(window.localStorage.getItem("registered_connections")) || [];
-                  connections.push({
-                    name: this.props.socketData.host,
-                    user: this.props.socketData.user,
-                    port: this.props.socketData.port,
-                    pass: this.props.socketData.pass === "anonymous" && this.props.socketData.pass,
-                    key: this.props.socketData.key ? this.props.socketData.key.toString() : false,
-                    protocol: this.props.socketData.protocol
-                  });
-                  window.localStorage.setItem("registered_connections", JSON.stringify(connections));
-                  alert("Saved connection as a bookmark in QuickConnect", false)
-                }}
+                onAction={this.saveConnection}
               >
                 <Bookmark />
                 <span>Save connection</span>

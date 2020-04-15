@@ -96,7 +96,7 @@ class App extends Component {
     })
   }
 
-  async login(data) {
+  async login(data, callback) {
     await this.logout();
     
     console.info(`logging in to ${data.host}...`);
@@ -200,6 +200,7 @@ class App extends Component {
         console.info(`%c${data.user}@${data.host}:`, "color: #25CC40", success.text);
         this.setState({ status: "online" });
       }
+      if (callback) callback(err, success);
     })
   }
 
@@ -232,6 +233,7 @@ class App extends Component {
                     socketStatus={this.state.status}
                     onLogin={this.login}
                     onLogout={this.logout}
+                    {...props}
                   />
                 );
               }} />
@@ -240,6 +242,7 @@ class App extends Component {
                   <DashboardPage
                     socket={this.socket}
                     socketData={this.state.socket}
+                    {...props}
                     socketStatus={this.state.status}
                   />
                 );
@@ -251,6 +254,7 @@ class App extends Component {
                     socket={this.socket}
                     socketData={this.state.socket}
                     socketStatus={this.state.status}
+                    {...props}
                   />
                 );
               }} />
@@ -260,13 +264,14 @@ class App extends Component {
                     socket={this.socket}
                     socketData={this.state.socket}
                     socketStatus={this.state.status}
+                    {...props}
                   />
                 )
               }} />
               <Route exact path="/stats" component={StatsPage} />
               <Route exact path="/settings" component={(props) => {
                 return (
-                  <SettingsPage />
+                  <SettingsPage {...props} />
                 )
               }} />
               <Route exact path="/quickconnect" component={(props) => {
@@ -275,11 +280,12 @@ class App extends Component {
                     socketData={this.state.socket}
                     socketStatus={this.state.status}
                     onLogin={this.login}
+                    {...props}
                   />
                 )
               }} />
             </Switch>
-            <Redirect to={this.settings.get("start_screen")} />
+            <Redirect to={this.settings.get("start_screen") || "/"} />
           </RouteChange>
         </BrowserRouter>
       </Fragment>
