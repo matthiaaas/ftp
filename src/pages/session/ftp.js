@@ -1,13 +1,15 @@
 import { getPlatformStartCmd } from "../../assets/utils/utils";
 
+const isWindows = window.process.platform === "win32";
+
 export default class FTP {
   constructor(ftp) {
     this.ftp = ftp;
     this.fs = window.require("fs");
-    this.path = window.require("path");
     this.tmp = window.require("tmp");
+    this.path = window.require("path");
+    this.shell = window.require("electron").shell;
     this.dlDir = window.require("downloads-folder");
-    this.exec = window.require("child_process").exec;
     this.spawn = window.require("child_process").spawn;
   }
 
@@ -29,12 +31,16 @@ export default class FTP {
     }
     console.debug("downloading file as temporary file for editing...")
     this.downloadExternFile(file, tmpfile.name, () => {
-      console.debug("opening file from temp directory...")
-      let start = this.spawn(getPlatformStartCmd(), [tmpfile.name]);
-      start.stderr.on("data", () => {
-        console.debug("no default app found: opening in default text editor instead...")
-        start = this.spawn(getPlatformStartCmd(), [tmpfile.name, "-t"]);
-      })
+      console.debug("opening file from temp directory in default app...")
+      if (isWindows) {
+        this.shell.openItem(tmpfile.name)
+      } else {
+        let start = this.spawn(getPlatformStartCmd(), [tmpfile.name]);
+        start.stderr.on("data", () => {
+          console.debug("no default app found: opening in default text editor instead...")
+          start = this.spawn(getPlatformStartCmd(), [tmpfile.name, "-t"]);
+        })
+      }
       let oldTime = this.fs.statSync(tmpfile.name).mtimeMs;
       console.debug("listening for changes to " + tmpfile.name + "...")
       const checkForChanges = () => {
