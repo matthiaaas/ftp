@@ -153,28 +153,6 @@ class App extends Component {
         host: data.host,
         port: data.port
       });
-
-      this.socket.on("error", (err) => {
-        let errors = {
-          "ECONNRESET": {
-            text: "Connection closed abruptly",
-            isError: true
-          },
-          "ECONNREFUSED": {
-            text: "Connection refused by server",
-            isError: true
-          }
-        };
-        Object.keys(errors).forEach(error => {
-          if (err.toString().includes(error)) {
-            if (data.host === this.state.socket.host) {
-              alert(errors[error].text, errors[error].isError);
-            }
-            console.debug(data.host, err, errors[error].text)
-          }
-        })
-        this.setState({ status: "offline" });
-      })
     } else {
       console.debug("session protocol is: sftp");
 
@@ -183,6 +161,32 @@ class App extends Component {
         port: data.port
       })
     }
+
+    this.socket.on("error", (err) => {
+      let errors = {
+        "ECONNRESET": {
+          text: "Connection closed abruptly",
+          isError: true
+        },
+        "ECONNREFUSED": {
+          text: "Connection refused by server",
+          isError: true
+        },
+        "ENOTFOUND": {
+          text: "Unable to resolve hostname",
+          isError: true
+        }
+      };
+      Object.keys(errors).forEach(error => {
+        if (data.host === this.state.socket.host) {
+          if (err.toString().includes(error)) {
+            alert(errors[error].text, errors[error].isError);
+          }
+          this.setState({ status: "offline" });
+        }
+      })
+      console.debug(data.host, err)
+    })
 
     this.socket.on("close", () => {
       console.info(`%c${data.user}@${data.host}:`, "color: #FF6157", "disconnected");
@@ -193,9 +197,6 @@ class App extends Component {
 
     this.socket.auth(data.user, data.pass || data.key, (err, success, end) => {
       if (err) {
-        if (data.host === this.state.socket.host) {
-          alert(err);
-        }
         console.debug(data.host, err.toString());
       }
       if (success) {

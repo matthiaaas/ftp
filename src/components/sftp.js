@@ -57,14 +57,23 @@ export default class SFTP {
 
     this.socket.on("error", (err) => {
       callback(err)
+      this._callback("error", err)
     })
 
     this.socket.on("close", () => {
       this.authenticated = false;
-      if (Object.keys(this.events).includes("close")) {
-        this.events["close"].callback();
-      }
+      this._callback("close")
     })
+  }
+
+  /**
+   * @param {String} type 
+   * @param {String} err 
+   */
+  _callback(type, err) {
+    if (Object.keys(this.events).includes(type)) {
+      this.events[type].callback(err);
+    }
   }
 
   /**
