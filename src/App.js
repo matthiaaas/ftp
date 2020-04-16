@@ -12,6 +12,8 @@ import SFTP from "./components/sftp";
 
 import Settings from "./components/localstorage/settings";
 
+import BetaInfo from "./components/static/beta/BetaInfo";
+
 import Titlebar from "./components/static/titlebar/Titlebar";
 import Sidebar from "./components/static/sidebar/Sidebar";
 import Taskbar from "./components/static/taskbar/Taskbar";
@@ -207,6 +209,7 @@ class App extends Component {
   render() {
     return (
       <Fragment>
+        <BetaInfo />
         <GlobalStyles />
         <BrowserRouter>
           <RouteChange onChange={(location, action) => {
