@@ -8,7 +8,7 @@ const isWindows = process.platform === "win32";
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 920,
+    width: isWindows ? 932 : 920,
     height: isWindows ? 632 : 600,
     titleBarStyle: "hiddenInset",
     webPreferences: {
