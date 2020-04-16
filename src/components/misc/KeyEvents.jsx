@@ -23,11 +23,13 @@ export default class KeyEvents extends Component {
   componentDidMount() {
     window.addEventListener("keydown", this.handleKeyDown)
     window.addEventListener("keyup", this.handleKeyUp)
+    window.addEventListener("blur", this.reset)
   }
 
   componentWillUnmount() {
     window.removeEventListener("keydown", this.handleKeyDown)
     window.removeEventListener("keyup", this.handleKeyUp)
+    window.removeEventListener("blur", this.reset)
 
     this.reset();
   }
@@ -52,6 +54,7 @@ export default class KeyEvents extends Component {
       default:
         modifier= false;
     }
+    
     if (modifier) {
       this.setState(keys);
       if (typeof this.props.onModifierKeys === "function") {
@@ -84,6 +87,7 @@ export default class KeyEvents extends Component {
       default:
         modifier = false;
     }
+    
     if (modifier) {
       this.setState(keys);
       if (typeof this.props.onModifierKeys === "function") {
