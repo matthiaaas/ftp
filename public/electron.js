@@ -1,14 +1,13 @@
 const path = require("path");
-const { app, BrowserWindow, Menu } = require("electron");
 const isDev = require("electron-is-dev");
+const { app, BrowserWindow, Menu } = require("electron");
 
 const isMac = process.platform === "darwin";
 const isWindows = process.platform === "win32";
 
 function createWindow() {
-  // Create the browser window.
   const win = new BrowserWindow({
-    width: isWindows ? 932 : 920,
+    width: isWindows ? 940 : 920,
     height: isWindows ? 632 : 600,
     titleBarStyle: "hiddenInset",
     webPreferences: {

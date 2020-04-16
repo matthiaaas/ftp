@@ -213,8 +213,6 @@ const Disable = styled.div`
   width: 100vw;
   height: 100vh;
   position: fixed;
-  background: rgba(20, 20, 23, 0);
-
   display: ${props => props.hidden ? `none` : "unset"};
 `
 
