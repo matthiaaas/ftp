@@ -4,6 +4,7 @@ import Container from "../../components/misc/Container";
 import KeyEvents from "../../components/misc/KeyEvents";
 
 import Data from "../../components/localstorage/data";
+import Settings from "../../components/localstorage/settings";
 
 import { Page, Content, System, Files } from "./styles";
 
@@ -41,6 +42,8 @@ class SessionPage extends Component {
     this.socket = new FTP(this.props.socket);
     this.dataSocket = new Data(this.props.socketData.host, this.props.socketData.user);
 
+    this.settings = new Settings();
+
     this.upload = createRef();
     this.download = createRef();
     this.contextMenus = createRef();
@@ -68,6 +71,9 @@ class SessionPage extends Component {
   updateExternFiles(path) {
     if (this.props.socketStatus === "offline") return console.debug("unable to update extern files");
     this.socket.updateExternFiles(path || this.state.extern.path, (data) => {
+      if (this.settings.get("sort_by") === "type") {
+        data.sort((a, b) => { return a.type < b.type ? 1 : a.type === b.type ? (a.name < b.name ? -1 : 1) : -1 })
+      }
       this.setState({
         extern: {
           ...this.state.extern,
@@ -97,27 +103,16 @@ class SessionPage extends Component {
     let depth = this.state.extern.path.split("/").length - 1;
     if (depth > 1) {
       newPath = this.state.extern.path.replace(this.state.extern.path.split("/")[depth - 1] + "/", "");
-      this.socket.updateExternFiles(newPath, (data) => {
-        this.setState({
-          extern: {
-            ...this.state.extern,
-            path: newPath,
-            files: data
-          }
-        });
-      })
     } else if (depth === 1 && this.state.extern.path.startsWith("./")) {
       newPath = "/";
-      this.socket.updateExternFiles(newPath, (data) => {
-        this.setState({
-          extern: {
-            ...this.state.extern,
-            path: newPath,
-            files: data
-          }
-        });
-      })
     }
+    this.setState({
+      extern: {
+        ...this.state.extern,
+        path: newPath
+      }
+    });
+    this.updateExternFiles(newPath);
     this.dataSocket.set("path", newPath);
   }
 
@@ -365,7 +360,9 @@ class SessionPage extends Component {
                         onClick={this.selectExternFile}
                         onDoubleClick={() => {
                           if (!this.state.keys.cmd && !this.state.keys.shift) {
-                            this.socket.openExternFile(file)
+                            if (this.settings.get("doubleclick_open")) {
+                              this.socket.openExternFile(file)
+                            }
                           }
                         }}
                         onContext={(event) => {

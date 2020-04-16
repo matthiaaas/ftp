@@ -103,7 +103,7 @@ export default class File extends Component {
         selected={this.props.selected}
         highlighted={this.props.highlighted}
         onClick={() => this.props.onClick.call(this, this.props.file)}
-        // onDoubleClick={() => this.props.onDoubleClick.call(this, this.props.file)}
+        onDoubleClick={() => this.props.onDoubleClick.call(this, this.props.file)}
         onDragStart={(event) => {
           event.dataTransfer.setData("native", "true")
           let files = [this.props.file]

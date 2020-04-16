@@ -47,9 +47,7 @@ export const Radio = styled.div`
   }
 
   &:active {
-    &::before {
-      background: ${props => props.selected || `var(--color-dark-grey-blur)`};
-    }
+    background: ${props => props.selected || `transparent`};
   }
 
   &::before {
