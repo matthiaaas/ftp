@@ -38,7 +38,7 @@ const Group = styled.div`
   align-items: center;
 `
 
-const Name = styled.span`o
+const Name = styled.span`
   max-width: 200px;
   height: 17px;
   white-space: nowrap;
@@ -96,6 +96,7 @@ const Item = styled.div`
 `
 
 const Dropdown = styled.ul`
+  z-index: 10;
   display: ${props => props.toggled ? `block` : `none`};
   position: absolute;
   top: 0;
@@ -125,6 +126,15 @@ const Separator = styled.hr`
   border: none;
   height: 1px;
   background: var(--color-dark-grey);
+`
+
+const Disable = styled.div`
+  z-index: 9;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 `
 
 export default class Connection extends Component {
@@ -166,7 +176,7 @@ export default class Connection extends Component {
     return (
       <Wrapper
         connected={this.props.connected}
-        onClick={this.submit}
+        onClick={!this.state.editing && this.submit}
       >
         <Header>
           <Group>
@@ -181,7 +191,7 @@ export default class Connection extends Component {
           >
             <MoreVertical />
             <Dropdown toggled={this.state.editing}>
-              <DropdownItem onClick={this.connect}>Connect</DropdownItem>
+              <DropdownItem onClick={this.submit}>Connect</DropdownItem>
               <Separator />
               <DropdownItem onClick={this.delete} delete>Delete</DropdownItem>
             </Dropdown>
@@ -202,6 +212,7 @@ export default class Connection extends Component {
             {this.props.keyData ? <Key /> : this.props.password ? <Unlock /> : <Lock /> }
           </Item>
         </Body>
+        {this.state.editing && <Disable onClick={() => {this.setState({ editing: !this.state.editing });}} />}
       </Wrapper>
     )
   }
