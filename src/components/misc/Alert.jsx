@@ -211,10 +211,10 @@ export class Confirm extends Component {
           </Header>
           <Actions>
             <Action>
-              <Button variant="button" onClick={() => {this.submit(false)}}>Cancel</Button>
+              <Button variant="button" onClick={() => {this.submit(false)}} tabIndex={-1}>Cancel</Button>
             </Action>
             <Action>
-              <Button variant="button" onClick={() => {this.submit(true)}} primary>Ok</Button>
+              <Button variant="button" onClick={() => {this.submit(true)}} tabIndex={-1} primary>Ok</Button>
             </Action>
           </Actions>
         </Body>
