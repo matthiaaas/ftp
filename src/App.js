@@ -6,7 +6,7 @@ import RouteChange from "./components/RouteChange";
 import ThemeProvider from "./components/ThemeProvider";
 import { GlobalStyles } from "./components/GlobalStyles";
 
-import Alert from "./components/misc/Alert";
+import Alert, { Confirm } from "./components/misc/Alert";
 
 import SFTP from "./components/sftp";
 
@@ -58,6 +58,7 @@ class App extends Component {
     this.themeProvider = new ThemeProvider();
 
     this.alert = createRef();
+    this.confirm = createRef();
 
     this.sidebar = createRef();
     this.taskbar = createRef();
@@ -67,6 +68,9 @@ class App extends Component {
   componentDidMount() {
     alert = (text, isError) => {
       this.alert.current.show(text, isError);
+    }
+    window.confirm = (text, callback) => {
+      this.confirm.current.show(text, callback);
     }
 
     let theme = this.settings.get("theme");
@@ -229,6 +233,7 @@ class App extends Component {
               onDisconnect={this.logout}
             />
             <Alert ref={this.alert} />
+            <Confirm ref={this.confirm} />
             <Switch>
               <Route exact path="/" component={(props) => {
                 return (

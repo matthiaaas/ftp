@@ -188,8 +188,16 @@ class SessionPage extends Component {
       }
 
       if (code === 8) {
-        if (this.state.extern.selected.length > 0) {
-          this.socket.deleteExternFiles(this.state.extern.selected, this.updateExternFiles);
+        let length = this.state.extern.selected.length;
+        if (length > 0) {
+          window.confirm(
+            `${length} file${length > 1 ? "s" : ""} will be deleted`,
+            (confirmed) => {
+              if (confirmed) {
+                this.socket.deleteExternFiles(this.state.extern.selected, this.updateExternFiles);
+              }
+            }
+          )
         }
       }
     }

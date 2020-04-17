@@ -33,7 +33,7 @@ const WrappedButton = styled.button`
   transition: all ease 0.1s;
   appearance: none;
   outline: none;
-  padding: 9px 20px;
+  padding: 7px 20px;
   border: 1px solid ${props => props.primary ? `var(--color-blue)` : `var(--color-dark-grey)`};
   border-radius: 4px;
   font-family: var(--font-main);
@@ -45,9 +45,12 @@ const WrappedButton = styled.button`
   background: ${props => props.primary ? `var(--color-blue)` : `transparent`};
 
   &:hover {
-    border-color: ${props => props.primary || `var(--color-grey)`};
     color: ${props => props.primary ? `var(--color-white)` : `var(--color-grey-light)`};
     background: ${props => props.primary ? `var(--color-blue-blur)` : `var(--color-dark-grey-blur)`};
+  }
+
+  &:active {
+    background: ${props => props.primary ? `var(--color-blue)` : `transparent`};
   }
 `
 

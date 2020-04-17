@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import { X } from "react-feather";
+import Button from "./Button";
 
 const Wrapper = styled.div`
   z-index: 100;
@@ -9,7 +10,6 @@ const Wrapper = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  pointer-events: none;
   justify-content: center;
   transform: translateY(-100%);
   color: var(--color-white);
@@ -17,6 +17,7 @@ const Wrapper = styled.div`
 `
 
 const Body = styled.div`
+  z-index: 100;
   pointer-events: all;
   padding: 16px 24px;
   border-radius: 0 0 8px 8px;
@@ -60,6 +61,18 @@ const Text = styled.span`
   color: inherit;
 `
 
+const Actions = styled.div`
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+`
+
+const Action = styled.div`
+  &:not(:last-child) {
+    margin-right: 4px;
+  }
+`
+
 const Time = styled.div`
   bottom: 0;
   left: 0;
@@ -76,6 +89,18 @@ const Time = styled.div`
       transform: translateX(-100%);
     }
   }
+`
+
+const Disable = styled.div`
+  z-index: 9;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  transition-delay: 2s;
+  opacity: ${props => props.hidden ? `0` : `0`};
+  background: var(--color-dark-blur);
 `
 
 export default class Alert extends Component {
@@ -135,6 +160,65 @@ export default class Alert extends Component {
           </Header>
           <Time hidden={this.state.hidden} isError={this.state.isError} />
         </Body>
+      </Wrapper>
+    )
+  }
+}
+
+
+export class Confirm extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      text: "",
+      hidden: true,
+      callback: undefined
+    }
+
+    this.show = this.show.bind(this);
+    this.close = this.close.bind(this);
+  }
+
+  show(text, callback) {
+    this.setState({
+      text: text.toString(),
+      callback: callback,
+      hidden: false
+    })
+  }
+
+  submit(confirmed) {
+    this.state.callback.call(this, confirmed)
+    this.close()
+  }
+
+  close() {
+    this.setState({
+      hidden: true
+    })
+  }
+
+  render() {
+    return (
+      <Wrapper
+        hidden={this.state.hidden}
+        style={{transform: this.state.hidden || "translateY(0)"}}
+      >
+        <Body>
+          <Header>
+            <Text>{this.state.text}</Text>
+          </Header>
+          <Actions>
+            <Action>
+              <Button variant="button" onClick={() => {this.submit(false)}}>Cancel</Button>
+            </Action>
+            <Action>
+              <Button variant="button" onClick={() => {this.submit(true)}} primary>Ok</Button>
+            </Action>
+          </Actions>
+        </Body>
+        <Disable hidden={this.state.hidden} />
       </Wrapper>
     )
   }
