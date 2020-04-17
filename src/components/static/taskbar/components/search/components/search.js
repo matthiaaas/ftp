@@ -76,28 +76,34 @@ export default class Find {
         if (files.length === 0) {
           return Promise.resolve();
         }
-        files.map((file) => {
+        return Promise.all(files.map((file) => {
           file.filepath = path.join(dir, file.name);
+          let promises = [];
           if (file.type === 1 && !file.name.startsWith(".") && depth <= maxDepth) {
-            walk(path.join(dir, file.name), callback);
+            promises.push(walk(path.join(dir, file.name), callback));
           }
-        });
+          return Promise.all(promises)
+        }))
       });
     }
     const getMatches = (results) => {
       let matches = [];
       results.map(result => {
-        if (result.name.includes(this.term)) {
+        if (result.name.toLowerCase().includes(this.term)) {
           matches.push(result)
         }
       })
       return matches;
     }
     walk("/", (results) => {
-      let matches = getMatches(results);
-      if (matches.length > 0) {
-        callback(matches);
+      if (results) {
+        let matches = getMatches(results);
+        if (matches.length > 0) {
+          callback(matches);
+        }
       }
+    }).then(() => {
+      callback(undefined, true)
     })
   }
 }

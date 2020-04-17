@@ -91,25 +91,30 @@ export default class Search extends Component {
     } else {
       this.setState({ searching: true })
       let find = new Find(term, this.props.socket);
-      find.findRecursive((results) => {
+      find.findRecursive((results, end) => {
         let newFiles = this.state.results.files;
         let newFolders = this.state.results.folders;
-        results.map(result => {
-          if (result.type === 0) {
-            return newFiles.push(result)
-          } else {
-            return newFolders.push(result)
-          }
-        })
-        newFiles = find.resort(newFiles);
-        newFolders = find.resort(newFolders);
-        this.setState({
-          results: {
-            ...this.state.results,
-            files: newFiles,
-            folders: newFolders
-          }
-        })
+
+        if (results) {
+          results.map(result => {
+            if (result.type === 0) {
+              return newFiles.push(result)
+            } else {
+              return newFolders.push(result)
+            }
+          })
+          newFiles = find.resort(newFiles);
+          newFolders = find.resort(newFolders);
+          this.setState({
+            results: {
+              ...this.state.results,
+              files: newFiles,
+              folders: newFolders
+            }
+          })
+        }
+
+        if (end) this.setState({ searching: false })
       });
     }
   }
