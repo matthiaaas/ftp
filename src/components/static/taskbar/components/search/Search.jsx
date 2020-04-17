@@ -208,7 +208,7 @@ export default class Search extends Component {
             <Zoom />
             <Input
               onChange={(event) => {
-                let term = event.target.value.toLowerCase().replace("*", "");
+                let term = event.target.value.toLowerCase().replace("*", "").trim();
                 let show = this.state.results.show;
                 show.files = show.default;
                 show.folders = show.default;
