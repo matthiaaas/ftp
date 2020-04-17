@@ -44,7 +44,7 @@ const Slider = styled.div`
     border-radius: 50%;
     transform: ${props => props.toggled && `translateX(18px)`};
     box-shadow: 2px 2px 8px var(--color-dark-blur);
-    background: ${props => props.toggled ? `var(--color-white)` : `var(--color-blue)`};
+    background: ${props => props.toggled ? `white` : `var(--color-blue)`};
   }
 `
 

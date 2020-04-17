@@ -59,6 +59,6 @@ export const Radio = styled.div`
     height: ${props => props.selected ? `6px` : `14px`};
     border: ${props => props.selected ? `5px solid var(--color-blue)` : `1px solid var(--color-grey-dark)`};
     border-radius: 50%;
-    background: ${props => props.selected ? `var(--color-white)` : `transparent`};
+    background: ${props => props.selected ? `white` : `transparent`};
   }
 `
