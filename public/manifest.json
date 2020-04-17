@@ -1,6 +1,6 @@
 {
-  "short_name": "FTP",
-  "name": "FTP",
+  "short_name": "transflow",
+  "name": "Transflow",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#141417",

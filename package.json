@@ -1,5 +1,5 @@
 {
-  "name": "FTP",
+  "name": "Transflow",
   "version": "0.1.2",
   "author": "Matthias Halfmann",
   "description": "React based Electron (S)FTP desktop application",
@@ -60,6 +60,12 @@
     ],
     "directories": {
       "buildResources": "assets"
+    },
+    "linux": {
+      "target": "tar.gz"
+    },
+    "dmg": {
+      "backgroundColor": "#1d1d21"
     }
   }
 }
