@@ -96,6 +96,7 @@ class SessionPage extends Component {
     });
     this.updateExternFiles(newPath)
     this.dataSocket.set("path", newPath);
+    window.scrollTo(0, 0)
   }
 
   goBackExternFolder() {
@@ -114,6 +115,7 @@ class SessionPage extends Component {
     });
     this.updateExternFiles(newPath);
     this.dataSocket.set("path", newPath);
+    window.scrollTo(0, 0)
   }
 
   selectExternFile(file) {
