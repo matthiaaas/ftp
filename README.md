@@ -1,10 +1,14 @@
-# ftp
+# ftp / [transflow](https://transflow.co)
 
 React based Electron (S)FTP desktop application like FileZilla for uploading local files to a remote server.
 
 ###### Notice: This app is still in beta and highly unstable
 
+![showcase](https://transflow.co/static/media/showcase.gif)
+
 ## Installation
+
+**Note:** If you want to download the app for real every-day usage / testing it's not recommended to build from the GitHub repo. Visit [transflow.co/download](https://transflow.co/download) instead.
 
 ### Requirements
 
@@ -23,7 +27,7 @@ npm install
 
 ## Testing
 
-**Note:** Electron is a framework used to guarantee cross-platform support for desktop apps. This app is developed on macOS and not well tested on other OSs yet. Some small configurations might be necessary.
+**Note:** Electron is a framework used to guarantee cross-platform support for desktop apps. This app is mainly developed on macOS and not well tested on other OSs yet. Some small configurations might be necessary.
 
 #### 1. Start in your browser
 
@@ -43,7 +47,13 @@ npm run electron-start
 
 ## License
 
-This app is **not** publicly **released** yet. Keep the code private. Do not pass it to third parties. Do not publish any details referencing this repository or its idea.
+#### [MIT License](https://github.com/matthiaaas/ftp/blob/master/LICENSE)
+
+**Note:** This app is **not** publicly **released** yet. Keep the code private. Do not pass it to third parties. Do not publish any details referencing this repository or its idea.
+
+## Terms
+
+In addition to the license: There's no liability for data loss, security issues, software abuse, etc.
 
 ## Usage
 
