@@ -63,7 +63,8 @@ class LoginPage extends Component {
       port: this.props.socketData.port,
       pass: this.props.socketData.pass === "anonymous" && this.props.socketData.pass,
       key: this.props.socketData.key ? this.props.socketData.key.toString() : false,
-      protocol: this.props.socketData.protocol
+      protocol: this.props.socketData.protocol,
+      popularity: 0
     });
     window.localStorage.setItem("registered_connections", JSON.stringify(connections));
     alert("Saved connection as a bookmark in QuickConnect", false)

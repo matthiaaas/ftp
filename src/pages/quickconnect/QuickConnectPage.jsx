@@ -19,9 +19,10 @@ class QuickConnectPage extends Component {
       target: undefined
     }
 
-    this.loadConnections = this.loadConnections.bind(this);
     this.submit = this.submit.bind(this);
     this.connect = this.connect.bind(this);
+    this.loadConnections = this.loadConnections.bind(this);
+    this.updateConnection = this.updateConnection.bind(this);
   }
 
   componentDidMount() {
@@ -29,16 +30,29 @@ class QuickConnectPage extends Component {
   }
 
   loadConnections() {
-    let connections = [
-    ];
-
+    let connections = [];
     if (!window.localStorage.hasOwnProperty("registered_connections")) {
       window.localStorage.setItem("registered_connections", JSON.stringify(connections));
     }
 
     connections = JSON.parse(window.localStorage.getItem("registered_connections"));
+    connections = connections.sort((a, b) => b.popularity - a.popularity);
 
     this.setState({ connections: connections })
+  }
+
+  updateConnection(connection) {
+    let connections = this.state.connections;
+    let i = connections.findIndex(item => item.name === connection.host && item.user === connection.user && item.port === connection.port);
+    if (connections[i].popularity !== undefined) {
+      connections[i].popularity++;
+    } else {
+      connections[i].popularity = 1;
+    }
+    this.setState({
+      connections: connections
+    })
+    window.localStorage.setItem("registered_connections", JSON.stringify(connections))
   }
 
   submit(connection) {
@@ -57,6 +71,7 @@ class QuickConnectPage extends Component {
   connect(login) {
     this.props.onLogin.call(this, login, (err, success) => {
       if (success) {
+        this.updateConnection(login)
         this.props.history.push("/session")
       }
     });
