@@ -222,7 +222,11 @@ export default class Search extends Component {
                   }
                 })
                 if (this.props.socketStatus === "online" && !this.state.recursive && term.length > 0) {
-                  this.search(term);
+                  setTimeout(() => {
+                    if (term === this.state.term) {
+                      this.search(term);
+                    }
+                  }, 400)
                 }
                 this.setState({
                   results: {
