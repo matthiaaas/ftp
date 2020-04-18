@@ -56,6 +56,10 @@ export default class InteractiveTerminal extends Component {
     })
   }
 
+  componentWillUnmount() {
+    this.shell.close()
+  }
+
   newProcess(prompt) {
     let host = this.props.socketData.host;
     let user = this.props.socketData.user;

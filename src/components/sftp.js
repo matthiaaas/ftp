@@ -247,4 +247,8 @@ export class Shell {
   send(data) {
     this.stream.write(`${data}\r`)
   }
+
+  close() {
+    this.stream.close()
+  }
 }
