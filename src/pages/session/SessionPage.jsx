@@ -57,7 +57,7 @@ class SessionPage extends Component {
 
   componentDidMount() {
     if (this.props.socketStatus === "online") {
-      let path = this.dataSocket.get("path");
+      let path = this.dataSocket.get("path") || this.props.socket.absPath || "/";
       this.setState({
         extern: {
           ...this.state.extern,
