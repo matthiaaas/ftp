@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import KeyEvents from "../../../components/misc/KeyEvents";
+
 import { Wrapper, Prompt, Connection, Tree, Input, Output, Line } from "./Process";
 
 export default class Process extends Component {
@@ -7,13 +9,38 @@ export default class Process extends Component {
     super(props);
 
     this.state = {
-      isRunning: false
+      isRunning: false,
+      keys: {}
+    }
+
+    this.handleShortcut = this.handleShortcut.bind(this);
+  }
+
+  handleShortcut(key) {
+    if (this.state.keys.cmd) {
+      switch (key) {
+        case "c":
+          this.props.onSubmit.call(this, "\x03")
+          break;
+        default:
+          break;
+      }
     }
   }
 
   render() {
     return (
       <Wrapper>
+        {this.state.isRunning &&
+          <KeyEvents
+            onModifierKeys={(keys) => {
+              this.setState({
+                keys: keys
+              })
+            }}
+            onKeys={this.handleShortcut}
+          />
+        }
         <Prompt>
           <Connection>{this.props.user}{this.props.host && "@"}{this.props.host || "terminal"}</Connection>
           <Tree>{this.props.path ? this.props.path : "~$"}</Tree>
