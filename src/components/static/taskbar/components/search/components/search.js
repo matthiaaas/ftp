@@ -13,43 +13,11 @@ export default class Find {
     return results;
   }
 
-  find = (type, callback) => {
-    console.debug("searching using cmd...");
-    const handleResults = (data) => {
-      let results = [];
-      for (let i = 0; i < data.length; i++) {
-        let result = data[i];
-        if (result === "" || !(result.startsWith("./") || result.startsWith("/"))) continue;
-        let split = result.split("/");
-    
-        let name = split[split.length - 1];
-        let depth = split.length;
-        split.pop();
-        let path = split.join("/") + "/";
-    
-        results.push({
-          name: name,
-          path: path,
-          depth: depth
-        })
-      }
-      return results;
-    }
-    
-    this.socket.raw(`find . -iname *${this.term}* -type ${type || "f"} -not -path '*/\.*'`, (err, data) => {
-      if (err) alert(err);
-      if (data) {
-        let results = handleResults(data.text.split("\n"));
-        results = this.resort(results);
-        callback(results);
-      }
-    })
-  }
-
-  findRecursive = (callback) => {
+  find = (callback) => {
     console.debug("searching recursive...");
     let maxDepth = 16;
     let depth = 0;
+    let startPath = this.socket.absPath || "/";
     
     const list = (dir) => {
       return new Promise((resolve, reject) => {
@@ -95,7 +63,7 @@ export default class Find {
       })
       return matches;
     }
-    walk("/", (results) => {
+    walk(startPath, (results) => {
       if (results) {
         let matches = getMatches(results);
         if (matches.length > 0) {

@@ -30,6 +30,7 @@ export default class Results extends Component {
               onClick={() => {
                 this.props.onSelect.call(this, index);
               }}
+              onDoubleClick={this.props.onSubmit}
             >
               <Path>{item.path}</Path>
               <File>

@@ -22,7 +22,6 @@ export default class Search extends Component {
       term: "",
       searching: false,
       redirect: undefined,
-      recursive: false,
       keys: {},
       results: {
         selected: 0,
@@ -39,24 +38,8 @@ export default class Search extends Component {
     this.dataSocket = new Data(this.props.socketData.host, this.props.socketData.user);
 
     this.search = this.search.bind(this);
+    this.submit = this.submit.bind(this);
     this.handleShortcut = this.handleShortcut.bind(this);
-  }
-
-  componentDidMount() {
-    if (this.props.socket) {
-      if (this.props.socket.sftp) {
-        this.props.socket.raw("find -maxdepth 1", (err, data) => {
-          if (err) console.log(err);
-          if (data) {
-            if (data.text.startsWith("-bash: ") || data.text.startsWith("-sh: ")) {
-              this.setState({ recursive: true });
-            }
-          }
-        })
-      } else {
-        this.setState({ recursive: true });
-      }
-    }
   }
 
   search(term) {
@@ -68,30 +51,9 @@ export default class Search extends Component {
         folders: []
       }
     })
-    if (!this.state.recursive) {
-      this.setState({ searching: true })
+    this.setState({ searching: true })
       let find = new Find(term, this.props.socket);
-      find.find("f", (results) => {
-        this.setState({
-          results: {
-            ...this.state.results,
-            files: results
-          }
-        })
-        find.find("d", (results) => {
-          this.setState({
-            results: {
-              ...this.state.results,
-              folders: results
-            }
-          })
-        })
-        this.setState({ searching: false })
-      })
-    } else {
-      this.setState({ searching: true })
-      let find = new Find(term, this.props.socket);
-      find.findRecursive((results, end) => {
+      find.find((results, end) => {
         let newFiles = this.state.results.files;
         let newFolders = this.state.results.folders;
 
@@ -116,10 +78,10 @@ export default class Search extends Component {
 
         if (end) this.setState({ searching: false })
       });
-    }
   }
 
   submit() {
+    console.log("submittting")
     let result;
     let selected = this.state.results.selected;
     let files = this.state.results.files;
@@ -137,6 +99,7 @@ export default class Search extends Component {
     }
 
     let newPath = result.path + (isFolder ? result.name + "/" : "");
+    console.log(newPath)
  
     this.dataSocket.set("path", newPath);
     this.setState({ redirect: "session" })
@@ -218,23 +181,18 @@ export default class Search extends Component {
                   results: {
                     ...this.state.results,
                     show: show,
-                    selected: 0
-                  }
-                })
-                if (this.props.socketStatus === "online" && !this.state.recursive && term.length > 0) {
-                  setTimeout(() => {
-                    if (term === this.state.term) {
-                      this.search(term);
-                    }
-                  }, 400)
-                }
-                this.setState({
-                  results: {
-                    ...this.state.results,
+                    selected: 0,
                     files: [],
                     folders: []
                   }
                 })
+                if (term.length > 0) {
+                  setTimeout(() => {
+                    if (term === this.state.term) {
+                      this.search(term);
+                    }
+                  }, 600)
+                }
               }}
               placeholder="Search for files and folders"
               autoFocus
@@ -272,6 +230,7 @@ export default class Search extends Component {
                       }
                     })
                   }}
+                  onSubmit={this.submit}
                 />
               </Section>
               <Section>
