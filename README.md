@@ -25,7 +25,7 @@ React based Electron (S)FTP desktop application like FileZilla for uploading loc
 npm install
 ```
 
-## Testing
+## Development
 
 **Note:** Electron is a framework used to guarantee cross-platform support for desktop apps. This app is mainly developed on macOS and not well tested on other OSs yet. Some small configurations might be necessary.
 
