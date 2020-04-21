@@ -3,7 +3,7 @@
   "version": "0.1.3",
   "author": "Matthias Halfmann",
   "description": "React based Electron (S)FTP desktop application",
-  "homepage": "https://transflow.co",
+  "homepage": "./",
   "bugs": {
     "url": "https://github.com/matthiaaas/ftp/issues",
     "email": "hi@matthias.works"
