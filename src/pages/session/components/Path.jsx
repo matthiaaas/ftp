@@ -6,11 +6,11 @@ import { GoBack } from "../../../components/misc/CircleButton";
 const Wrapper = styled.div`
   z-index: 3;
   position: fixed;
-  width: 100%;
   padding: 28px 0 20px 0;
   color: var(--color-grey);
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  width: 100%;
   background: var(--color-dark-light);
 `
 
@@ -19,6 +19,7 @@ const Url = styled.div`
   font-weight: 400;
   font-size: 16px;
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   margin-left: 8px;
 `
@@ -27,6 +28,7 @@ const Dir = styled.div`
   border-radius: 4px;
   padding: 4px 4px;
   position: relative;
+  white-space: nowrap;
   color: ${props => props.dropping ? `var(--color-white)` : `var(--color-grey)`};
   border: 1px solid ${props => props.dropping ? `var(--color-blue)` : `transparent`};
   background: ${props => props.dropping && `var(--color-blue-blur)`}; 
