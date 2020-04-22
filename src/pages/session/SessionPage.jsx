@@ -336,6 +336,12 @@ class SessionPage extends Component {
                   const file = this.state.extern.files[key];
                   file.path = this.state.extern.path;
 
+                  console.log(this.settings.get("hide_hidden_files"))
+
+                  if (this.settings.get("hide_hidden_files") && file.name.startsWith(".")) {
+                    return;
+                  }
+
                   if (file.type === 1) {
                     return (
                       <Folder

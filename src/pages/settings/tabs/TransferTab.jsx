@@ -14,7 +14,8 @@ export default class TransferTab extends Component {
 
     this.state = {
       sortBy: this.settings.get("sort_by") || "name",
-      doubleClick: this.settings.get("doubleclick_open") || false
+      doubleClick: this.settings.get("doubleclick_open") || false,
+      hideHidden: this.settings.get("hide_hidden_files") || false
     }
   }
 
@@ -62,6 +63,18 @@ export default class TransferTab extends Component {
                 doubleClick: !this.state.doubleClick
               })
               this.settings.set("doubleclick_open", !this.state.doubleClick)
+            }}
+          />
+        </Setting>
+        <Setting>
+          <Label>Hide hidden files</Label>
+          <Toggle
+            toggled={this.state.hideHidden}
+            onClick={() => {
+              this.setState({
+                hideHidden: !this.state.hideHidden
+              })
+              this.settings.set("hide_hidden_files", !this.state.hideHidden)
             }}
           />
         </Setting>
