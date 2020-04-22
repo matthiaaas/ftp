@@ -4,7 +4,7 @@ React based Electron (S)FTP desktop application like FileZilla for uploading loc
 
 ###### Notice: This app is still in beta and highly unstable
 
-![showcase](https://transflow.co/static/media/showcase.gif)
+![showcase](https://cdn.transflow.co/static/42vkW/showcase.gif)
 
 ## Installation
 
