@@ -179,6 +179,10 @@ class App extends Component {
         "ENOTFOUND": {
           text: "Unable to resolve hostname",
           isError: true
+        },
+        "All configured authentication methods failed": {
+          text: "Authentication failed",
+          isError: true
         }
       };
       Object.keys(errors).forEach(error => {
