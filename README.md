@@ -49,8 +49,6 @@ npm run electron-start
 
 #### [MIT License](https://github.com/matthiaaas/ftp/blob/master/LICENSE)
 
-**Note:** This app is **not** publicly **released** yet. Keep the code private. Do not pass it to third parties. Do not publish any details referencing this repository or its idea.
-
 ## Terms
 
 In addition to the license: There's no liability for data loss, security issues, software abuse, etc.
