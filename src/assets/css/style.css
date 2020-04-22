@@ -1,7 +1,13 @@
 html.theme-transition {
   transition: all ease 0.8s !important;
+  -webkit-transition: all ease 0.8s !important;
+  -moz-transition: all ease 0.8s !important;
+  -o-transition: all ease 0.8s !important;
 }
 
 html.theme-transition * {
   transition: all ease 0.8s !important;
+  -webkit-transition: all ease 0.8s !important;
+  -moz-transition: all ease 0.8s !important;
+  -o-transition: all ease 0.8s !important;
 }
