@@ -187,6 +187,10 @@ class App extends Component {
         "Timed out while waiting for handshake": {
           text: "Timed out",
           isError: true
+        },
+        "Unsupported key format": {
+          text: "Your key file format is unsupported",
+          isError: true
         }
       };
       Object.keys(errors).forEach(error => {

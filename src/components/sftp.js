@@ -32,28 +32,33 @@ export default class SFTP {
     if (typeof pass === "string") this.pass = pass;
     if (typeof pass === "object") this.key = pass;
 
-    this.socket.once("ready", () => {
-      this.socket.sftp((err, sftp) => {
-        this.sftp = sftp;
-        this.authenticated = true;
-        this.sftp.realpath(".", (err, absPath) => {
-          this.absPath = absPath;
-          let isUnix = absPath.startsWith("/");
-          this.platform = isUnix ? "unix" : "windows";
-          if (callback) callback(null, {text: `Login successful; path is ${absPath} on platform ${isUnix ? "Unix" : "Windows"}`});
+    try {
+      this.socket.once("ready", () => {
+        this.socket.sftp((err, sftp) => {
+          this.sftp = sftp;
+          this.authenticated = true;
+          this.sftp.realpath(".", (err, absPath) => {
+            this.absPath = absPath;
+            let isUnix = absPath.startsWith("/");
+            this.platform = isUnix ? "unix" : "windows";
+            if (callback) callback(null, {text: `Login successful; path is ${absPath} on platform ${isUnix ? "Unix" : "Windows"}`});
+          })
         })
+      }).connect(this.key ? {
+        host: this.host,
+        port: this.port,
+        username: this.user,
+        privateKey: this.key
+      } : {
+        host: this.host,
+        port: this.port,
+        username: this.user,
+        password: this.pass
       })
-    }).connect(this.key ? {
-      host: this.host,
-      port: this.port,
-      username: this.user,
-      privateKey: this.key
-    } : {
-      host: this.host,
-      port: this.port,
-      username: this.user,
-      password: this.pass
-    })
+    } catch(err) {
+      callback(err)
+      this._callback("error", err)
+    }
 
     this.socket.on("error", (err) => {
       callback(err)
@@ -179,6 +184,11 @@ export default class SFTP {
     })
   }
 
+  /**
+   * @param {String} filePath 
+   * @param {String} newPath 
+   * @param {Function} callback 
+   */
   rename(filePath, newPath, callback) {
     if (!this.authenticated) return;
     this.sftp.rename(filePath, newPath, (err) => {
