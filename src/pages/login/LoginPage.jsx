@@ -73,7 +73,7 @@ class LoginPage extends Component {
   render() {
     let isValidSSHKey = true;
     if (this.state.login.keyFile.path) {
-      isValidSSHKey = window.require("fs").readFileSync(this.state.login.keyFile.path).toString().includes("-----BEGIN OPENSSH PRIVATE KEY-----");
+      isValidSSHKey = window.require("fs").readFileSync(this.state.login.keyFile.path).toString().includes("PRIVATE KEY-----");
     }
 
     return (
