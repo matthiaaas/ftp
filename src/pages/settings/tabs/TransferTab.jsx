@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import Button from "../../../components/misc/Button";
+
 import { Tab, Setting, Label, Radios, Radio } from "./styles";
 
 import Toggle from "./components/Toggle";
@@ -15,7 +17,8 @@ export default class TransferTab extends Component {
     this.state = {
       sortBy: this.settings.get("sort_by") || "name",
       doubleClick: this.settings.get("doubleclick_open") || false,
-      hideHidden: this.settings.get("hide_hidden_files") || false
+      hideHidden: this.settings.get("hide_hidden_files") || false,
+      dlDir: this.settings.get("downloads_folder") || window.require("downloads-folder")()
     }
   }
 
@@ -53,6 +56,23 @@ export default class TransferTab extends Component {
               )
             })}
           </Radios>
+        </Setting>
+        <Setting>
+          <Label>Downloads folder</Label>
+          <Button
+            variant="browse"
+            type="folder"
+            defaultValue={this.state.dlDir}
+            onChange={(event) => {
+              let file = event.target.files[0];
+              let dirs = file.path.split("/"); dirs.pop();
+              let path = dirs.join("/")
+              this.setState({
+                dlDir: path
+              });
+              this.settings.set("downloads_folder", path)
+            }}
+          />
         </Setting>
         <Setting>
           <Label>Download & open files with double click</Label>

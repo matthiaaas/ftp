@@ -154,6 +154,14 @@ const BrowseText = styled.span`
 `
 
 export default class Button extends Component {
+  _addDirectory(node) {
+    if (node) {
+      node.directory = true;
+      node.webkitdirectory = true;
+    }
+  }
+
+
   render() {
     if (this.props.variant === "button") {
       return (
@@ -184,7 +192,11 @@ export default class Button extends Component {
           <BrowseIcon tabIndex={-1}>
             <Upload />
           </BrowseIcon>
-          <BrowseInput tabIndex={-1} type="file" />
+          <BrowseInput
+            tabIndex={-1}
+            type="file"
+            ref={node => this.props.type === "folder" && this._addDirectory(node)}
+          />
           <BrowseText invalid={this.props.invalid} highlighted={this.props.defaultValue ? true : false}>{this.props.defaultValue || "Browse..."}</BrowseText>
         </WrappedBrowse>
       )

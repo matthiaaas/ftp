@@ -1,4 +1,5 @@
 import { getPlatformStartCmd } from "../../assets/utils/utils";
+import Settings from "../../components/localstorage/settings";
 
 const isWindows = window.process.platform === "win32";
 
@@ -11,6 +12,8 @@ export default class FTP {
     this.shell = window.require("electron").shell;
     this.dlDir = window.require("downloads-folder");
     this.spawn = window.require("child_process").spawn;
+
+    this.settings = new Settings();
   }
 
   updateExternFiles = (path, callback) => {
@@ -123,7 +126,8 @@ export default class FTP {
   }
 
   downloadExternFile = (file, to, callback) => {
-    let destination = to || this.dlDir() + "/" + file.name;
+    let dlDir = this.settings.get("downloads_folder") || this.dlDir();
+    let destination = to || dlDir + "/" + file.name;
     if (this.ftp.sftp) {
       this.ftp.get(file.path + file.name, destination, (err) => {
         if (err) alert(err);
@@ -149,7 +153,8 @@ export default class FTP {
   }
 
   downloadExternFiles = (files, to, callback, progress) => {
-    let destination = to || this.dlDir() + "/";
+    let dlDir = this.settings.get("downloads_folder") || this.dlDir();
+    let destination = to || dlDir + "/";
 
     const getBasePath = () => {
       let i = files.findIndex(file => file.type === 0);
