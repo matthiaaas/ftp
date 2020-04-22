@@ -8,6 +8,8 @@ import Toggle from "./components/Toggle";
 
 import Settings from "../../../components/localstorage/settings";
 
+const path = window.require("path");
+
 export default class TransferTab extends Component {
   constructor(props) {
     super(props);
@@ -65,12 +67,11 @@ export default class TransferTab extends Component {
             defaultValue={this.state.dlDir}
             onChange={(event) => {
               let file = event.target.files[0];
-              let dirs = file.path.split("/"); dirs.pop();
-              let path = dirs.join("/")
+              let newPath = path.dirname(file.path);
               this.setState({
-                dlDir: path
+                dlDir: newPath
               });
-              this.settings.set("downloads_folder", path)
+              this.settings.set("downloads_folder", newPath)
             }}
           />
         </Setting>
