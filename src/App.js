@@ -183,6 +183,10 @@ class App extends Component {
         "All configured authentication methods failed": {
           text: "Authentication failed",
           isError: true
+        },
+        "Timed out while waiting for handshake": {
+          text: "Timed out",
+          isError: true
         }
       };
       Object.keys(errors).forEach(error => {
