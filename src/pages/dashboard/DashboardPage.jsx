@@ -141,7 +141,7 @@ class DashboardPage extends Component {
                       <Text style={{userSelect: "all"}} highlighted>{data.port}</Text>
                     </BoxSection>
                     <BoxSection>
-                      <Text>{"IPv" + data.family}</Text>
+                      <Text>{data.family ? "IPv" + data.family : "Connecting..."}</Text>
                     </BoxSection>
                     <BoxSection>
                       <Icon>{data.protocol === "ftp" ? <ShieldOff /> : <Shield />}</Icon>
