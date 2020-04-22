@@ -66,6 +66,11 @@
     },
     "dmg": {
       "backgroundColor": "#1d1d21"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
     }
   }
 }
