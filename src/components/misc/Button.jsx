@@ -150,7 +150,7 @@ const BrowseInput = styled.input`
 
 const BrowseText = styled.span`
   pointer-events: none;
-  color: ${props => props.highlighted ? `var(--color-white)` : `inherit`};
+  color: ${props => props.invalid ? `var(--color-red)` : props.highlighted ? `var(--color-white)` : `inherit`};
 `
 
 export default class Button extends Component {
@@ -185,7 +185,7 @@ export default class Button extends Component {
             <Upload />
           </BrowseIcon>
           <BrowseInput tabIndex={-1} type="file" />
-          <BrowseText highlighted={this.props.defaultValue ? true : false}>{this.props.defaultValue || "Browse..."}</BrowseText>
+          <BrowseText invalid={this.props.invalid} highlighted={this.props.defaultValue ? true : false}>{this.props.defaultValue || "Browse..."}</BrowseText>
         </WrappedBrowse>
       )
     } else {

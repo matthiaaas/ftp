@@ -71,6 +71,11 @@ class LoginPage extends Component {
   }
 
   render() {
+    let isValidSSHKey = true;
+    if (this.state.login.keyFile.path) {
+      isValidSSHKey = window.require("fs").readFileSync(this.state.login.keyFile.path).toString().includes("-----BEGIN OPENSSH PRIVATE KEY-----");
+    }
+
     return (
       <Page
         onKeyDown={(event) => {
@@ -180,6 +185,7 @@ class LoginPage extends Component {
                       variant="browse"
                       type="file"
                       defaultValue={this.state.login.keyFile.name}
+                      invalid={!isValidSSHKey}
                       onChange={(event) => {
                         this.setState({
                           login: {
