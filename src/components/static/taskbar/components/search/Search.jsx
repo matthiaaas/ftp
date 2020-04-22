@@ -81,7 +81,6 @@ export default class Search extends Component {
   }
 
   submit() {
-    console.log("submittting")
     let result;
     let selected = this.state.results.selected;
     let files = this.state.results.files;
@@ -99,7 +98,6 @@ export default class Search extends Component {
     }
 
     let newPath = result.path + (isFolder ? result.name + "/" : "");
-    console.log(newPath)
  
     this.dataSocket.set("path", newPath);
     this.setState({ redirect: "session" })
