@@ -167,6 +167,7 @@ class App extends Component {
     }
 
     this.socket.on("error", (err) => {
+      console.log(err);
       let errors = {
         "ECONNRESET": {
           text: "Connection closed abruptly",
@@ -182,6 +183,10 @@ class App extends Component {
         },
         "All configured authentication methods failed": {
           text: "Authentication failed",
+          isError: true
+        },
+        "Timed out while waiting for handshake": {
+          text: "Timed out",
           isError: true
         }
       };
