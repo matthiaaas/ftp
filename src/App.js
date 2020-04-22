@@ -167,7 +167,6 @@ class App extends Component {
     }
 
     this.socket.on("error", (err) => {
-      console.log(err);
       let errors = {
         "ECONNRESET": {
           text: "Connection closed abruptly",
