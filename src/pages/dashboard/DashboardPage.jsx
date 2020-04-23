@@ -53,7 +53,7 @@ class DashboardPage extends Component {
 
   getSpace() {
     if (this.props.socket && this.props.socket.sftp) {
-      this.props.socket.raw("df -l -h -BM", (err, output) => {
+      this.props.socket.raw("df -l -h -BM /", (err, output) => {
         if (output) {
           output = output.text.split("\n")
           output.shift()
