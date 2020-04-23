@@ -15,6 +15,12 @@ export const Header = styled.section`
   margin: 48px 0 0 8px;
 `
 
+export const QuickActions = styled.ul`
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+`
+
 export const Dashboard = styled.section`
   padding-top: 40px;
   display: flex;

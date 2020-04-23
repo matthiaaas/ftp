@@ -7,8 +7,9 @@ import Headline from "../../components/misc/Headline";
 import ServerStatus from "../../components/misc/ServerStatus";
 import CircularChart from "../../components/misc/CircularChart";
 
-import { Page, Content, Header, Dashboard, Column, Item, Label, Box, Chart, Info, BoxSection, Icon, Text, ToolTip, Ip } from "./styles";
-import QuickAction from "./components/QuickActionIcon";
+import { Page, Content, Header, QuickActions, Dashboard, Column, Item, Label, Box, Chart, Info, BoxSection, Icon, Text, ToolTip, Ip } from "./styles";
+
+import QuickAction from "./components/QuickAction";
 
 class DashboardPage extends Component {
   constructor(props) {
@@ -27,6 +28,14 @@ class DashboardPage extends Component {
     this.saveConnection = this.saveConnection.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.socketStatus === "offline") {
+      this.props.history.push("/")
+    } else {
+      this.getSpace();
+    }
+  }
+
   saveConnection() {
     let connections = JSON.parse(window.localStorage.getItem("registered_connections")) || [];
     connections.push({
@@ -40,14 +49,6 @@ class DashboardPage extends Component {
     });
     window.localStorage.setItem("registered_connections", JSON.stringify(connections));
     alert("Saved connection as a bookmark in QuickConnect", false)
-  }
-
-  componentDidMount() {
-    if (this.props.socketStatus === "offline") {
-      this.props.history.push("/")
-    } else {
-      this.getSpace();
-    }
   }
 
   getSpace() {
@@ -115,13 +116,16 @@ class DashboardPage extends Component {
           <Content>
             <Header>
               <ServerStatus status={this.props.socketStatus} />
-                <Headline>{data.user ? data.user + "@" : "Dashboard"}{data.host}</Headline>
+              <Headline>{data.user ? data.user + "@" : "Dashboard"}{data.host}</Headline>
+              <QuickActions>
                 <QuickAction
-                  disabled={!(this.props.socketStatus === "online")}
+                  disabled={this.props.socketStatus !== "online"}
                   onAction={this.saveConnection}
                 >
                   <Bookmark />
                 </QuickAction>
+              </QuickActions>
+              
             </Header>
             <Dashboard>
               <Column>

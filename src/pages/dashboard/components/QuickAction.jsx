@@ -9,21 +9,24 @@ const Wrapper = styled.li`
   font-weight: 400;
   font-size: 16px;
   white-space: nowrap;
-  margin-left: 16px;
   color: ${props => props.disabled ? `var(--color-grey-dark) !important` : `var(--color-grey)`};
+
+  &:not(:last-child) {
+    margin-right: 8px;
+  }
 
   svg {
     width: 20px;
     height: 20px;
     color: inherit;
   }
-
+  
   &:hover {
     color: var(--color-grey-light);
   }
 
   &:active {
-    background: ${props => props.disabled || `var(--color-dark-grey-blur)`};
+    color: var(--color-grey);
   }
 `
 
