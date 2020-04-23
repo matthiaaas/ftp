@@ -9,8 +9,8 @@
     "url": "https://github.com/matthiaaas/ftp/issues",
     "email": "hi@matthias.works"
   },
+  "license": "MIT",
   "main": "public/electron.js",
-  "private": true,
   "dependencies": {
     "electron-is-dev": "^1.1.0",
     "jsftp": "^2.1.3",
