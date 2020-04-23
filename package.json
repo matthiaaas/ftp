@@ -1,5 +1,6 @@
 {
-  "name": "Transflow",
+  "name": "transflow",
+  "productName": "Transflow",
   "version": "0.1.3",
   "author": "Matthias Halfmann",
   "description": "React based Electron (S)FTP desktop application",
