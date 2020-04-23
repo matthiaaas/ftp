@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 
-import { Database, Shield, ShieldOff, GitCommit } from "react-feather";
+import { Database, Shield, ShieldOff, GitCommit, Bookmark } from "react-feather";
 
 import Container from "../../components/misc/Container";
 import Headline from "../../components/misc/Headline";
@@ -8,6 +8,7 @@ import ServerStatus from "../../components/misc/ServerStatus";
 import CircularChart from "../../components/misc/CircularChart";
 
 import { Page, Content, Header, Dashboard, Column, Item, Label, Box, Chart, Info, BoxSection, Icon, Text, ToolTip, Ip } from "./styles";
+import QuickAction from "./components/QuickActionIcon";
 
 class DashboardPage extends Component {
   constructor(props) {
@@ -22,6 +23,23 @@ class DashboardPage extends Component {
         max: 1
       }
     }
+
+    this.saveConnection = this.saveConnection.bind(this);
+  }
+
+  saveConnection() {
+    let connections = JSON.parse(window.localStorage.getItem("registered_connections")) || [];
+    connections.push({
+      name: this.props.socketData.host,
+      user: this.props.socketData.user,
+      port: this.props.socketData.port,
+      pass: this.props.socketData.pass === "anonymous" && this.props.socketData.pass,
+      key: this.props.socketData.key ? this.props.socketData.key.toString() : false,
+      protocol: this.props.socketData.protocol,
+      popularity: 0
+    });
+    window.localStorage.setItem("registered_connections", JSON.stringify(connections));
+    alert("Saved connection as a bookmark in QuickConnect", false)
   }
 
   componentDidMount() {
@@ -98,6 +116,12 @@ class DashboardPage extends Component {
             <Header>
               <ServerStatus status={this.props.socketStatus} />
                 <Headline>{data.user ? data.user + "@" : "Dashboard"}{data.host}</Headline>
+                <QuickAction
+                  disabled={!(this.props.socketStatus === "online")}
+                  onAction={this.saveConnection}
+                >
+                  <Bookmark />
+                </QuickAction>
             </Header>
             <Dashboard>
               <Column>
