@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import Button from "../../../components/misc/Button";
 
+import { getDownloadsFolder } from "../../../assets/utils/utils";
+
 import { Tab, Setting, Label, Radios, Radio } from "./styles";
 
 import Toggle from "./components/Toggle";
@@ -20,7 +22,7 @@ export default class TransferTab extends Component {
       sortBy: this.settings.get("sort_by") || "name",
       doubleClick: this.settings.get("doubleclick_open") || false,
       hideHidden: this.settings.get("hide_hidden_files") || false,
-      dlDir: this.settings.get("downloads_folder") || window.require("downloads-folder")()
+      dlDir: this.settings.get("downloads_folder") || getDownloadsFolder()
     }
   }
 
