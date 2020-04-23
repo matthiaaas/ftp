@@ -1,5 +1,7 @@
 const path = window.require("path")
+const statSync = window.require("fs").statSync;
 const process = window.require("process");
+const execSync = window.require("child_process").execSync;
 
 export function toAccurateFileSize(size) {
   const units = ["B", "KB", "MB", "GB", "TB", "PB"];
@@ -53,5 +55,29 @@ export function getPlatformStartCmd() {
      case "win32": return "start";
      case "win64": return "start";
      default: return "xdg-open";
+  }
+}
+
+export function getDownloadsFolder() {
+  switch (process.platform) {
+    case "darwin":
+      return `${process.env.HOME}/Downloads`;
+    case "win32":
+      return `${process.env.USERPROFILE}\\Downloads`;
+    case "win64":
+      return `${process.env.USERPROFILE}\\Downloads`;
+    default:
+      try {
+        let dir = execSync("xdg-user-dir DOWNLOAD", { stdio: [0, 3, 3] });
+        if (dir) return dir;
+      } catch {}
+
+      const homeDownloads = `${process.env.HOME}/Downloads`;
+      try {
+        let stat = statSync(homeDownloads);
+        if (stat) return homeDownloads;
+      } catch {}
+
+      return "/tmp/";
   }
 }
