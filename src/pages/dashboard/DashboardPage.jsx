@@ -21,7 +21,8 @@ class DashboardPage extends Component {
         loading: true,
         used: 0,
         available: 0,
-        max: 1
+        max: 1,
+        os: false
       }
     }
 
@@ -117,15 +118,9 @@ class DashboardPage extends Component {
           if (output[0].includes("NAME=")) {
             runningOS = output[0].split('=')[1].replace(/"/gi, "");
           }
-          if (runningOS !== undefined) {
-            this.setState({
-              os: runningOS
-            })
-          } else {
-            this.setState({
-              os: "Unknown"
-            })
-          }
+          this.setState({
+            os: runningOS || "Unknown"
+          })
         }
       })
     } else {
