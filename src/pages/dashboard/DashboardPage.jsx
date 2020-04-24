@@ -115,9 +115,7 @@ class DashboardPage extends Component {
         if (output) {
           output = output.text.split("\n")
           let runningOS = "";
-          if (output[0].includes("NAME=")) {
-            runningOS = output[0].split('=')[1].replace(/"/gi, "");
-          }
+          if (output[0].includes("NAME=")) runningOS = output[0].split('=')[1].replace(/"/gi, "");
           this.setState({
             os: runningOS || "Unknown"
           })
