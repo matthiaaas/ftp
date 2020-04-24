@@ -259,6 +259,10 @@ export class Shell {
   }
 
   close() {
-    this.stream.close()
+    try {
+      this.stream.close()
+    } catch {
+      console.debug("unable to close shell session")
+    }
   }
 }
