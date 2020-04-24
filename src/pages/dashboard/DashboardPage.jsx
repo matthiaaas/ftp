@@ -33,6 +33,7 @@ class DashboardPage extends Component {
       this.props.history.push("/")
     } else {
       this.getSpace();
+      this.getOS();
     }
   }
 
@@ -103,6 +104,33 @@ class DashboardPage extends Component {
           error: true,
           loading: false
         }
+      })
+    }
+  }
+
+  getOS() {
+    if (this.props.socket && this.props.socket.sftp) {
+      this.props.socket.raw("cat /etc/os-release", (err, output) => {
+        if (output) {
+          output = output.text.split("\n")
+          let runningOS = "";
+          if (output[0].includes("NAME=")) {
+            runningOS = output[0].split('=')[1].replace(/"/gi, "");
+          }
+          if (runningOS !== undefined) {
+            this.setState({
+              os: runningOS
+            })
+          } else {
+            this.setState({
+              os: "Unknown"
+            })
+          }
+        }
+      })
+    } else {
+      this.setState({
+        os: "Unknown"
       })
     }
   }
@@ -181,7 +209,7 @@ class DashboardPage extends Component {
                   <Label>System</Label>
                   <Box>
                     <BoxSection>
-                      <Text>Unix</Text>
+                      <Text>{this.state.os ? this.state.os : "Loading..."}</Text>
                     </BoxSection>
                   </Box>
                 </Item>
