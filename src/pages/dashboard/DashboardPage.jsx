@@ -111,13 +111,11 @@ class DashboardPage extends Component {
 
   getOS() {
     if (this.props.socket && this.props.socket.sftp) {
-      this.props.socket.raw("cat /etc/os-release", (err, output) => {
+      this.props.socket.raw("grep '^PRETTY_NAME=' /etc/os-release || grep '^NAME=' /etc/os-release", (err, output) => {
         if (output) {
-          output = output.text.split("\n")
-          let runningOS = "";
-          if (output[0].includes("NAME=")) runningOS = output[0].split('=')[1].replace(/"/gi, "");
           this.setState({
-            os: runningOS || "Unknown"
+            os: output.text.split("=")[1].replace(/"/gi, "") || "Unknown"
+            //os: output.text.replace(/.*NAME="?(.*?)"?/gi, "") || "Unknown"
           })
         }
       })
