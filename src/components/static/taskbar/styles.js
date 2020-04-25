@@ -127,13 +127,13 @@ export const Server = styled.div`
 
   &:hover {
     >div {
-      transition: visibility 0s ease 0.4s, opacity 0.2s ease 0.4s;
+      transition: visibility 0s ease 0.2s, opacity 0.2s ease 0.2s;
       visibility: visible;
       opacity: 1;
     }
 
     >a {
-      transition: padding-left 0.2s ease 0.4s;
+      transition: padding-left 0.2s ease 0.2s;
       padding-left: 56px;
     }
   }
