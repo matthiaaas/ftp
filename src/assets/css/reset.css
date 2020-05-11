@@ -124,7 +124,6 @@ q {
 }
 
 blockquote {
-
   &:before,
   &:after {
     content: '';

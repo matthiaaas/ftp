@@ -161,7 +161,7 @@ function createWindow() {
         {
           label: "Github Repository",
           click: async () => {
-            const { shell } = require("electron")
+            const { shell } = require("electron")
             await shell.openExternal("https://github.com/matthiaaas/ftp")
           }
         }
