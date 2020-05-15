@@ -11,25 +11,29 @@ export enum StatusTypes {
 }
 
 export interface ISocket {
-  address: String,
-  port: Number,
-  user: String,
-  pass: String,
+  address: string,
+  port: number | null,
+  user: string,
+  pass: string,
   protocol: ProtocolTypes,
   status: StatusTypes,
-  key?: Boolean | {
-    raw?: String,
-    valid?: Boolean,
-    filePath?: String,
+  key?: boolean | {
+    raw: string,
+    valid: boolean,
+    file?: {
+      path: string,
+      name: string
+    }
+    passPhrase?: string,
   },
   meta?: {
-    timestamp?: Number,
-    ip?: String,
-    family?: Number
+    timestamp?: number,
+    ip?: string,
+    family?: number
   },
   system?: {
-    os?: String,
-    absPath?: String,
-    isWindows?: Boolean
+    os?: string,
+    absPath?: string,
+    isWindows?: boolean
   }
 }

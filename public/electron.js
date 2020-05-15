@@ -16,7 +16,7 @@ function createWindow() {
     minWidth: 720,
     minHeight: 484,
     autoHideMenuBar: true,
-    backgroundColor: "#141417"
+    backgroundColor: "#1D1D24"
   })
 
   const menu = Menu.buildFromTemplate([
