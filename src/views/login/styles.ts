@@ -58,10 +58,6 @@ export const Port = styled.div`
   display: flex;
   align-items: center;
   background: var(--color-dark-100);
-
-  &:focus {
-    background: red;
-  }
 `
 
 export const InputPort = styled(InputWrapper)`
@@ -83,20 +79,20 @@ export const InputPort = styled(InputWrapper)`
 `
 
 export const Dropdown = styled(DropdownWrapper)`
-  transition: all ease 0.1s;
   color: var(--color-gray-200);
   border-radius: 12px;
   border: 1px solid var(--color-dark-400);
   padding: 3px 8px;
-  background: var(--color-dark-500);
+  background: var(--color-dark-600);
 
   &:hover {
     color: var(--color-gray-100);
-    background: var(--color-dark-600);
+    background: var(--color-dark-500);
   }
 
   &:focus-within {
-    color: var(--color-gray-200);
+    color: var(--color-white);
+    background: transparent;
   }
 
   ul {
@@ -113,11 +109,11 @@ export const Dropdown = styled(DropdownWrapper)`
       color: var(--color-gray-200);
 
       &:not(:last-child) {
-        border-bottom: 1px solid var(--color-dark-600);
+        border-bottom: 1px solid var(--color-dark-700);
       }
 
       &:hover {
-        background: var(--color-dark-600);
+        background: var(--color-dark-700);
       }
 
       &[data-selected="true"] {
@@ -141,7 +137,7 @@ export const AuthMode = styled.div<{selected?: boolean}>`
   border-radius: 14px;
   padding: 4px 8px 4px 28px;
   display: inline-block;
-  border: 1px solid ${props => props.selected ? `var(--color-dark-500) !important` : `transparent`};
+  border: 1px solid ${props => props.selected ? `var(--color-dark-600) !important` : `transparent`};
 
   &:not(:last-child) {
     margin-right: 4px;
@@ -149,11 +145,11 @@ export const AuthMode = styled.div<{selected?: boolean}>`
 
   &:hover {
     color: var(--color-gray-300);
-    border-color: var(--color-dark-500);
+    border-color: var(--color-dark-600);
   }
 
   &:active {
-    border-color: var(--color-dark-600);
+    border-color: var(--color-dark-700);
   }
 
   &::before {
@@ -163,7 +159,7 @@ export const AuthMode = styled.div<{selected?: boolean}>`
     left: ${props => props.selected ? `9px` : `6px`};
     width: ${props => props.selected ? `6px` : `12px`};
     height: ${props => props.selected ? `6px` : `12px`};
-    box-shadow: 0 0 0 ${props => props.selected ? `5px var(--color-dark-500)` : `1px var(--color-gray-400)`};
+    box-shadow: 0 0 0 ${props => props.selected ? `5px var(--color-dark-600)` : `1px var(--color-gray-400)`};
     border-radius: 50%;
     background: ${props => props.selected && `var(--color-gray-200)`};
   }

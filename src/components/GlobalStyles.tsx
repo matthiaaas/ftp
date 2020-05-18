@@ -9,8 +9,9 @@ export const GlobalStyles = createGlobalStyle`
     --color-dark-200: #191920;
     --color-dark-300: #1D1D24;
     --color-dark-400: #302F38;
-    --color-dark-500: rgba(48, 47, 56, 0.32);
-    --color-dark-600: rgba(48, 47, 56, 0.16);
+    --color-dark-500: rgba(48, 47, 56, 0.48);
+    --color-dark-600: rgba(48, 47, 56, 0.32);
+    --color-dark-700: rgba(48, 47, 56, 0.16);
 
     --color-gray-100: #7D88A7;
     --color-gray-200: #69738F;
@@ -20,6 +21,10 @@ export const GlobalStyles = createGlobalStyle`
     --color-blue: #0064FE;
     --color-red: #FF6157;
     --color-red-dark: #8C2C26;
+    --color-green: #25CC40;
+    --color-green-dark: #1E8B2F;
+    --color-yellow: #FFBF2A;
+    --color-yellow-dark: #C9811B;
     
     --font-main: "Karla";
     --font-code: "Source Code Pro";

@@ -1,9 +1,12 @@
 {
   "name": "transflow",
-  "productName": "Transflow",
   "version": "0.2.0",
-  "author": "Matthias Halfmann",
+  "productName": "Transflow",
   "description": "React based Electron (S)FTP desktop application",
+  "author": "Matthias Halfmann",
+  "contributors": [
+    "Tobias Moeritz <tobias@moeritz.cc> (https://github.com/tobimori/)"
+  ],
   "homepage": "./",
   "bugs": {
     "url": "https://github.com/matthiaaas/ftp/issues",
@@ -53,6 +56,7 @@
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
     "@types/react-router-dom": "^5.1.5",
+    "@types/ssh2": "^0.5.43",
     "electron": "^8.2.5",
     "electron-builder": "^22.6.0",
     "react-dom": "^16.13.1",

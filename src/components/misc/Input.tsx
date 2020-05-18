@@ -26,7 +26,7 @@ const Wrapper = styled.input`
   }
 
   &:focus {
-    border-color: var(--color-dark-500);
+    border-color: var(--color-dark-400);
   }
 
   &:invalid {

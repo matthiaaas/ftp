@@ -15,7 +15,7 @@ class RouteChange extends Component<IProps, {unlisten: UnregisterCallback}> {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({
       unlisten: this.props.history.listen((location: any) => {
         if (typeof this.props.onChange === "function") {

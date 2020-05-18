@@ -10,22 +10,24 @@ export enum StatusTypes {
   online = "online"
 }
 
+export interface IKey {
+  raw: string,
+  valid: boolean,
+  file?: {
+    path: string,
+    name: string
+  }
+  passPhrase?: string
+}
+
 export interface ISocket {
   address: string,
   port: number | null,
   user: string,
   pass: string,
   protocol: ProtocolTypes,
-  status: StatusTypes,
-  key?: boolean | {
-    raw: string,
-    valid: boolean,
-    file?: {
-      path: string,
-      name: string
-    }
-    passPhrase?: string,
-  },
+  status?: StatusTypes,
+  key?: boolean | IKey,
   meta?: {
     timestamp?: number,
     ip?: string,

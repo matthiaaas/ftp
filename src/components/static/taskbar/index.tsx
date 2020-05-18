@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 
-import SocketContext from "../../../states/socket";
+import SocketContext from "../../../providers/socket";
 
 import { Header, Content } from "./styles";
 

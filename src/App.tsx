@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
-import SocketContext from "./states/socket";
-import { ProtocolTypes, StatusTypes, ISocket } from "./states/socket/types";
+import SocketContext from "./providers/socket";
+import ClientContext, { Client } from "./providers/client";
+import { ProtocolTypes, StatusTypes, ISocket } from "./providers/socket/types";
 
 import { GlobalStyles } from "./components/GlobalStyles";
 
@@ -17,7 +18,7 @@ import LoginView from "./views/login";
 import "./assets/css/reset.css";
  
 const socketState = {
-  address: "lol",
+  address: "",
   port: 22,
   user: "",
   pass: "",
@@ -30,25 +31,33 @@ const socketState = {
 
 function App() {
   const socket = useState<ISocket>(socketState);
+  const client = useState(new Client({socket: [socket[0], socket[1]]}));
   const [location, setLocation] = useState("/");
 
+  useEffect(() => {
+    client[0].socketState = socket[0];
+    client[0].setSocket = socket[1];
+  }, [socket[0]]);
+
   return (
-    <SocketContext.Provider value={socket}>
-      <GlobalStyles />
-      <BrowserRouter>
-        <RouteChange onChange={(location: string) => setLocation(location)}>
-          <Titlebar />
-          <Sidebar location={location} />
-          <Taskbar />
-          <Switch>
-            <Route exact path="/login" component={(props: any) => {
-              return <LoginView {...props} />
-            }} />
-          </Switch>
-          <Redirect to="/login" />
-        </RouteChange>
-      </BrowserRouter>
-    </SocketContext.Provider>
+    <ClientContext.Provider value={client}>
+      <SocketContext.Provider value={socket}>
+        <GlobalStyles />
+        <BrowserRouter>
+          <RouteChange onChange={(location: string) => setLocation(location)}>
+            <Titlebar />
+            <Sidebar location={location} />
+            <Taskbar />
+            <Switch>
+              <Route exact path="/login" component={(props: any) => {
+                return <LoginView {...props} />
+              }} />
+            </Switch>
+            <Redirect to="/login" />
+          </RouteChange>
+        </BrowserRouter>
+      </SocketContext.Provider>
+    </ClientContext.Provider>
   )
 }
 

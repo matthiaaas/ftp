@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 
-import SocketContext from "../../states/socket";
-import { ISocket, ProtocolTypes, StatusTypes } from "../../states/socket/types";
+import SocketContext from "../../providers/socket";
+import ClientContext, { Client } from "../../providers/client";
+import { ISocket, ProtocolTypes, StatusTypes } from "../../providers/socket/types";
 
 import Container from "../../components/misc/Container";
 import ServerStatus from "../../components/misc/ServerStatus";
@@ -10,13 +11,12 @@ import { IOption, TOptions } from "../../components/misc/Dropdown";
 
 import { View, Content, Header, Login, Row, Field, Label, Input, Port, InputPort, Dropdown, SwitchAuth, AuthMode } from "./styles";
 
-import { isValidSSHKey } from "../../utils/utils";
+import { isValidSSHKey, areValidCredentials } from "./functions";
 
 enum AuthTypes { pass = "pass", key = "key"};
 
 const protocolItems: TOptions = [
-  { name: "SSH", value: ProtocolTypes.ssh },
-  { name: "SFTP", value: ProtocolTypes.sftp },
+  { name: "SSH/SFTP", value: ProtocolTypes.ssh },
   { name: "FTP", value: ProtocolTypes.ftp}
 ]
 
@@ -25,23 +25,50 @@ const credentialsDefault: ISocket = {
   port: null,
   user: "",
   pass: "",
-  protocol: ProtocolTypes.ssh,
-  status: StatusTypes.offline
+  protocol: ProtocolTypes.ssh
+}
+
+const fallbackCredentials: ISocket = {
+  address: "",
+  port: 22,
+  user: "root",
+  pass: "root",
+  protocol: ProtocolTypes.ssh
 }
 
 function LoginView() {
   const [socket, setSocket] = useContext(SocketContext);
-  const [authMode, setAuthMode] = useState<AuthTypes>(AuthTypes.pass);
+  const [client, setClient] = useContext(ClientContext);
   const [credentials, setCredentials] = useState(credentialsDefault);
+  const [authMode, setAuthMode] = useState<AuthTypes>(socket.key ? AuthTypes.key : AuthTypes.pass);
 
   const isNotOffline = socket.status !== StatusTypes.offline;
 
+  const submitCredentials = async () => {
+    if (!areValidCredentials(credentials)) {
+      return console.debug("received non valid credentials");
+    }
+    credentials.key = authMode === AuthTypes.key ? credentials.key : false;
+    setClient(new Client({
+      type: credentials.protocol,
+      socket: [socket, setSocket]
+    }));
+    const login = await client.login(credentials);
+    if (login.success) {
+      console.log("successful login");
+    }
+  }
+
   return (
-    <View>
+    <View onKeyDown={(event: React.KeyboardEvent<HTMLFormElement>) => {
+      if (event.keyCode === 13) {
+        submitCredentials()
+      }
+    }}>
       <Container>
         <Content>
           <Header>
-            <ServerStatus status={StatusTypes.offline} />
+            <ServerStatus status={socket.status || StatusTypes.offline} />
             <Headline>Login</Headline>
           </Header>
           <Login>
@@ -57,6 +84,7 @@ function LoginView() {
                       address: event.target.value
                     })
                   }}
+                  maxLength="99"
                   autoFocus
                 />
               </Field>
@@ -102,6 +130,7 @@ function LoginView() {
                       user: event.target.value
                     })
                   }}
+                  maxLength="99"
                 />
               </Field>
               <Field>
@@ -128,6 +157,7 @@ function LoginView() {
                         pass: event.target.value
                       })
                     }}
+                    maxLength="99"
                   /> :
                   <Input
                     type="browse"
