@@ -29,7 +29,7 @@ const credentialsDefault: ISocket = {
 }
 
 const fallbackCredentials: ISocket = {
-  address: "",
+  address: "localhost",
   port: 22,
   user: "root",
   pass: "root",
@@ -45,18 +45,15 @@ function LoginView() {
   const isNotOffline = socket.status !== StatusTypes.offline;
 
   const submitCredentials = async () => {
-    if (!areValidCredentials(credentials)) {
+    if (!areValidCredentials(credentials, fallbackCredentials)) {
       return console.debug("received non valid credentials");
     }
-    credentials.key = authMode === AuthTypes.key ? credentials.key : false;
+    credentials.key = authMode === AuthTypes.key ? credentials.key : { valid: false };
     setClient(new Client({
       type: credentials.protocol,
       socket: [socket, setSocket]
     }));
     const login = await client.login(credentials);
-    if (login.success) {
-      console.log("successful login");
-    }
   }
 
   return (
@@ -78,7 +75,7 @@ function LoginView() {
                 <Input
                   type="text"
                   defaultValue={isNotOffline ? socket.address : credentials.address}
-                  placeholder={credentials.address || "example.com"}
+                  placeholder={credentials.address || fallbackCredentials.address}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                     setCredentials({...credentials,
                       address: event.target.value
@@ -106,10 +103,9 @@ function LoginView() {
                   />
                   <Dropdown
                     onChange={(options: TOptions, selected: IOption) => {
-                      const defaultPort = selected.value === ProtocolTypes.ftp ? 21 : 22;
                       setCredentials({
                         ...credentials,
-                        port: credentials.port ? credentials.port : defaultPort,
+                        port: credentials.port ? credentials.port : fallbackCredentials.port,
                         protocol: selected.value
                       })
                     }}
@@ -124,7 +120,7 @@ function LoginView() {
                 <Input
                   type="text"
                   defaultValue={isNotOffline ? socket.user : credentials.user}
-                  placeholder={credentials.user || "root"}
+                  placeholder={credentials.user || fallbackCredentials.user}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                     setCredentials({...credentials,
                       user: event.target.value
@@ -151,7 +147,7 @@ function LoginView() {
                   <Input
                     type="password"
                     defaultValue={isNotOffline ? socket.pass : credentials.pass}
-                    placeholder={"•".repeat(credentials.pass.length) || "••••"}
+                    placeholder={"•".repeat(credentials.pass.length || fallbackCredentials.pass.length)}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                       setCredentials({...credentials,
                         pass: event.target.value

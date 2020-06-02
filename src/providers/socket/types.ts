@@ -11,7 +11,7 @@ export enum StatusTypes {
 }
 
 export interface IKey {
-  raw: string,
+  raw?: string,
   valid: boolean,
   file?: {
     path: string,
@@ -27,7 +27,7 @@ export interface ISocket {
   pass: string,
   protocol: ProtocolTypes,
   status?: StatusTypes,
-  key?: boolean | IKey,
+  key?: IKey,
   meta?: {
     timestamp?: number,
     ip?: string,

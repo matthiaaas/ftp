@@ -2,14 +2,13 @@ import { createContext } from "react";
 
 import { ISocket, ProtocolTypes, StatusTypes } from "./types";
 
-const socketState = {
+const socketState: ISocket = {
   address: "",
   port: 22,
   user: "",
   pass: "",
   protocol: ProtocolTypes.sftp,
   status: StatusTypes.offline,
-  key: false,
   meta: {},
   system: {}
 }

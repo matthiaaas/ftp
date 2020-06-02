@@ -14,6 +14,7 @@ import Sidebar from "./components/static/sidebar";
 import Taskbar from "./components/static/taskbar";
 
 import LoginView from "./views/login";
+import SessionView from "./views/session";
 
 import "./assets/css/reset.css";
  
@@ -24,7 +25,7 @@ const socketState = {
   pass: "",
   protocol: ProtocolTypes.sftp,
   status: StatusTypes.offline,
-  key: false,
+  key: { valid: false },
   meta: {},
   system: {}
 }
@@ -51,6 +52,9 @@ function App() {
             <Switch>
               <Route exact path="/login" component={(props: any) => {
                 return <LoginView {...props} />
+              }} />
+              <Route exact path="/session" component={(props: any) => {
+                return <SessionView {...props} />
               }} />
             </Switch>
             <Redirect to="/login" />
