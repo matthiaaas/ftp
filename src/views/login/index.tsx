@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 
 import SocketContext from "../../providers/socket";
 import ClientContext, { Client } from "../../providers/client";
@@ -40,7 +40,7 @@ function LoginView() {
   const [socket, setSocket] = useContext(SocketContext);
   const [client, setClient] = useContext(ClientContext);
   const [credentials, setCredentials] = useState(credentialsDefault);
-  const [authMode, setAuthMode] = useState<AuthTypes>(socket.key ? AuthTypes.key : AuthTypes.pass);
+  const [authMode, setAuthMode] = useState<AuthTypes>(socket.key?.raw ? AuthTypes.key : AuthTypes.pass);
 
   const isNotOffline = socket.status !== StatusTypes.offline;
 
@@ -53,8 +53,17 @@ function LoginView() {
       type: credentials.protocol,
       socket: [socket, setSocket]
     }));
+    setCredentials(credentials)
     const login = await client.login(credentials);
+    client.socket = login.socket.socket;
+    console.log(client.socket)
   }
+
+  useEffect(() => {
+    if (isNotOffline) {
+      setCredentials({...credentials, ...socket});
+    }
+  }, [socket]);
 
   return (
     <View onKeyDown={(event: React.KeyboardEvent<HTMLFormElement>) => {
