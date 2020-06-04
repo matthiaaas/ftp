@@ -129,15 +129,15 @@ export const SwitchAuth = styled.div`
   margin-bottom: 10px;
 `
 
-export const AuthMode = styled.div<{selected?: boolean}>`
+export const AuthMode = styled.div<{selected?: boolean}>(({ selected }) => `
   transition: all ease 0.1s;
   position: relative;
   display: inline-block;
-  color: ${props => props.selected ? `var(--color-gray-200) !important` : `var(--color-gray-400)`};
+  color: ${selected ? `var(--color-gray-200) !important` : `var(--color-gray-400)`};
   border-radius: 14px;
   padding: 4px 8px 4px 28px;
   display: inline-block;
-  border: 1px solid ${props => props.selected ? `var(--color-dark-600) !important` : `transparent`};
+  border: 1px solid ${selected ? `var(--color-dark-600) !important` : `transparent`};
 
   &:not(:last-child) {
     margin-right: 4px;
@@ -155,12 +155,12 @@ export const AuthMode = styled.div<{selected?: boolean}>`
   &::before {
     content: "";
     position: absolute;
-    top: ${props => props.selected ? `9px` : `6px`};
-    left: ${props => props.selected ? `9px` : `6px`};
-    width: ${props => props.selected ? `6px` : `12px`};
-    height: ${props => props.selected ? `6px` : `12px`};
-    box-shadow: 0 0 0 ${props => props.selected ? `5px var(--color-dark-600)` : `1px var(--color-gray-400)`};
+    top: ${selected ? `9px` : `6px`};
+    left: ${selected ? `9px` : `6px`};
+    width: ${selected ? `6px` : `12px`};
+    height: ${selected ? `6px` : `12px`};
+    box-shadow: 0 0 0 ${selected ? `5px var(--color-dark-600)` : `1px var(--color-gray-400)`};
     border-radius: 50%;
-    background: ${props => props.selected && `var(--color-gray-200)`};
+    background: ${selected && `var(--color-gray-200)`};
   }
-`
+`)

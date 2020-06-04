@@ -7,7 +7,7 @@ const ResizingWrapper = styled.div`
 
 `
 
-const Wrapper = styled.input`
+const Wrapper = styled.input(({ type }) => `
   appearance: none;
   outline: none;
   user-select: all;
@@ -16,7 +16,7 @@ const Wrapper = styled.input`
   box-sizing: border-box;
   border-radius: 22px;
   border: 1px solid var(--color-dark-100);
-  letter-spacing: ${props => props.type === "password" && "3px"};
+  letter-spacing: ${type === "password" && "3px"};
   color: var(--color-white);
   display: inline-block;
   background: var(--color-dark-100);
@@ -37,7 +37,7 @@ const Wrapper = styled.input`
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
-`
+`)
 
 const Span = styled.span`
   visibility: hidden;
@@ -106,10 +106,10 @@ const BrowseInput = styled.input`
   height: 0;
 `
 
-const BrowseText = styled.span<{invalid?: boolean, highlighted?: boolean}>`
+const BrowseText = styled.span<{invalid?: boolean, highlighted?: boolean}>(({ invalid, highlighted }) => `
   pointer-events: none;
-  color: ${props => props.invalid ? `var(--color-red)` : props.highlighted ? `var(--color-white)` : `inherit`};
-`
+  color: ${invalid ? `var(--color-red)` : highlighted ? `var(--color-white)` : `inherit`};
+`)
 
 interface IProps {
   type: string,

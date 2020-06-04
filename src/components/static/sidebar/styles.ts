@@ -20,12 +20,12 @@ export const Nav = styled.ul`
   padding-top: 152px;
 `
 
-export const Item = styled.li<{active: boolean}>`
-  color: ${props => props.active ? `var(--color-white) !important` : `var(--color-gray-200)`};
-  background: ${props => props.active && `var(--color-dark-100) !important`};
+export const Item = styled.li<{active: boolean}>(({ active }) => `
+  color: ${active ? `var(--color-white) !important` : `var(--color-gray-200)`};
+  background: ${active && `var(--color-dark-100) !important`};
 
   svg {
-    color: ${props => props.active && `var(--color-blue) !important`};
+    color: ${active && `var(--color-blue) !important`};
   }
 
   &:hover {
@@ -36,7 +36,7 @@ export const Item = styled.li<{active: boolean}>`
   &:active {
     color: var(--color-gray-200);
   }
-`
+`)
 
 export const Url = styled(Link)`
   cursor: pointer;
