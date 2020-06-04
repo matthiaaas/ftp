@@ -39,7 +39,6 @@ export default class SFTP {
   }
   
   auth(user: string, pass: string | IKey) {
-    console.log(pass)
     return new Promise((resolve, reject) => {
       try {
         this.client.once("ready", () => {

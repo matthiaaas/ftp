@@ -9,6 +9,7 @@ const socketState: ISocket = {
   pass: "",
   protocol: ProtocolTypes.sftp,
   status: StatusTypes.offline,
+  key: { valid: false },
   meta: {},
   system: {}
 }
