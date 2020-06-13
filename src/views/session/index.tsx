@@ -7,8 +7,8 @@ function SessionView() {
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
-    console.log(client.type)
     client.socket.ls("/").then((data: any) => {
+      console.log(data)
       setFiles(data);
     })
   }, []);

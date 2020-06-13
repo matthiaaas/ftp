@@ -44,19 +44,13 @@ function LoginView() {
 
   const isNotOffline = socket.status !== StatusTypes.offline;
 
-  const submitCredentials = async () => {
+  const submitCredentials = () => {
     if (!areValidCredentials(credentials, fallbackCredentials)) {
       return console.debug("received non valid credentials");
     }
     credentials.key = authMode === AuthTypes.key ? credentials.key : { valid: false };
-    setClient(new Client({
-      type: credentials.protocol,
-      socket: [socket, setSocket]
-    }));
     setCredentials(credentials)
-    const login = await client.login(credentials);
-    client.socket = login.socket.socket;
-    console.log(client.socket)
+    const login = client.login(credentials);
   }
 
   useEffect(() => {
@@ -167,8 +161,8 @@ function LoginView() {
                   <Input
                     type="browse"
                     defaultValue={
-                      isNotOffline && socket.key ? (socket.key as any).file.name :
-                      credentials.key ? (credentials.key as any).file.name : ""
+                      isNotOffline && socket.key?.valid ? socket?.key?.file?.name :
+                      credentials.key ? credentials?.key?.file?.name : ""
                     }
                     onChange={(event: any) => {
                       const keyFile = event.target.files[0];
