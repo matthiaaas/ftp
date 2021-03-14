@@ -1,3 +1,14 @@
+# Good News: [v2 is in the making](https://twitter.com/matthiashalfmnn/status/1370691356679569412)
+
+![version badge](https://img.shields.io/badge/Good%20News-brightgreen)
+[![discord badge](https://img.shields.io/badge/Join%20Discord-brightgreen?&color=7289da&logo=discord&logoColor=white)](https://discord.gg/9NhwCuGR8E)
+
+Transflow v2 is currently being developed in a different private repository until release. This repo contains the source code the old, no longer maintained version of Transflow.
+
+Feel free to ask me anything on my [Twitter](https://twitter.com/matthiashalfmnn). You can also follow to stay up-to-date and get notified about upcoming app showcases and beta testings.
+
+→ Most recent app demo: https://twitter.com/matthiashalfmnn/status/1370691356679569412
+
 # ftp / [transflow](https://transflow.co)
 
 React based Electron (S)FTP desktop application like FileZilla for uploading local files to a remote server.
@@ -8,18 +19,9 @@ React based Electron (S)FTP desktop application like FileZilla for uploading loc
 
 ## Installation
 
-**Note:** If you want to download the app for real every-day usage / testing it's not recommended to build from the GitHub repo. Visit [transflow.co/download](https://transflow.co/download) instead.
+**Important:** The source code of this app is deprecated in favor of v2 rewrite. It's recommended to wait until v2 is being released. Follow me on [Twitter](https://twitter.com/matthiashalfmnn) to stay up-to-date and get notified about upcoming previews, betas and release dates.
 
-### Requirements
-
-* npm
-
-### Packages
-
-* React >16.12
-* Electron >8.0
-
-### Installing
+### Install packages
 
 ```
 npm install
@@ -29,7 +31,7 @@ npm install
 
 **Note:** Electron is a framework used to guarantee cross-platform support for desktop apps. This app is mainly developed on macOS and not well tested on other OSs yet. Some small configurations might be necessary.
 
-#### 1. Start in your browser
+#### 1. Start Dev Server
 
 ```
 npm run start
