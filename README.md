@@ -3,7 +3,7 @@
 ![version badge](https://img.shields.io/badge/Good%20News-brightgreen)
 [![discord badge](https://img.shields.io/badge/Join%20Discord-brightgreen?&color=7289da&logo=discord&logoColor=white)](https://discord.gg/9NhwCuGR8E)
 
-Transflow v2 is currently being developed in a different private repository until release. This repo contains the source code the old, no longer maintained version of Transflow.
+Transflow v2 is currently being developed in a different private repository until release. This repo contains the source code of the old, no longer maintained version of Transflow.
 
 Feel free to ask me anything on my [Twitter](https://twitter.com/matthiashalfmnn). You can also follow to stay up-to-date and get notified about upcoming app showcases and beta testings.
 
