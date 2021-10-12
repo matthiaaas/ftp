@@ -47,7 +47,7 @@
     ]
   },
   "devDependencies": {
-    "electron": "^8.0.1",
+    "electron": "^11.5.0",
     "electron-builder": "^22.3.2",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.0"
