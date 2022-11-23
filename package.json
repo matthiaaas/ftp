@@ -50,7 +50,7 @@
     "electron": "^8.0.1",
     "electron-builder": "^22.3.2",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.0"
+    "react-scripts": "^5.0.1"
   },
   "build": {
     "appId": "nonExistentID",
